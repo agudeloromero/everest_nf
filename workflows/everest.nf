@@ -76,14 +76,29 @@ workflow EVEREST {
     //
     // MODULE: Run FastQC
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    /* FASTQC ( */
+    /*     INPUT_CHECK.out.reads */
+    /* ) */
+    /* ch_versions = ch_versions.mix(FASTQC.out.versions.first()) */
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    //============================
+    // EVEREST WORKFLOW
+    //============================
+
+
+    // BINNING_WF -> Optional
+    // PRE_TRIMMING_QC_WF -> Optional, reuse the module
+
+
+    TRIMMING_ADAPTERS_PE_WF( INPUT_CHECK.out.reads )
+
+    /* TODO: HOST_REMOVAL_PE() */
+
+    //=============================
 
     //
     // MODULE: MultiQC

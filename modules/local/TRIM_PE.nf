@@ -1,8 +1,8 @@
 process TRIM_PE{
-		tag "$meta.id"
-		label 'process_medium'
+        tag "$meta.id"
+        label 'process_medium'
 
-		conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
+        conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
 
 		input:
 		tuple val(meta), path('*_clean_R1.fastq.gz')	, emit: clean1
