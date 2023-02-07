@@ -76,17 +76,14 @@ workflow EVEREST {
     //
     // MODULE: Run FastQC
     //
-    /* FASTQC ( */
-    /*     INPUT_CHECK.out.reads */
-    /* ) */
-    /* ch_versions = ch_versions.mix(FASTQC.out.versions.first()) */
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    FASTQC (
+        INPUT_CHECK.out.reads
     )
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
 
     //============================
-    // EVEREST WORKFLOW
+    // START: EVEREST WORKFLOW
     //============================
 
 
@@ -98,7 +95,14 @@ workflow EVEREST {
 
     /* TODO: HOST_REMOVAL_PE() */
 
-    //=============================
+    //============================
+    // FINISH: EVEREST WORKFLOW
+    //============================
+
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     //
     // MODULE: MultiQC

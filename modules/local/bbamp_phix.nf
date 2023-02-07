@@ -4,6 +4,11 @@ process BBMAP_PHIX {
 
         conda (params.enable_conda ? 'bioconda::bbmap=38.96' : null)
 
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+            'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
+            'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+
+
         input:
         tuple val(meta), path(reads)
 
@@ -23,7 +28,7 @@ process BBMAP_PHIX {
         bbduk.sh \\
           --cores $task.cpus \\ // do I need this?
           $args \\
-          in1=$reads[0] in2=$reads[1] \\ // I don't know how to call R1 + R2
+          in1=$reads[0] in2=$reads[1] \\ 
           out1=${prefix}_clean_R1.fastq.gz out2=${prefix}_clean_R2.fastq.gz  \\
           outm1=${prefix}_noclean_R1.fastq.gz outm2=${prefix}_noclean_R2.fastq.gz \\
           ref=artifacts,phix \\

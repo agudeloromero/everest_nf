@@ -17,5 +17,10 @@ process BBMAP_DEDUPE {
 
     """
     dedupe.sh ${params.mem} ${params.other} in1=${f1} in2=${f2} out=bbmap_dedupe.out 
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+      BBMAP_DEDUPE: \$(bbmap --version)
+    END_VERSIONS
     """
 }
