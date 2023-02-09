@@ -26,7 +26,7 @@ process BBMAP_PHIX {
 
         """
         bbduk.sh \\
-          --cores $task.cpus \\ // do I need this?
+          --cores $task.cpus \\ 
           $args \\
           in1=$reads[0] in2=$reads[1] \\ 
           out1=${prefix}_clean_R1.fastq.gz out2=${prefix}_clean_R2.fastq.gz  \\
