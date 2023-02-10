@@ -93,7 +93,7 @@ workflow EVEREST {
 
     TRIMMING_ADAPTERS_PE_WF( INPUT_CHECK.out.reads )
 
-    /* TODO: HOST_REMOVAL_PE() */
+    /* TODO: HOST_REMOVAL_PE( TRIMMING_ADAPTERS_PE_WF.out.xyz ) */
 
     //============================
     // FINISH: EVEREST WORKFLOW
