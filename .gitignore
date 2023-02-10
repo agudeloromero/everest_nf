@@ -8,4 +8,4 @@ testing*
 *.pyc
 null
 
-results_test_dev/
+_resources/
