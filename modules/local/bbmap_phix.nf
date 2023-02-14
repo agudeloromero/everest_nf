@@ -15,7 +15,7 @@ process BBMAP_PHIX {
         output:
         tuple val(meta), path('*_clean_R*.fastq.gz')	                                , emit: clean
         tuple val(meta), path('*_noclean_R*.fastq.gz')	                              , emit: unclean
-        tuple val(meta), path('*_stats_phix.txt')		                                  , emit: stats_phix
+        tuple val(meta), path('*stats_phix.txt')		                                  , emit: stats_phix
         tuple val(meta), path('*bbmap_phix.log')					                            , emit: log
         path "versions.yml"								                                            , emit: versions
 
@@ -27,7 +27,7 @@ process BBMAP_PHIX {
         """
         bbduk.sh \\
           $args \\
-          in1=${reads[0]} in2=${reads[1]} \\ 
+          in1=${reads[0]} in2=${reads[1]} \\
           out1=${prefix}_clean_R1.fastq.gz out2=${prefix}_clean_R2.fastq.gz  \\
           outm1=${prefix}_noclean_R1.fastq.gz outm2=${prefix}_noclean_R2.fastq.gz \\
           ref=artifacts,phix \\
