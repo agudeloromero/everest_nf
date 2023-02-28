@@ -12,7 +12,7 @@ process TRIM_PE {
         output:
         tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	, emit: paired
         tuple val(meta), path('*_trimm_unpair_R1.fastq.gz'), path('*_trimm_unpair_R2.fastq.gz')	, emit: unpaired
-        tuple val(meta), path('*.log')						, emit: log
+        tuple val(meta), path('*.log')						                , emit: log
         path "versions.yml"									, emit: versions
 
 
@@ -21,11 +21,11 @@ process TRIM_PE {
         def prefix = task.ext.prefix ?: "${meta.id}"
         """
         trimmomatic PE \\
-        -threads $task.cpus \
+        -threads $task.cpus \\
         -phred33 \\
         ${clean[0]} ${clean[1]} \\
-        ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
-        ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
+        ${prefix}_trimm_pair_R1.fastq.gz  ${prefix}_trimm_unpair_R1.fastq.gz \\
+        ${prefix}_trimm_pair_R2.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz \\
         > ${prefix}.TRIM_PE.log
 
         cat <<-END_VERSIONS > versions.yml
