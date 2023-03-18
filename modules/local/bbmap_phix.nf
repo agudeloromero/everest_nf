@@ -43,13 +43,14 @@ process BBMAP_PHIX {
 
 
         stub:
+        def prefix = task.ext.prefix ?: "${meta.id}"
 
         """
         touch ${prefix}_clean_R1.fastq.gz ${prefix}_clean_R2.fastq.gz
         touch ${prefix}_noclean_R1.fastq.gz ${prefix}_noclean_R2.fastq.gz
 
         touch ${prefix}.stats_phix.txt
-        touch ${prefix}.bbmap_phix.txt
+        touch ${prefix}.bbmap_phix.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

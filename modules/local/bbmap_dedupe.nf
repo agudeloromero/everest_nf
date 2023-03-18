@@ -16,11 +16,23 @@ process BBMAP_DEDUPE {
     script:
 
     """
-    dedupe.sh ${params.mem} ${params.other} in1=${f1} in2=${f2} out=bbmap_dedupe.out 
+    dedupe.sh ${task.memory} ${args} in1=${f1} in2=${f2} out=bbmap_dedupe.out 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
       BBMAP_DEDUPE: \$(bbmap --version)
     END_VERSIONS
     """
+
+
+    stub:
+    """
+    touch bbmap_dedupe.out
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+      BBMAP_DEDUPE: \$(bbmap --version)
+    END_VERSIONS
+    """
+
 }

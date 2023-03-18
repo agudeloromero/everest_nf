@@ -19,6 +19,7 @@ process TRIM_PE {
         script:
             def args = task.ext.args ?: '7'
             def prefix = task.ext.prefix ?: "${meta.id}"
+
             """
             trimmomatic PE \\
             -threads $task.cpus \
@@ -35,8 +36,11 @@ process TRIM_PE {
             """
 
         stub:
+            def prefix = task.ext.prefix ?: "${meta.id}"
+
             """
             touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
+            touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
             touch ${prefix}.TRIM_PE.log
 
             cat <<-END_VERSIONS > versions.yml
