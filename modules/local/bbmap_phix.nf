@@ -40,4 +40,20 @@ process BBMAP_PHIX {
           bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS
         """
+
+
+        stub:
+
+        """
+        touch ${prefix}_clean_R1.fastq.gz ${prefix}_clean_R2.fastq.gz
+        touch ${prefix}_noclean_R1.fastq.gz ${prefix}_noclean_R2.fastq.gz
+
+        touch ${prefix}.stats_phix.txt
+        touch ${prefix}.bbmap_phix.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+          bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
+        END_VERSIONS
+        """
 }
