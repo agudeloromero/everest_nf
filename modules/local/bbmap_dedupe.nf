@@ -8,7 +8,7 @@ process BBMAP_DEDUPE {
 
     //Below are the most frequent directives
     input:
-    tuple path(f1), path(f2)
+    tuple val(meta), path(reads)
 
     output:
     path("bbmap_dedupe.out")
@@ -16,7 +16,7 @@ process BBMAP_DEDUPE {
     script:
 
     """
-    dedupe.sh ${task.memory} ${args} in1=${f1} in2=${f2} out=bbmap_dedupe.out 
+    dedupe.sh ${task.memory} ${args} in1=${reads{0}} in2=${reads{1}} out=bbmap_dedupe.out 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

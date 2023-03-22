@@ -24,7 +24,9 @@ workflow TRIMMING_ADAPTERS_PE_WF {
 
         FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated )
 
-        MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] )
+        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 
-    /* emit: */
+    emit:
+        fastqc_trimm_zip_ch = FASTQC_TRIMM.out.zip.collect{it[1]}
+        cat_trimm_fastq_ch  = fastqc_trimm_zip_ch
 }
