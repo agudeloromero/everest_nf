@@ -6,15 +6,15 @@ workflow HOST_REMOVAL_PE_WF {
     take:
 
     main:
-        MINIMAP2_index
-        MINIMAP2_host_removal
-        BBMAP_singletons_PE
+        MINIMAP2_INDEX
+        MINIMAP2_HOST_REMOVAL
+        BBMAP_SINGLETONS_PE
         CAT_PE
-        BBMAP_dup
-        BBMAP_deduped_reformat
-        BBMAP_duduped_normalisation
-        FASTQC_before_merge
-        multiQC_before_merge
+        BBMAP_DUP
+        BBMAP_DEDUPED_REFORMAT
+        BBMAP_DUDUPED_NORMALISATION
+        FASTQC_BEFORE_MERGE
+        MULTIQC_BEFORE_MERGE
 
     emit:
 }

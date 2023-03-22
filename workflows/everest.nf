@@ -119,6 +119,9 @@ workflow EVEREST {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
+    //CUSTOM FILES
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTERS_PE_WF.out.fastqc_trimm_zip_ch)
+
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),

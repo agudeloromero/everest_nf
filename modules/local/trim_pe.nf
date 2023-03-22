@@ -10,31 +10,44 @@ process TRIM_PE {
 
 
         output:
-        tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	, emit: paired
+        tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	    , emit: paired
         tuple val(meta), path('*_trimm_unpair_R1.fastq.gz'), path('*_trimm_unpair_R2.fastq.gz')	, emit: unpaired
-        tuple val(meta), path('*.log')						, emit: log
-        path "versions.yml"									, emit: versions
+        tuple val(meta), path('*.log')						                                              , emit: log
+        path "versions.yml"									                                                    , emit: versions
 
 
         script:
-        def args = task.ext.args ?: '7'
-        def prefix = task.ext.prefix ?: "${meta.id}"
-        """
-        trimmomatic PE \\
-        -threads $task.cpus \
-        -phred33 \\
-        ${clean[0]} ${clean[1]} \\
-        ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
-        ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
-        > ${prefix}.TRIM_PE.log
+            def args = task.ext.args ?: '7'
+            def prefix = task.ext.prefix ?: "${meta.id}"
 
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          TRIM_PE: \$(trimmomatic --version)
-        END_VERSIONS
-        """
+            """
+            trimmomatic PE \\
+            -threads $task.cpus \
+            -phred33 \\
+            ${clean[0]} ${clean[1]} \\
+            ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
+            ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
+            > ${prefix}.TRIM_PE.log
 
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+              TRIM_PE: \$(trimmomatic --version)
+            END_VERSIONS
+            """
 
+        stub:
+            def prefix = task.ext.prefix ?: "${meta.id}"
+
+            """
+            touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
+            touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
+            touch ${prefix}.TRIM_PE.log
+
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+              TRIM_PE: \$(trimmomatic --version)
+            END_VERSIONS
+            """
 
         /* ILLUMINACLIP:$adaptors:2:30:10 \\ */
 
