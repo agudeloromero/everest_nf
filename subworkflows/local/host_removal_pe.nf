@@ -1,5 +1,6 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/03_Host_removal_PE.smk */
 include { BBMAP_DEDUPE } from "../modules/local/bbmap_dedupe"
+include { MINIMAP2_INDEX } from "../modules/local/bbmap_dedupe"
 
 
 workflow HOST_REMOVAL_PE_WF {
