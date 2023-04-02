@@ -54,7 +54,7 @@ process BBMAP_PHIX {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-          bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
+            bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS
         """
 }

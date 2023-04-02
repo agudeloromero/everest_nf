@@ -1,7 +1,7 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/03_Host_removal_PE.smk */
 include { BBMAP_DEDUPE } from "../../modules/local/bbmap_dedupe"
 include { MINIMAP2_INDEX } from "../../modules/nf-core/minimap2/index"
-/* include { MINIMAP2_HOST_REMOVAL } from "../modules/local/minimap2_host_removal" */
+include { MINIMAP2_HOST_REMOVAL } from "../../modules/local/minimap2_host_removal"
 
 
 workflow HOST_REMOVAL_PE_WF {
@@ -11,7 +11,7 @@ workflow HOST_REMOVAL_PE_WF {
 
     main:
         MINIMAP2_INDEX( fasta_ch  )
-        MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index.first(), fastq_ch)
+        MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index, fastq_ch)
         /* BBMAP_SINGLETONS_PE */
         /* CAT_PE */
         /* BBMAP_DUP */

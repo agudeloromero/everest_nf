@@ -28,7 +28,7 @@ process BBMAP_DUDUPED_NORMALISATION {
             out=${prefix}_unmapped_cat_dedup_norm_R1.fastq.gz out2=${prefix}_unmapped_cat_dedup_norm_R2.fastq.gz \\
           > ${prefix}.S3P8_BBMAP_duduped_normalisation.log
 
-        bbnorm <<-END_VERSIONS > versions.yml
+        cat <<-END_VERSIONS > versions.yml
         "${task.process}":
           bbnorm.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS

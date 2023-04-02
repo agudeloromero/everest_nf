@@ -29,7 +29,7 @@ process BBMAP_REFORMAT {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-          reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
+            reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS
         """
 }

@@ -25,7 +25,7 @@ process S3P5_PIGZ_fastq {
               pigz $args $r2 ) \\
               > ${prefix}.S3P5_PIGZ_fastq.log
 
-        pigz <<-END_VERSIONS > versions.yml
+        cat <<-END_VERSIONS > versions.yml
         "${task.process}":
           pigz: \$(pigz)
         END_VERSIONS

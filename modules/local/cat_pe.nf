@@ -28,8 +28,8 @@ process CAT_PE {
                   > ${prefix}.S3P4_CAT_PE.log
 
             cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-            CAT_pair_unpair: \$(cat --version)
+                "${task.process}":
+                    CAT_pair_unpair: \$(cat --version)
             END_VERSIONS
         """
 }
