@@ -39,6 +39,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { TRIMMING_ADAPTERS_PE_WF } from '../subworkflows/local/trimming_adapters_pe'
+include { HOST_REMOVAL_PE_WF } from '../subworkflows/local/host_removal_pe'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -93,7 +95,7 @@ workflow EVEREST {
 
     TRIMMING_ADAPTERS_PE_WF( INPUT_CHECK.out.reads )
 
-    /* TODO: HOST_REMOVAL_PE( TRIMMING_ADAPTERS_PE_WF.out.xyz ) */
+    HOST_REMOVAL_PE_WF( params.fasta, TRIMMING_ADAPTERS_PE_WF.out.cat_trimm_fastq_ch )
 
     //============================
     // FINISH: EVEREST WORKFLOW

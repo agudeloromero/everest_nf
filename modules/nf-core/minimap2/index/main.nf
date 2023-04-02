@@ -8,10 +8,10 @@ process MINIMAP2_INDEX {
         'quay.io/biocontainers/minimap2:2.24--h7132678_1' }"
 
     input:
-    tuple val(meta), path(fasta)
+    path(fasta)
 
     output:
-    tuple val(meta), path("*.mmi"), emit: index
+    path("*.mmi")                 , emit: index
     path "versions.yml"           , emit: versions
 
     when:

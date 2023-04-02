@@ -10,7 +10,7 @@ process MINIMAP2_HOST_REMOVAL {
 
         input:
         tuple val(meta), path(concatenated)
-	/* path index */
+        path index
 
         output:
         tuple val(meta), path('*_unmapped_R*.fastq')			, emit: unmapped_pair
@@ -19,21 +19,20 @@ process MINIMAP2_HOST_REMOVAL {
         path "versions.yml"						, emit: versions
 
         script:
-        def args = task.ext.args ?: '-Xmx20000m'
-        def args2 = task.ext.args ?: '-ax sr --secondary=no'
-        def args3 = task.ext.args ?: '7'
-        def args4 = task.ext.args ?: 'view -f 4 -h'
-        def args5 = task.ext.args ?: 'sort -@ 7'
-        def args6 = task.ext.args ?: 'fastq -NO -@ 7'
+        def args = task.ext.args ?: "-Xmx${task.memory}g"
+        def args2 = task.ext.args2 ?: '-ax sr --secondary=no'
+        def args4 = task.ext.args4 ?: 'view -f 4 -h'
+        def args5 = task.ext.args ?: "sort -@ ${task.cpus}"
+        def args6 = task.ext.args ?: "fastq -NO -@ ${task.cpus}"
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         """
-        minimap2 $args2 -t $args3 $index $cat1 $cat2 \\
+        minimap2 $args2 -t ${task.cpus} $index $cat1 $cat2 \\
           | samtools $args4 - | samtools $args5 \\
           | samtools fastq -NO -@ 7 - \\
           -1 ${prefix}_unmapped_R1.fastq -2 ${prefix}_unmapped_R2.fastq \\
           -s ${prefix}_unmapped_singletons.fastq
-                > ${prefix}.S3P2_MINIMAP2_host_removal.log
+                > ${prefix}.MINIMAP2_host_removal.log
 
         minimap2_host_removal <<-END_VERSIONS > versions.yml
                 "${task.process}":
