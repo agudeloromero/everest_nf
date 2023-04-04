@@ -20,17 +20,17 @@ process MINIMAP2_HOST_REMOVAL {
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def minimap2_args = task.ext.minimap2_args ?: '-ax sr --secondary=no'
-        def samtools_view_args = task.ext.samtools_view_args ?: ' -f 4 -h'
-        def samtools_sort_args = task.ext.samtools_sort_args ?: " -@ ${task.cpus}"
-        def samtools_fastq_args = task.ext.samtools_fastq_args ?: " -NO -@ ${task.cpus}"
+        def args_minimap2 = task.ext.args_minimap2 ?: '-ax sr --secondary=no'
+        def args_samtools_view = task.ext.args_samtools_view ?: ' -f 4 -h'
+        def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
+        def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
 
 
         """
-        minimap2 $minimap2_args -t ${task.cpus} $index ${trimm_cat_fastqs[0]} ${trimm_cat_fastqs[1]} \\
-          | samtools view $samtools_view_args - 
-          | samtools sort $samtools_sort_args \\
-          | samtools $samtools_fastq_args - \\
+        minimap2 $args_minimap2 -t ${task.cpus} $index ${trimm_cat_fastqs[0]} ${trimm_cat_fastqs[1]} \\
+          | samtools view $args_samtools_view - 
+          | samtools sort $args_samtools_sort \\
+          | samtools $args_samtools_fastq - \\
           -1 ${prefix}_unmapped_R1.fastq \\
           -2 ${prefix}_unmapped_R2.fastq \\
           -s ${prefix}_unmapped_singletons.fastq \\

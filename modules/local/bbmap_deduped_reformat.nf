@@ -10,12 +10,12 @@ process BBMAP_DEDUPED_REFORMAT {
 
 
         input:
-        tuple val(meta), path(dedupe)
+        tuple val(meta), path(deduped_fastqgz)
 
         output:
         tuple val(meta), path('*_unmapped_cat_dedup_R*.fastq.gz')		, emit: dedupe_ref
-        tuple val(meta), path('*S3P7_BBMAP_deduped_reformat.log') 		, emit: log
-        path "versions.yml"							, emit: versions
+        tuple val(meta), path('*bbmap_deduped_reformat.log') 		    , emit: log
+        path "versions.yml"							                            , emit: versions
 
         script:
         def args = task.ext.args ?: '-Xmx20000m'
@@ -24,15 +24,33 @@ process BBMAP_DEDUPED_REFORMAT {
         """
         reformat.sh \\
           $args \\
-          in1=$f \\
+          in1=$deduped_fastqgz \\
           out1=${prefix}_unmapped_cat_dedup_R1.fastq.gz out2=${prefix}_unmapped_cat_dedup_R2.fastq.gz \\
           out=${prefix}_noclean_R1.fastq.gz out2=${prefix}_noclean_R2.fastq.gz \\
-          > ${prefix}.S3P7_BBMAP_deduped_reformat.log
+          2> ${prefix}.bbmap_deduped_reformat.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
           reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS
         """
+
+        stub:
+        def prefix = task.ext.prefix ?: "${meta.id}"
+
+        """
+        touch ${prefix}_unmapped_cat_dedup_R1.fastq.gz
+        touch ${prefix}_unmapped_cat_dedup_R2.fastq.gz
+        touch ${prefix}.bbmap_deduped_reformat.log
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+          reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
+        END_VERSIONS
+        """
+
+
+
+
 }
 

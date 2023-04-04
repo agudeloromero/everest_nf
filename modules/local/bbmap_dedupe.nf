@@ -2,7 +2,7 @@ process BBMAP_DEDUPE {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "envs/minimap2.yml"
+    conda "envs/BBMAP.yml"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -13,7 +13,8 @@ process BBMAP_DEDUPE {
     tuple val(meta), path(reads)
 
     output:
-    path("*bbmap_dedupe.out")
+    tuple val(meta), path("*_unmapped_cat_dedup.fastq.gz")             , emit: deduped_fastqgz
+    tuple val(meta), path("*bbmap_dedupe.out")                         , emit: log
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -30,6 +31,7 @@ process BBMAP_DEDUPE {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
+    touch ${prefix}_unmapped_cat_dedup.fastq.gz
     touch ${prefix}.bbmap_dedupe.out 
 
     cat <<-END_VERSIONS > versions.yml

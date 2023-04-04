@@ -18,14 +18,14 @@ process CAT_PE {
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def pigz_args = task.ext.pigz_args ?: "${meta.id}"
+        def args_pigz = task.ext.args_pigz ?: " -p 7 -5 "
 
         """
             cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
-            pigz $args ${prefix}_unmapped_cat_R1.fastq
+            pigz $args_pigz ${prefix}_unmapped_cat_R1.fastq
 
             cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
-            pigz $args ${prefix}_unmapped_cat_R2.fastq
+            pigz $args_pigz ${prefix}_unmapped_cat_R2.fastq
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
