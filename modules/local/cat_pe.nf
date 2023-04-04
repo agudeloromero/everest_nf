@@ -13,23 +13,42 @@ process CAT_PE {
         tuple val(meta), path(unmapped_pair), path(singleton_pair)
 
         output:
-        tuple val(meta), path('*_unmapped_cat_R*.fastq')	                    , emit: reformat
-        tuple val(meta), path('*S3P4_CAT_PE.log')	                            , emit: log
-        path "versions.yml"			                                    , emit: versions
-        tuple val(meta), path(reads)
+        tuple val(meta), path('*_unmapped_cat_R*.fastq.gz')	                  , emit: fastqgz
+        path "versions.yml"			                                              , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
+        def pigz_args = task.ext.pigz_args ?: "${meta.id}"
 
         """
-          (cat $up1 $us1 > ${prefix}_unmapped_singletons_R1.fastq ; \\
-            cat $up2 $us2 > ${prefix}_unmapped_singletons_R2.fastq ) \\
-                  > ${prefix}.S3P4_CAT_PE.log
+            cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
+            pigz $args ${prefix}_unmapped_cat_R1.fastq
+
+            cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
+            pigz $args ${prefix}_unmapped_cat_R2.fastq
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    CAT_pair_unpair: \$(cat --version)
+                    CAT_PE: \$(cat --version)
+                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
         """
+
+        stub:
+        def prefix = task.ext.prefix ?: "${meta.id}"
+
+        """
+            touch ${prefix}_unmapped_cat_R1.fastq.gz
+            touch ${prefix}_unmapped_cat_R2.fastq.gz
+
+            cat <<-END_VERSIONS > versions.yml
+                "${task.process}":
+                    CAT_PE: \$(cat --version)
+                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+            END_VERSIONS
+
+
+        """
+
 }
 
