@@ -22,7 +22,7 @@ process CAT_PAIR_UNPAIR {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            CAT_pair_unpair: \$(cat --version)
+            CAT_PAIR_UNPAIR: \$(cat --version)
         END_VERSIONS
         """
 

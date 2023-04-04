@@ -9,13 +9,13 @@ process MINIMAP2_HOST_REMOVAL {
 //            'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
 
         input:
-        tuple val(meta), path(trimm_cat_fastqs)
         path index
+        tuple val(meta), path(trimm_cat_fastqs)
 
         output:
         tuple val(meta), path('*_unmapped_R*.fastq')			              , emit: unmapped_pair
-        tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: unmapped_single
-        tuple val(meta), path('*MINIMAP2_host_removal.log')	      , emit: log
+        tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: unmapped_singleton
+        tuple val(meta), path('*MINIMAP2_host_removal.log')	            , emit: log
         path "versions.yml"						                                  , emit: versions
 
         script:
@@ -38,9 +38,27 @@ process MINIMAP2_HOST_REMOVAL {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            minimap2: \$(bbversion.sh | grep -v "Duplicate cpuset")
-            samtools: \$(bbversion.sh | grep -v "Duplicate cpuset")
-            pigz: \$(bbversion.sh | grep -v "Duplicate cpuset")
+            minimap2: \$(minimap2 --version 2>&1)
+            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+            pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
         END_VERSIONS
         """
+
+        stub:
+        def prefix = task.ext.prefix ?: "${meta.id}"
+        """
+          touch ${prefix}_unmapped_R1.fastq
+          touch ${prefix}_unmapped_R2.fastq
+          touch ${prefix}_unmapped_singletons.fastq
+          touch ${prefix}.MINIMAP2_host_removal.log
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            minimap2: \$(minimap2 --version 2>&1)
+            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+            pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+        END_VERSIONS
+        """
+
 }
+

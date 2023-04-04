@@ -18,9 +18,12 @@ workflow TRIMMING_ADAPTERS_PE_WF {
 
         joint_trimm_ch = TRIM_PE.out.paired
                             .join(TRIM_PE.out.unpaired)
-                            .dump(tag: "CAT_PAIR_UNPAIR", pretty: true)
+                            .dump(tag: "TRIM_PE", pretty: true)
 
         CAT_PAIR_UNPAIR( joint_trimm_ch )
+
+        CAT_PAIR_UNPAIR.out.concatenated
+                           .dump(tag: "CAT_PAIR_UNPAIR", pretty: true)
 
         FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated )
 
@@ -28,5 +31,5 @@ workflow TRIMMING_ADAPTERS_PE_WF {
 
     emit:
         fastqc_trimm_zip_ch = FASTQC_TRIMM.out.zip.collect{it[1]}
-        cat_trimm_fastq_ch  = fastqc_trimm_zip_ch
+        cat_trimm_fastq_ch  = CAT_PAIR_UNPAIR.out.concatenated
 }

@@ -10,8 +10,7 @@ process CAT_PE {
 
 
         input:
-        tuple val(meta), path(unmapped_pair)
-        tuple val(meta), path(u_single_pair)
+        tuple val(meta), path(unmapped_pair), path(singleton_pair)
 
         output:
         tuple val(meta), path('*_unmapped_cat_R*.fastq')	                    , emit: reformat
