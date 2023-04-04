@@ -13,7 +13,7 @@ process BBMAP_DEDUPED_REFORMAT {
         tuple val(meta), path(deduped_fastqgz)
 
         output:
-        tuple val(meta), path('*_unmapped_cat_dedup_R*.fastq.gz')		, emit: dedupe_ref
+        tuple val(meta), path('*_unmapped_cat_dedup_R*.fastq.gz')		, emit: reformatted_fastq
         tuple val(meta), path('*bbmap_deduped_reformat.log') 		    , emit: log
         path "versions.yml"							                            , emit: versions
 
@@ -48,8 +48,6 @@ process BBMAP_DEDUPED_REFORMAT {
           reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
         END_VERSIONS
         """
-
-
 
 
 }

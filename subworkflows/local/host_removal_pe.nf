@@ -1,8 +1,9 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/03_Host_removal_PE.smk */
 include { BBMAP_DEDUPE                          } from "../../modules/local/bbmap_dedupe"
 include { BBMAP_DEDUPED_REFORMAT                } from "../../modules/local/bbmap_deduped_reformat"
+include { BBMAP_DUDUPED_NORMALIZATION           } from "../../modules/local/bbmap_deduped_normalization"
 include { BBMAP_REFORMAT as BBMAP_SINGLETONS_PE } from "../../modules/local/bbmap_reformat"
-include { CAT_PE                                } from '../../modules/local/cat_pe'
+include { CAT_PE                                } from "../../modules/local/cat_pe"
 include { MINIMAP2_INDEX                        } from "../../modules/nf-core/minimap2/index"
 include { MINIMAP2_HOST_REMOVAL                 } from "../../modules/local/minimap2_host_removal"
 
@@ -29,10 +30,12 @@ workflow HOST_REMOVAL_PE_WF {
 
         BBMAP_DEDUPED_REFORMAT( BBMAP_DEDUPE.out.deduped_fastqgz )
 
+        BBMAP_DUDUPED_NORMALIZATION( BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq )
+
         //TODO
-        /* BBMAP_DUDUPED_NORMALISATION */
         /* FASTQC_BEFORE_MERGE */
         /* MULTIQC_BEFORE_MERGE */
 
-    /* emit: */
+    emit:
+        deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
 }
