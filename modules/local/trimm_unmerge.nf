@@ -2,7 +2,7 @@ process TRIMM_UNMERGE {
         tag "$meta.id"
         label 'process_medium'
 
-        conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
+        conda "envs/QC.yml"
 
         input:
         tuple val(meta), path(reads)
@@ -10,9 +10,10 @@ process TRIMM_UNMERGE {
 
 
         output:
-        tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	    , emit: paired
-        tuple val(meta), path('*.log')						                                              , emit: log
-        path "versions.yml"									                                                    , emit: versions
+        tuple val(meta), path('*_unmapped_cat_unmerge_pair_R*.fastq.gz')                        	      , emit: paired
+        tuple val(meta), path('*_unmapped_cat_unmerge_unpair_R*.fastq.gz')                        	    , emit: unpaired
+        tuple val(meta), path('*.log')						                                                      , emit: log
+        path "versions.yml"									                                                            , emit: versions
 
 
         script:

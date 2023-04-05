@@ -1,6 +1,6 @@
 include { BBMAP_MERGE       } from "../../modules/local/bbmap_merge"
 include { TRIMM_UNMERGE     } from "../../modules/local/trimm_unmerge"
-/* include { TRIMM_MERGE       } from "../../modules/local/trimm_merge" */
+include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 /* include { SPADES_DENOVO     } from "../../modules/local/spades_denovo" */
 /* include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust" */
 
@@ -15,9 +15,13 @@ workflow DENOVO_PE_WF {
 
         TRIMM_UNMERGE( BBMAP_MERGE.out.unmerged, params.adaptor )
 
-/* TODO */
-        /* TRIMM_MERGE */
+        TRIMM_MERGE( BBMAP_MERGE.out.merged, params.adaptor )
+
+
+        /* ch_trimmed =  */
         /* SPADES_DENOVO */
+
+/* TODO */
         /* MMSEQ2_ELINCLUST */
 
 

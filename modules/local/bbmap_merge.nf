@@ -14,6 +14,7 @@ process BBMAP_MERGE {
 
     output:
     tuple val(meta), path("*_unmapped_cat_unmerge_R*.fastq.gz")             , emit: unmerged
+    tuple val(meta), path("*_unmapped_cat_R1_merge.fastq.gz")               , emit: merged
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
 
     script:

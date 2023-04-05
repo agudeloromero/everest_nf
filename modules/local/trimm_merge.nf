@@ -2,7 +2,7 @@ process TRIMM_MERGE {
         tag "$meta.id"
         label 'process_medium'
 
-        conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
+        conda "envs/QC.yml"
 
         input:
         tuple val(meta), path(reads)
@@ -10,9 +10,9 @@ process TRIMM_MERGE {
 
 
         output:
-        tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	    , emit: paired
-        tuple val(meta), path('*.log')						                                              , emit: log
-        path "versions.yml"									                                                    , emit: versions
+        tuple val(meta), path("*_unmapped_cat_R1_merge_trimm.fastq.gz")                 , emit: paired
+        tuple val(meta), path('*.log')						                                      , emit: log
+        path "versions.yml"									                                            , emit: versions
 
 
         script:
@@ -23,11 +23,8 @@ process TRIMM_MERGE {
             trimmomatic PE \\
             -threads $task.cpus \\
             -phred33 \\
-            ${reads[0]} ${reads[1]} \\
-            ${prefix}_unmapped_cat_unmerge_pair_R1.fastq.gz \\
-            ${prefix}_unmapped_cat_unmerge_unpair_R1.fastq.gz \\
-            ${prefix}_unmapped_cat_unmerge_pair_R2.fastq.gz \\
-            ${prefix}_unmapped_cat_unmerge_unpair_R2.fastq.gz \\
+            ${reads[0]} \\
+            ${prefix}_unmapped_cat_R1_merge_trimm.fastq.gz \\
             ILLUMINACLIP:${adapter}:2:30:10 \\
             ${args} \\
             2> ${prefix}.trimm_merge.log
@@ -42,8 +39,7 @@ process TRIMM_MERGE {
             def prefix = task.ext.prefix ?: "${meta.id}"
 
             """
-            touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
-            touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
+            touch ${prefix}_unmapped_cat_R1_merge_trimm.fastq.gz
             touch ${prefix}.trimm_merge.log
 
             cat <<-END_VERSIONS > versions.yml
