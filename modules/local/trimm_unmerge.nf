@@ -1,37 +1,40 @@
-process TRIM_PE {
+process TRIMM_UNMERGE {
         tag "$meta.id"
         label 'process_medium'
 
         conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
 
         input:
-        tuple val(meta), path(clean)
-        /* path adapters */
+        tuple val(meta), path(reads)
+        path adapter
 
 
         output:
         tuple val(meta), path('*_trimm_pair_R1.fastq.gz'), path('*_trimm_pair_R2.fastq.gz')	    , emit: paired
-        tuple val(meta), path('*_trimm_unpair_R1.fastq.gz'), path('*_trimm_unpair_R2.fastq.gz')	, emit: unpaired
         tuple val(meta), path('*.log')						                                              , emit: log
         path "versions.yml"									                                                    , emit: versions
 
 
         script:
-            def args = task.ext.args ?: '7'
+            def args = task.ext.args ?: ' LEADING:10 TRAILING:10 SLIDINGWINDOW:3:15 MINLEN:50 '
             def prefix = task.ext.prefix ?: "${meta.id}"
 
             """
             trimmomatic PE \\
-            -threads $task.cpus \
+            -threads $task.cpus \\
             -phred33 \\
-            ${clean[0]} ${clean[1]} \\
-            ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
-            ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
-            > ${prefix}.TRIM_PE.log
+            ${reads[0]} ${reads[1]} \\
+            ${prefix}_unmapped_cat_unmerge_pair_R1.fastq.gz \\
+            ${prefix}_unmapped_cat_unmerge_unpair_R1.fastq.gz \\
+            ${prefix}_unmapped_cat_unmerge_pair_R2.fastq.gz \\
+            ${prefix}_unmapped_cat_unmerge_unpair_R2.fastq.gz \\
+            ILLUMINACLIP:${adapter}:2:30:10 \\
+            ${args} \\
+            2> ${prefix}.trimm_unmerge.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIM_PE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic --version)
             END_VERSIONS
             """
 
@@ -41,14 +44,12 @@ process TRIM_PE {
             """
             touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
             touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
-            touch ${prefix}.TRIM_PE.log
+            touch ${prefix}.trimm_unmerge.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIM_PE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic --version)
             END_VERSIONS
             """
-
-        /* ILLUMINACLIP:$adaptors:2:30:10 \\ */
 
 }

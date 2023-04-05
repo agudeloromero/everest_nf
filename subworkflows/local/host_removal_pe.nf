@@ -1,4 +1,3 @@
-/* https://github.com/agudeloromero/EVEREST/blob/main/SMK/03_Host_removal_PE.smk */
 include { BBMAP_DEDUPE                          } from "../../modules/local/bbmap_dedupe"
 include { BBMAP_DEDUPED_REFORMAT                } from "../../modules/local/bbmap_deduped_reformat"
 include { BBMAP_DUDUPED_NORMALIZATION           } from "../../modules/local/bbmap_deduped_normalization"
