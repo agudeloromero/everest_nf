@@ -1,9 +1,9 @@
-name: minimap2
+name: QC
 channels:
  - bioconda
  - conda-forge
  - defaults
 dependencies:
- - minimap2=2.24
- - samtools=1.9
- - pigz=2.6
+ - multiqc=1.12
+ - fastqc=0.11.9
+ - trimmomatic=0.39

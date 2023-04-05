@@ -48,12 +48,6 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
@@ -265,6 +259,58 @@
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 }
             }
+        },
+        "database_options": {
+            "title": "Database options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "sequencing": {
+                    "type": "string",
+                    "default": "PE"
+                },
+                "adaptor": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mmseq_viral_db_nt": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mmseq_viral_db_aa": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "virsorter_db": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "checkv_db": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "diamond_db_aa": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "baltimore": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "tax_aa": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "tax_nt": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "vrhyme": {
+                    "type": "string",
+                    "default": "None"
+                }
+            }
         }
     },
     "allOf": [
@@ -282,6 +328,9 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/database_options"
         }
     ]
 }

@@ -1,4 +1,4 @@
-process TRIM_PE {
+process TRIMM_PE {
         tag "$meta.id"
         label 'process_medium'
 
@@ -6,7 +6,7 @@ process TRIM_PE {
 
         input:
         tuple val(meta), path(clean)
-        /* path adapters */
+        path adapter
 
 
         output:
@@ -22,16 +22,16 @@ process TRIM_PE {
 
             """
             trimmomatic PE \\
-            -threads $task.cpus \
+            -threads $task.cpus \\
             -phred33 \\
             ${clean[0]} ${clean[1]} \\
             ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
             ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
-            > ${prefix}.TRIM_PE.log
+            > ${prefix}.trimm_pe.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIM_PE: \$(trimmomatic --version)
+              TRIMM_PE: \$(trimmomatic --version)
             END_VERSIONS
             """
 
@@ -41,14 +41,12 @@ process TRIM_PE {
             """
             touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
             touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
-            touch ${prefix}.TRIM_PE.log
+            touch ${prefix}.trimm_pe.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIM_PE: \$(trimmomatic --version)
+              TRIMM_PE: \$(trimmomatic --version)
             END_VERSIONS
             """
-
-        /* ILLUMINACLIP:$adaptors:2:30:10 \\ */
 
 }

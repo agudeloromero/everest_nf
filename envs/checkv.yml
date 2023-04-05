@@ -1,9 +1,8 @@
-name: minimap2
+name: checkv
 channels:
  - bioconda
  - conda-forge
  - defaults
 dependencies:
- - minimap2=2.24
- - samtools=1.9
- - pigz=2.6
+ - checkv=0.9.0
+ - python=3.8

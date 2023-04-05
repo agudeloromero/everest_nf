@@ -1,6 +1,19 @@
 Changes in module 'nf-core/minimap2/index'
 --- modules/nf-core/minimap2/index/main.nf
 +++ modules/nf-core/minimap2/index/main.nf
+@@ -8,10 +8,10 @@
+         'quay.io/biocontainers/minimap2:2.24--h7132678_1' }"
+ 
+     input:
+-    tuple val(meta), path(fasta)
++    path(fasta)
+ 
+     output:
+-    tuple val(meta), path("*.mmi"), emit: index
++    path("*.mmi"), emit: index
+     path "versions.yml"           , emit: versions
+ 
+     when:
 @@ -31,4 +31,16 @@
          minimap2: \$(minimap2 --version 2>&1)
      END_VERSIONS

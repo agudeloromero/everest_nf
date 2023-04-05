@@ -1,9 +1,8 @@
-name: minimap2
+name: spades
 channels:
  - bioconda
  - conda-forge
  - defaults
 dependencies:
- - minimap2=2.24
- - samtools=1.9
- - pigz=2.6
+ - python=3.7
+ - spades=3.13.0
