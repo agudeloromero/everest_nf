@@ -1,6 +1,7 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
 include { BBMAP_PHIX                       } from '../../modules/local/bbmap_phix'
+/* include { BBMAP_BBDUK as BBMAP_PHIX        } from '../../modules/nf-core/bbmap/bbduk' */
 include { TRIMM                            } from '../../modules/local/trimm'
 include { CAT_PAIR_UNPAIR                  } from '../../modules/local/cat_pair_unpair'
 include { FASTQC  as FASTQC_TRIMM          } from '../../modules/nf-core/fastqc'
@@ -12,9 +13,17 @@ workflow TRIMMING_ADAPTERS_WF {
         reads_ch // [ val(meta), [ reads ] ]
 
     main:
+
+        reads_ch.dump(tag:"reads_ch")
+
+        //TODO: Replace with the nf-core module
         BBMAP_PHIX( reads_ch ) 
 
         TRIMM( BBMAP_PHIX.out.clean, params.adaptor ) 
+
+}
+
+/*
 
         joint_trimm_ch = TRIMM.out.paired
                             .join(TRIMM.out.unpaired)
@@ -27,9 +36,10 @@ workflow TRIMMING_ADAPTERS_WF {
 
         FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated )
 
-        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
+        //MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] )
 
     emit:
         fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]}
         cat_trimm_fastq  = CAT_PAIR_UNPAIR.out.concatenated
-}
+
+*/

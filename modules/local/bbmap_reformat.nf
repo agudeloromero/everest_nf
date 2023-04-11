@@ -38,7 +38,7 @@ process BBMAP_REFORMAT {
         """
         touch ${prefix}_unmapped_singletons_R1.fastq 
         touch ${prefix}_unmapped_singletons_R2.fastq 
-        touch ${prefix}.BBMAP_singletons.log
+        touch ${prefix}.bbmap_singletons.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

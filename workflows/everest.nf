@@ -96,9 +96,9 @@ workflow EVEREST {
 
     TRIMMING_ADAPTERS_WF( INPUT_CHECK.out.reads )
 
-    HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTERS_WF.out.cat_trimm_fastq )
+    /* HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTERS_WF.out.cat_trimm_fastq ) */
 
-    DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+    /* DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz ) */
 
     //============================
     // FINISH: EVEREST WORKFLOW
@@ -124,8 +124,8 @@ workflow EVEREST {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    //CUSTOM FILES
-    ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTERS_WF.out.fastqc_trimm_zip)
+    //FIXME: CUSTOM FILES
+    /* ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTERS_WF.out.fastqc_trimm_zip) */
 
     MULTIQC (
         ch_multiqc_files.collect(),

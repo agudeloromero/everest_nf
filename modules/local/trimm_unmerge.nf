@@ -43,8 +43,11 @@ process TRIMM_UNMERGE {
             def prefix = task.ext.prefix ?: "${meta.id}"
 
             """
-            touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
-            touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
+            touch ${prefix}_unmapped_cat_unmerge_pair_R1.fastq.gz
+            touch ${prefix}_unmapped_cat_unmerge_unpair_R1.fastq.gz
+            touch ${prefix}_unmapped_cat_unmerge_pair_R2.fastq.gz
+            touch ${prefix}_unmapped_cat_unmerge_unpair_R2.fastq.gz
+
             touch ${prefix}.trimm_unmerge.log
 
             cat <<-END_VERSIONS > versions.yml
