@@ -1,12 +1,12 @@
-/* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors_PE.smk */
+/* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
 include { BBMAP_PHIX                       } from '../../modules/local/bbmap_phix'
-include { TRIMM_PE                          } from '../../modules/local/trimm_pe'
+include { TRIMM                            } from '../../modules/local/trimm'
 include { CAT_PAIR_UNPAIR                  } from '../../modules/local/cat_pair_unpair'
 include { FASTQC  as FASTQC_TRIMM          } from '../../modules/nf-core/fastqc'
 include { MULTIQC as MULTIQC_TRIMM         } from '../../modules/nf-core/multiqc'
 
-workflow TRIMMING_ADAPTERS_PE_WF {
+workflow TRIMMING_ADAPTERS_WF {
 
     take:
         reads_ch // [ val(meta), [ reads ] ]
@@ -14,11 +14,11 @@ workflow TRIMMING_ADAPTERS_PE_WF {
     main:
         BBMAP_PHIX( reads_ch ) 
 
-        TRIMM_PE( BBMAP_PHIX.out.clean, params.adaptor ) 
+        TRIMM( BBMAP_PHIX.out.clean, params.adaptor ) 
 
-        joint_trimm_ch = TRIMM_PE.out.paired
-                            .join(TRIMM_PE.out.unpaired)
-                            .dump(tag: "TRIMM_PE", pretty: true)
+        joint_trimm_ch = TRIMM.out.paired
+                            .join(TRIMM.out.unpaired)
+                            .dump(tag: "TRIMM", pretty: true)
 
         CAT_PAIR_UNPAIR( joint_trimm_ch )
 

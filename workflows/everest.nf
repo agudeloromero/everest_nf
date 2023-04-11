@@ -38,9 +38,9 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK             } from '../subworkflows/local/input_check'
-include { TRIMMING_ADAPTERS_PE_WF } from '../subworkflows/local/trimming_adapters_pe'
-include { HOST_REMOVAL_PE_WF      } from '../subworkflows/local/host_removal_pe'
-include { DENOVO_PE_WF            } from '../subworkflows/local/denovo_pe'
+include { TRIMMING_ADAPTERS_WF    } from '../subworkflows/local/trimming_adapters'
+include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
+include { DENOVO_WF               } from '../subworkflows/local/denovo'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,11 +94,11 @@ workflow EVEREST {
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
 
-    TRIMMING_ADAPTERS_PE_WF( INPUT_CHECK.out.reads )
+    TRIMMING_ADAPTERS_WF( INPUT_CHECK.out.reads )
 
-    HOST_REMOVAL_PE_WF( params.fasta, TRIMMING_ADAPTERS_PE_WF.out.cat_trimm_fastq )
+    HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTERS_WF.out.cat_trimm_fastq )
 
-    DENOVO_PE_WF( HOST_REMOVAL_PE_WF.out.deduped_normalized_fastqgz )
+    DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
     //============================
     // FINISH: EVEREST WORKFLOW
@@ -125,7 +125,7 @@ workflow EVEREST {
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
     //CUSTOM FILES
-    ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTERS_PE_WF.out.fastqc_trimm_zip)
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTERS_WF.out.fastqc_trimm_zip)
 
     MULTIQC (
         ch_multiqc_files.collect(),

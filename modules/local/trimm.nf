@@ -1,4 +1,4 @@
-process TRIMM_PE {
+process TRIMM {
         tag "$meta.id"
         label 'process_medium'
 
@@ -27,11 +27,11 @@ process TRIMM_PE {
             ${clean[0]} ${clean[1]} \\
             ${prefix}_trimm_pair_R1.fastq.gz  $up1 \\
             ${prefix}_trimm_pair_R2.fastq.gz $up2 \\
-            > ${prefix}.trimm_pe.log
+            > ${prefix}.trimm.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_PE: \$(trimmomatic --version)
+              TRIMM: \$(trimmomatic --version)
             END_VERSIONS
             """
 
@@ -41,11 +41,11 @@ process TRIMM_PE {
             """
             touch ${prefix}_trimm_pair_R1.fastq.gz ${prefix}_trimm_pair_R2.fastq.gz
             touch ${prefix}_trimm_unpair_R1.fastq.gz ${prefix}_trimm_unpair_R2.fastq.gz
-            touch ${prefix}.trimm_pe.log
+            touch ${prefix}.trimm.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_PE: \$(trimmomatic --version)
+              TRIMM: \$(trimmomatic --version)
             END_VERSIONS
             """
 

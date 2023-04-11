@@ -1,4 +1,4 @@
-process CAT_PE {
+process CAT {
         tag "$meta.id"
         label 'process_medium'
 
@@ -29,7 +29,7 @@ process CAT_PE {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    CAT_PE: \$(cat --version)
+                    CAT: \$(cat --version)
                     pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
         """
@@ -43,7 +43,7 @@ process CAT_PE {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    CAT_PE: \$(cat --version)
+                    CAT: \$(cat --version)
                     pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
 
