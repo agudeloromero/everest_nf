@@ -4,9 +4,9 @@ include { BBMAP_PHIX                          } from '../../modules/local/bbmap_
 /* include { BBMAP_BBDUK as BBMAP_PHIX        } from '../../modules/nf-core/bbmap/bbduk' */
 include { TRIMM                               } from '../../modules/local/trimm'
 include { CAT_PAIR_UNPAIR                     } from '../../modules/local/cat_pair_unpair'
-include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc'
-include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc'
-include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc'
+/* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc' */
+/* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
+/* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
 
 workflow TRIMMING_ADAPTERS_WF {
 
@@ -22,7 +22,7 @@ workflow TRIMMING_ADAPTERS_WF {
 
         TRIMM( BBMAP_PHIX.out.clean, params.adaptor ) 
 
-        //Filter single_end and paired_end samples
+        //Filter single_end and paired_end samples using branch operator
         ch_trimmed = TRIMM.out.paired
                                 .branch {
                                          se: it[0].single_end == true
@@ -36,9 +36,9 @@ workflow TRIMMING_ADAPTERS_WF {
         CAT_PAIR_UNPAIR( ch_trimm_all_pe )
 
 
+        //TODO 
         /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
-
-        //MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] )
+        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 
     emit:
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */

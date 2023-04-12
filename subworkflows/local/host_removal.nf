@@ -17,6 +17,10 @@ workflow HOST_REMOVAL_WF {
 
         MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, fastq_ch )
 
+
+}
+
+/*
         BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.unmapped_singleton )
 
         ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped_pair
@@ -32,9 +36,9 @@ workflow HOST_REMOVAL_WF {
         BBMAP_DUDUPED_NORMALIZATION( BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq )
 
         //TODO
-        /* FASTQC_BEFORE_MERGE */
-        /* MULTIQC_BEFORE_MERGE */
+        //FASTQC_BEFORE_MERGE
+        //MULTIQC_BEFORE_MERGE
 
     emit:
         deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
-}
+        */
