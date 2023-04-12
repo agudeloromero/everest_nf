@@ -37,13 +37,6 @@ WorkflowMain.initialise(workflow, params, log)
 
 include { EVEREST } from './workflows/everest'
 
-//
-// WORKFLOW: Run main nf-core/everest analysis pipeline
-//
-workflow NFCORE_EVEREST {
-    EVEREST ()
-}
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN ALL WORKFLOWS
@@ -55,7 +48,7 @@ workflow NFCORE_EVEREST {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_EVEREST ()
+    EVEREST ()
 }
 
 /*

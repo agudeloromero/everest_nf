@@ -2,7 +2,7 @@ process MINIMAP2_HOST_REMOVAL {
         tag "$meta.id"
         label 'process_medium'
 
-        conda (params.enable_conda ? 'bioconda::minimap2=2.24 bioconda::samtools=1.9 bioconda::pigz=2.6' : null)
+        conda "envs/minimap2.yml"
 
 //        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 //            'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':

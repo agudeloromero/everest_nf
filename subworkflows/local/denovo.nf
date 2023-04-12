@@ -4,7 +4,7 @@ include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 /* include { SPADES_DENOVO     } from "../../modules/local/spades_denovo" */
 /* include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust" */
 
-workflow DENOVO_PE_WF {
+workflow DENOVO_WF {
     take:
         ch_deduped_normalized_fastqgz
 
