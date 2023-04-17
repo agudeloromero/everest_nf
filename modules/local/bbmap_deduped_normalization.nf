@@ -2,14 +2,14 @@ process BBMAP_DUDUPED_NORMALIZATION {
         tag "$meta.id"
         label 'process_medium'
 
-        conda (params.enable_conda ? 'bioconda::bbmap=38.96' : null)
+        conda "envs/BBMAP.yml"
 
-        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
-            'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+        /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
+        /*     'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0': */
+        /*     'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }" */
 
         input:
-        tuple val(meta), path(dedupe_ref)
+        tuple val(meta), path(reads)
 
         output:
         tuple val(meta), path('*_unmapped_cat_dedup_norm_R*.fastq.gz')		, emit: norm_fastqgz
@@ -17,14 +17,22 @@ process BBMAP_DUDUPED_NORMALIZATION {
         path "versions.yml"							                                  , emit: versions
 
         script:
-        def args = task.ext.args ?: '-Xmx20000m'
+        def args = task.ext.args ?: "-Xmx${task.memory}m"
         def prefix = task.ext.prefix ?: "${meta.id}"
+
+        def input = meta.single_end ?
+                    "in=${reads}}" 
+                    : "in=${reads[0]} in2=${reads[1]}"
+
+        def output = meta.single_end ?
+                     "out=${prefix}_unmapped_dedup_norm_R1.fastq.gz" 
+                    : "out=${prefix}_unmapped_cat_dedup_norm_R1.fastq.gz out2=${prefix}_unmapped_cat_dedup_norm_R2.fastq.gz"
 
         """
         bbnorm.sh \\
           $args \\
-            in=$f1 in2=$f2 \\
-            out=${prefix}_unmapped_cat_dedup_norm_R1.fastq.gz out2=${prefix}_unmapped_cat_dedup_norm_R2.fastq.gz \\
+          $input\\
+          $output \\ 
           > ${prefix}.bbmap_duduped_normalization.log
 
         cat <<-END_VERSIONS > versions.yml
@@ -36,9 +44,13 @@ process BBMAP_DUDUPED_NORMALIZATION {
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
 
+        def output = meta.single_end ?
+                     "${prefix}_unmapped_dedup_norm_R1.fastq.gz" 
+                    : "${prefix}_unmapped_cat_dedup_norm_R1.fastq.gz ${prefix}_unmapped_cat_dedup_norm_R2.fastq.gz"
+
+
         """
-        touch ${prefix}_unmapped_cat_dedup_norm_R1.fastq.gz
-        touch ${prefix}_unmapped_cat_dedup_norm_R2.fastq.gz
+        touch ${output}
         touch ${prefix}.bbmap_duduped_normalization.log
 
         cat <<-END_VERSIONS > versions.yml

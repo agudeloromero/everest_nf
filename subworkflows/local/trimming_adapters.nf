@@ -44,7 +44,7 @@ workflow TRIMMING_ADAPTERS_WF {
 
        all_fastq_ch = ch_trimmed.se
                         .mix(CAT_PAIR_UNPAIR.out.concatenated)
-                        .dump(tag:"all_fastq_ch")
+                        /* .dump(tag:"all_fastq_ch") */
 
 
 

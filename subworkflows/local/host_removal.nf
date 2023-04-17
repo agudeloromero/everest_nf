@@ -14,42 +14,58 @@ workflow HOST_REMOVAL_WF {
         all_fastq_ch
 
     main:
-        MINIMAP2_INDEX( ref_fasta_ch  )
 
-        MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, all_fastq_ch )
+        //FIXME Add this param to the schema
+        if(!params.rnaseq) {
+            MINIMAP2_INDEX( ref_fasta_ch  )
 
-        //NOTE: Process the PE-singletons here
-        BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.singleton )
+            MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, all_fastq_ch )
 
-        ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
-                                    .join(BBMAP_SINGLETONS.out.singleton_pair)
-                                    .dump(tag: "HOST_REMOVAL: ch_cat_input" )
+            //NOTE: Process the PE-singletons here
+            BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.singleton )
 
-        CAT( ch_cat_input )
+            ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
+                                        .join(BBMAP_SINGLETONS.out.singleton_pair)
+                                        /* .dump(tag: "HOST_REMOVAL: ch_cat_input" ) */
 
-        //NOTE: Combine the SE and PE_Singletons FASTQ files here
-        ch_pigz_input = CAT.out.fastq
-                            .concat(MINIMAP2_HOST_REMOVAL.out.unmapped)
-                            .unique()
-                            .dump(tag: "ch_pigz_input")
-
-        PIGZ(ch_pigz_input)
+            CAT( ch_cat_input )
 
 
-}
+            //NOTE: Combine the SE and PE_Singletons FASTQ files here
 
-/*
+            ch_unmapped_se = MINIMAP2_HOST_REMOVAL.out.unmapped.filter { it[0].single_end == true }
 
-        BBMAP_DEDUPE ( CAT.out.fastq )
+            ch_pigz_input = CAT.out.fastq
+                                .concat(ch_unmapped_se)
+                                /* .dump(tag: "ch_pigz_input") */
 
-        BBMAP_DEDUPED_REFORMAT( BBMAP_DEDUPE.out.deduped_fastqgz )
+            PIGZ(ch_pigz_input)
 
-        BBMAP_DUDUPED_NORMALIZATION( BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq )
+        } else {
+            //FIXME Accommodate the RNASEQ analysis tools
+            //KALLISTO_index
+            //KALLISTO_align
+            //SAMTOOLS_fastq
+            //PIGZ_fastq
+        }
 
-        //TODO
-        //FASTQC_BEFORE_MERGE
-        //MULTIQC_BEFORE_MERGE
+
+        BBMAP_DEDUPE( PIGZ.out.fastqgz )
+
+        //NOTE: Only needed for concatenated PE samples
+        BBMAP_DEDUPED_REFORMAT( BBMAP_DEDUPE.out.cat_deduped_fastqgz )
+
+        ch_deduped_se = BBMAP_DEDUPE.out.deduped_fastqgz.filter { it[0].single_end == true }
+
+        ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq
+                            .concat(ch_unmapped_se)
+                            .dump(tag: "ch_bbmap_norm_input")
+
+
+        BBMAP_DUDUPED_NORMALIZATION( ch_bbmap_norm_input )
+
 
     emit:
         deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
-        */
+   }
+
