@@ -3,6 +3,7 @@ include { BBMAP_DEDUPED_REFORMAT                } from "../../modules/local/bbma
 include { BBMAP_DUDUPED_NORMALIZATION           } from "../../modules/local/bbmap_deduped_normalization"
 include { BBMAP_REFORMAT as BBMAP_SINGLETONS    } from "../../modules/local/bbmap_reformat"
 include { CAT                                   } from "../../modules/local/cat"
+include { KALLISTO_INDEX                        } from '../../modules/nf-core/kallisto/index/main'                                            
 include { MINIMAP2_INDEX                        } from "../../modules/nf-core/minimap2/index"
 include { MINIMAP2_HOST_REMOVAL                 } from "../../modules/local/minimap2_host_removal"
 include { PIGZ                                  } from "../../modules/local/pigz"
