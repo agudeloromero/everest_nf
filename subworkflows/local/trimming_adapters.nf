@@ -40,10 +40,18 @@ workflow TRIMMING_ADAPTERS_WF {
         /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
         /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 
+
+
+       all_fastq_ch = ch_trimmed.se
+                        .mix(CAT_PAIR_UNPAIR.out.concatenated)
+                        /* .dump(tag:"all_fastq_ch") */
+
+
+
     emit:
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
+        trimm_se_fastq  = ch_trimmed.se
         cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
-        cat_trimm_se_fastq  = ch_trimmed.se
-
+        ch_all_fastq = all_fastq_ch
 
 }

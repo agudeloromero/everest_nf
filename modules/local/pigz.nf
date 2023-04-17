@@ -1,4 +1,4 @@
-process CAT {
+process PIGZ {
         tag "$meta.id"
         label 'process_medium'
 
@@ -10,38 +10,39 @@ process CAT {
 
 
         input:
-        tuple val(meta), path(unmapped_pair), path(singleton_pair)
+        tuple val(meta), path(reads)
 
         output:
-        tuple val(meta), path('*_unmapped_cat_R*.fastq')	                    , emit: fastq
-        path "versions.yml"			                                              , emit: versions
+        tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
+        path "versions.yml"			                              , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
+        def args = task.ext.args ?: " -p ${task.cpus} -5 "
 
+                                       
         """
-            cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
-
-            cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
+            pigz $args $reads
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    CAT: \$(cat --version)
+                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
         """
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
+        def output = meta.single_end ? 
+                        "${prefix}_unmapped_R1.fastq.gz" 
+                        : "${prefix}_unmapped_cat_R1.fastq.gz ${prefix}_unmapped_cat_R2.fastq.gz"
 
         """
-            touch ${prefix}_unmapped_cat_R1.fastq
-            touch ${prefix}_unmapped_cat_R2.fastq
+            touch ${output}
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    CAT: \$(cat --version)
+                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
-
         """
 
 }
