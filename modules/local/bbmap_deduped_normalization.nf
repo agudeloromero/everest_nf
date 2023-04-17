@@ -12,7 +12,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         tuple val(meta), path(reads)
 
         output:
-        tuple val(meta), path('*_unmapped_cat_dedup_norm_R*.fastq.gz')		, emit: norm_fastqgz
+        tuple val(meta), path('*_dedup_norm_R*.fastq.gz')		              , emit: norm_fastqgz
         tuple val(meta), path('*bbmap_duduped_normalization.log')		      , emit: log
         path "versions.yml"							                                  , emit: versions
 
