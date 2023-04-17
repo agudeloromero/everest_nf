@@ -2,7 +2,7 @@ process CAT_PAIR_UNPAIR {
         tag "$meta.id"
         label 'process_medium'
 
-    //		conda (params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
+        conda "envs/minimap2.yml"
 
         input:
         tuple val(meta), path(paired), path(unpaired)

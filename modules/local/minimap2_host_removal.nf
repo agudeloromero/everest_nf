@@ -10,12 +10,12 @@ process MINIMAP2_HOST_REMOVAL {
 
         input:
         path index
-        tuple val(meta), path(trimm_cat_fastqs)
+        tuple val(meta), path(fastqs)
 
         output:
-        tuple val(meta), path('*_unmapped_R*.fastq')			              , emit: unmapped_pair
-        tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: unmapped_singleton
-        tuple val(meta), path('*MINIMAP2_host_removal.log')	            , emit: log
+        tuple val(meta), path('*_unmapped_R*.fastq')			              , emit: unmapped
+        tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
+        tuple val(meta), path('*minimap2_host_removal.log')	            , emit: log
         path "versions.yml"						                                  , emit: versions
 
         script:
@@ -25,16 +25,17 @@ process MINIMAP2_HOST_REMOVAL {
         def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
         def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
 
+        def output = meta.single_end ? 
+                    "${prefix}_unmapped_R1.fastq" 
+                    : "-1 ${prefix}_unmapped_R1.fastq -2 ${prefix}_unmapped_R2.fastq -s ${prefix}_unmapped_singletons.fastq"
 
         """
-        minimap2 $args_minimap2 -t ${task.cpus} $index ${trimm_cat_fastqs[0]} ${trimm_cat_fastqs[1]} \\
+        minimap2 $args_minimap2 -t ${task.cpus} $index ${fastqs} \\
           | samtools view $args_samtools_view - 
           | samtools sort $args_samtools_sort \\
           | samtools $args_samtools_fastq - \\
-          -1 ${prefix}_unmapped_R1.fastq \\
-          -2 ${prefix}_unmapped_R2.fastq \\
-          -s ${prefix}_unmapped_singletons.fastq \\
-          > ${prefix}.MINIMAP2_host_removal.log
+          ${output} \\
+          > ${prefix}.minimap2_host_removal.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -46,11 +47,14 @@ process MINIMAP2_HOST_REMOVAL {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
+        def output = meta.single_end ? 
+                    "${prefix}_unmapped_R1.fastq" 
+                    : " ${prefix}_unmapped_R1.fastq ${prefix}_unmapped_R2.fastq ${prefix}_unmapped_singletons.fastq"
+
+
         """
-          touch ${prefix}_unmapped_R1.fastq
-          touch ${prefix}_unmapped_R2.fastq
-          touch ${prefix}_unmapped_singletons.fastq
-          touch ${prefix}.MINIMAP2_host_removal.log
+        touch ${output}
+        touch ${prefix}.minimap2_host_removal.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
