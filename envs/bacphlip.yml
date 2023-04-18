@@ -1,0 +1,10 @@
+name: bacphlip
+channels:
+ - bioconda
+ - conda-forge
+ - defaults
+dependencies:
+ - bacphlip=0.9.6
+ - python=3.8.15
+ - hmmer=3.3.2
+

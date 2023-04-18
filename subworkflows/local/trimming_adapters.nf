@@ -53,5 +53,6 @@ workflow TRIMMING_ADAPTERS_WF {
         trimm_se_fastq  = ch_trimmed.se
         cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
         ch_all_fastq = all_fastq_ch
+        trim_fastq = TRIMM.out.paired
 
 }

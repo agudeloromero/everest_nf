@@ -309,6 +309,10 @@
                 "vrhyme": {
                     "type": "string",
                     "default": "None"
+                },
+                "transcriptome": {
+                    "type": "string",
+                    "default": null
                 }
             }
         }
