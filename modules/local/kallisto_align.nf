@@ -14,7 +14,7 @@ process KALLISTO_ALIGN {
         path(idx)
 
         output:
-        tuple val(meta), path('alignment/pseudoalignments.bam')	    , emit: fastqgz
+        tuple val(meta), path('alignment/pseudoalignments.bam')	    , emit: bam
         path("kallisto_align_*.log")	                              , emit: log
         path "versions.yml"			                                    , emit: versions
 
