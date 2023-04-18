@@ -44,7 +44,6 @@ workflow HOST_REMOVAL_WF {
                                 /* .dump(tag: "ch_pigz_input") */
 
         } else {
-            //FIXME Accommodate the RNASEQ analysis tools
             KALLISTO_INDEX( params.transcriptome )
             KALLISTO_ALIGN( trim_fastq_ch, KALLISTO_INDEX.out.idx )
             SAMTOOLS_FASTQ( KALLISTO_ALIGN.out.bam )
