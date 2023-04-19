@@ -79,7 +79,7 @@ workflow HOST_REMOVAL_WF {
 
         ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq
                             .concat(ch_unmapped_se)
-                            .dump(tag: "ch_bbmap_norm_input")
+                            /* .dump(tag: "ch_bbmap_norm_input") */
 
 
         BBMAP_DUDUPED_NORMALIZATION( ch_bbmap_norm_input )

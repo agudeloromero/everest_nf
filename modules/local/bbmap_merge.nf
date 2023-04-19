@@ -18,7 +18,7 @@ process BBMAP_MERGE {
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
 
     script:
-    def args = task.ext.args ?: '-Xmx20000m'
+    def args = task.ext.args ?: "-Xmx${task.memory}m"
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bbmerge.sh ${args} \\
