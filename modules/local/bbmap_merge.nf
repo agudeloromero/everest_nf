@@ -2,7 +2,7 @@ process BBMAP_MERGE {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "envs/BBMAP.yml"
+    conda "${projectDir}/envs/BBMAP.yml"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -18,7 +18,7 @@ process BBMAP_MERGE {
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
 
     script:
-    def args = task.ext.args ?: '-Xmx20000m'
+    def args = task.ext.args ?: "-Xmx${task.memory}m"
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bbmerge.sh ${args} \\

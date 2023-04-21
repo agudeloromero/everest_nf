@@ -90,8 +90,9 @@ workflow EVEREST {
 
     HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTERS_WF.out.ch_all_fastq, TRIMMING_ADAPTERS_WF.out.trim_fastq )
 
-    //TODO:
-    //DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+    DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+
+    /* PILON and ABRICATE didn't work */
     
 }
 
