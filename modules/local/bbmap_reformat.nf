@@ -2,9 +2,9 @@ process BBMAP_REFORMAT {
         tag "$meta.id"
         label 'process_medium'
 
-        conda (params.enable_conda ? 'bioconda::bbmap=38.96' : null)
+        conda "${projectDir}/envs/BBMAP.yml"
 
-        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        container "${}${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
             'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
 

@@ -2,7 +2,7 @@ process TRIMM_UNMERGE {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "envs/QC.yml"
+        conda "${projectDir}/envs/QC.yml"
 
         input:
         tuple val(meta), path(reads)
