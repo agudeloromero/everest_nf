@@ -33,7 +33,7 @@ process MMSEQ2_ELINCLUST {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version://; s/ .*\$//')
+        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version: //; s/\$//')
     END_VERSIONS
     """
 
@@ -48,7 +48,7 @@ process MMSEQ2_ELINCLUST {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version://; s/ .*\$//')
+        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version: //; s/\$//')
     END_VERSIONS
     """
 }
