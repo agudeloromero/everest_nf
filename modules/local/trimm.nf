@@ -10,8 +10,8 @@ process TRIMM {
 
 
         output:
-        tuple val(meta), path('*_trimm_pair_R*.fastq.gz')                                       , emit: paired
-        tuple val(meta), path('*_trimm_unpair_R*.fastq.gz')	                                    , emit: unpaired, optional: true
+        tuple val(meta), path('*.trimm_pair_R*.fastq.gz')                                       , emit: paired
+        tuple val(meta), path('*.trimm_unpair_R*.fastq.gz')	                                    , emit: unpaired, optional: true
         tuple val(meta), path('*.log')						                                              , emit: log
         path "versions.yml"									                                                    , emit: versions
 
