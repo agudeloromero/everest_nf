@@ -37,7 +37,7 @@ process TRIMM {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM: \$(trimmomatic --version)
+              TRIMM: \$(trimmomatic -version)
             END_VERSIONS
             """
 
@@ -54,7 +54,7 @@ process TRIMM {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM: \$(trimmomatic --version)
+              TRIMM: \$(trimmomatic -version)
             END_VERSIONS
             """
 
