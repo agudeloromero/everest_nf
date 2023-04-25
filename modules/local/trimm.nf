@@ -22,15 +22,18 @@ process TRIMM {
             def trimmed = meta.single_end ? "SE" : "PE"
             def output = meta.single_end ?
                 "${prefix}._trimm_pair_R1.fastq.gz" 
-                : "${prefix}._trimm_pair_R1.fastq.gz ${prefix}._trimm_unpair_R1.fastq.gz ${prefix}._trimm_pair_R2.fastq.gz ${prefix}._trimm_unpair_R2.fastq.gz"
+                : "${prefix}.trimm_pair_R1.fastq.gz ${prefix}.trimm_unpair_R1.fastq.gz ${prefix}.trimm_pair_R2.fastq.gz ${prefix}.trimm_unpair_R2.fastq.gz"
 
             """
-            trimmomatic $trimmed \\
-            -threads $task.cpus \\
-            ${args} \\
-            ${cleaned_reads} \\
-            ${output} \\
-            > ${prefix}.trimm.log
+            trimmomatic \\
+                $trimmed \\
+                -threads $task.cpus \\
+                -trimlog ${prefix}.trimm.log \\
+                -summary ${prefix}.summary \\
+                $cleaned_reads \\
+                $output \\
+                $args
+
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
