@@ -2,7 +2,7 @@ process TRIMM {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/QC.yml" //(params.enable_conda ? 'bioconda::trimmomatic=0.39' : null)
+        conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml"  }
 
         input:
         tuple val(meta), path(cleaned_reads)

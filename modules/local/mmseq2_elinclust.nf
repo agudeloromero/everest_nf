@@ -2,7 +2,7 @@ process MMSEQ2_ELINCLUST {
     tag "$meta.id"
     label 'process_high'
 
-    conda "${projectDir}/envs/MMSEQS.yml"
+    conda { params.conda_mmseqs_env ?: "${projectDir}/envs/MMSEQS.yml" }
 
     /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
     /*     'https://depot.galaxyproject.org/singularity/spades:3.15.5--h95f258a_1' : */

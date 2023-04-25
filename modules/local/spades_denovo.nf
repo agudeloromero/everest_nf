@@ -2,7 +2,7 @@ process SPADES_DENOVO {
     tag "$meta.id"
     label 'process_high'
 
-    conda "${projectDir}/envs/spades.yml"
+    conda { params.conda_spades_env ?: "${projectDir}/envs/spades.yml" }
 
     /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
     /*     'https://depot.galaxyproject.org/singularity/spades:3.15.5--h95f258a_1' : */

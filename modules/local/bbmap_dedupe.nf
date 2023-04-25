@@ -2,7 +2,7 @@ process BBMAP_DEDUPE {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "${projectDir}/envs/BBMAP.yml"
+    conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
     /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
     /*         'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0': */

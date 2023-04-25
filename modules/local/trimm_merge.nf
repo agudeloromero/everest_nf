@@ -2,7 +2,7 @@ process TRIMM_MERGE {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/QC.yml"
+        conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml" }
 
         input:
         tuple val(meta), path(reads)

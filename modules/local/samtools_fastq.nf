@@ -2,7 +2,7 @@ process SAMTOOLS_FASTQ {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/minimap2.yml"
+        conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
 //        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 //            'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':

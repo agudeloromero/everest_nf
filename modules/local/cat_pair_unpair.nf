@@ -2,7 +2,7 @@ process CAT_PAIR_UNPAIR {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/minimap2.yml"
+        conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         input:
         tuple val(meta), path(paired), path(unpaired)
