@@ -6,7 +6,7 @@ process TRIMM {
 
         input:
         tuple val(meta), path(cleaned_reads)
-        path adapter
+        path adaptor
 
 
         output:
@@ -17,7 +17,7 @@ process TRIMM {
 
 
         script:
-            def args = task.ext.args ?: "-phred33 ILLUMINACLIP:${input.adaptor}:2:30:10"
+            def args = task.ext.args ?: "-phred33 ILLUMINACLIP:${adaptor}:2:30:10"
             def prefix = task.ext.prefix ?: "${meta.id}"
             def trimmed = meta.single_end ? "SE" : "PE"
             def output = meta.single_end ?

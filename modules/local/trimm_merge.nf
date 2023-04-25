@@ -6,7 +6,7 @@ process TRIMM_MERGE {
 
         input:
         tuple val(meta), path(reads)
-        path adapter
+        path adaptor
 
 
         output:
@@ -25,7 +25,7 @@ process TRIMM_MERGE {
             -phred33 \\
             ${reads[0]} \\
             ${prefix}_unmapped_cat_R1_merge_trimm.fastq.gz \\
-            ILLUMINACLIP:${adapter}:2:30:10 \\
+            ILLUMINACLIP:${adaptor}:2:30:10 \\
             ${args} \\
             2> ${prefix}.trimm_merge.log
 
