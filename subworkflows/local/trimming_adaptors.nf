@@ -8,7 +8,7 @@ include { CAT_PAIR_UNPAIR                     } from '../../modules/local/cat_pa
 /* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
 /* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
 
-workflow TRIMMING_ADAPTERS_WF {
+workflow TRIMMING_ADAPTORS_WF {
 
     take:
         reads_ch // [ val(meta), [ reads ] ]
