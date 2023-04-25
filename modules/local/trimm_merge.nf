@@ -31,7 +31,7 @@ process TRIMM_MERGE {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_MERGE: \$(trimmomatic --version)
+              TRIMM_MERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 
@@ -44,7 +44,7 @@ process TRIMM_MERGE {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_MERGE: \$(trimmomatic --version)
+              TRIMM_MERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 

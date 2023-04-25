@@ -3,7 +3,7 @@ process TRIMM_UNMERGE {
         label 'process_medium'
 
         conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml" }
-
+ 
         input:
         tuple val(meta), path(reads)
         path adapter
@@ -35,7 +35,7 @@ process TRIMM_UNMERGE {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 
@@ -52,7 +52,7 @@ process TRIMM_UNMERGE {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 
