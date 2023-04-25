@@ -17,7 +17,7 @@ process TRIMM {
 
 
         script:
-            def args = task.ext.args ?: '-phred33'
+            def args = task.ext.args ?: "-phred33 ILLUMINACLIP:${input.adaptor}:2:30:10"
             def prefix = task.ext.prefix ?: "${meta.id}"
             def trimmed = meta.single_end ? "SE" : "PE"
             def output = meta.single_end ?
