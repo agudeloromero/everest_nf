@@ -9,16 +9,14 @@ process CAT_PAIR_UNPAIR {
         
         output:
         tuple val(meta), path('*_trimm_cat_R*.fastq.gz')	, emit: concatenated
-        tuple val(meta), path('*.log')						        , emit: log
         path "versions.yml"									              , emit: versions
 
         script:
         def args = task.ext.args ?: '-7'
         def prefix = task.ext.prefix ?: "${meta.id}"
         """
-        cat ${paired[0]} ${unpaired[0]} > ${prefix}_trimm_cat_R1.fastq.gz \\
-        cat ${paired[0]} ${unpaired[1]} > ${prefix}_trimm_cat_R2.fastq.gz \\
-        > ${prefix}.CAT.pair_unpair.log
+        cat ${paired[0]} ${unpaired[0]} > ${prefix}_trimm_cat_R1.fastq.gz 
+        cat ${paired[0]} ${unpaired[1]} > ${prefix}_trimm_cat_R2.fastq.gz
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -33,7 +31,6 @@ process CAT_PAIR_UNPAIR {
         """
         touch ${prefix}_trimm_cat_R1.fastq.gz
         touch ${prefix}_trimm_cat_R2.fastq.gz
-        touch ${prefix}.CAT.pair_unpair.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
