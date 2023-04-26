@@ -18,7 +18,7 @@ process BBMAP_DEDUPED_REFORMAT {
         path "versions.yml"							                            , emit: versions
 
         script:
-        def args = task.ext.args ?: "-Xmx${task.memory}m"
+        def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         """
