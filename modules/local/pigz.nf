@@ -1,6 +1,7 @@
 process PIGZ {
         tag "$meta.id"
         label 'process_medium'
+        stageInMode "copy"
 
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
