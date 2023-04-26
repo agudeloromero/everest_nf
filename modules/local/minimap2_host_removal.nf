@@ -33,7 +33,7 @@ process MINIMAP2_HOST_REMOVAL {
         minimap2 $args_minimap2 -t ${task.cpus} $index ${fastqs} \\
           | samtools view $args_samtools_view - \\
           | samtools sort $args_samtools_sort \\
-          | samtools $args_samtools_fastq - \\
+          | samtools fastq $args_samtools_fastq - \\
           ${output} \\
           > ${prefix}.minimap2_host_removal.log
 
