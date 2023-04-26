@@ -22,8 +22,8 @@ process BBMAP_DEDUPE {
     def args = task.ext.args ?: " ac=f s=5 e=5 minidentity=95 "
 
     def input = meta.single_end ? 
-                "in=${reads{0}}"
-                : "in1=${reads{0}} in2=${reads{1}}" 
+                "in=${reads[0]}"
+                : "in1=${reads[0]} in2=${reads[1]}" 
 
     def output = meta.single_end ? 
                 "${prefix}_unmapped_dedup.fastq.gz" 
