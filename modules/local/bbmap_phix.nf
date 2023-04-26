@@ -37,7 +37,7 @@ process BBMAP_PHIX {
           ref=artifacts,phix \\
           stats=${prefix}.stats_phix.txt \\
           $args2 \\
-          > ${prefix}.bbmap_phix.log
+          2> ${prefix}.bbmap_phix.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

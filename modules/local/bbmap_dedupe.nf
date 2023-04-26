@@ -30,7 +30,7 @@ process BBMAP_DEDUPE {
                 : "${prefix}_unmapped_cat_dedup.fastq.gz" 
 
     """
-    dedupe.sh ${args} ${input} out=${output} 
+    dedupe.sh ${args} ${input} out=${output}  2> ${prefix}.bbmap_dedupe.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

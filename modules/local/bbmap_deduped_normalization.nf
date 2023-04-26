@@ -33,7 +33,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
           $args \\
           $input\\
           $output \\ 
-          > ${prefix}.bbmap_duduped_normalization.log
+          2> ${prefix}.bbmap_duduped_normalization.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

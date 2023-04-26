@@ -27,7 +27,7 @@ process BBMAP_MERGE {
         out=${prefix}_unmapped_cat_R1_merge.fastq.gz \\
         outu1=${prefix}_unmapped_cat_unmerge_R1.fastq.gz \\
         outu2=${prefix}_unmapped_cat_unmerge_R2.fastq.gz  \\
-        > ${prefix}.bbmap_merge.log
+        2> ${prefix}.bbmap_merge.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
