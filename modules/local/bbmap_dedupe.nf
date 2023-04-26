@@ -34,7 +34,7 @@ process BBMAP_DEDUPE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        BBMAP_DEDUPE: \$(bbmap --version)
+        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
 
@@ -52,7 +52,7 @@ process BBMAP_DEDUPE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        BBMAP_DEDUPE: \$(bbmap --version)
+        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
 
