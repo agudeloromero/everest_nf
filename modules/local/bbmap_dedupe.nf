@@ -19,7 +19,7 @@ process BBMAP_DEDUPE {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " ac=f s=5 e=5 minidentity=95 "
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m ac=f s=5 e=5 minidentity=95 "
 
     def input = meta.single_end ? 
                 "in=${reads[0]}"
@@ -30,7 +30,7 @@ process BBMAP_DEDUPE {
                 : "${prefix}_unmapped_cat_dedup.fastq.gz" 
 
     """
-    dedupe.sh ${task.memory.toMega()} ${args} ${input} out=${output} 
+    dedupe.sh ${args} ${input} out=${output} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
