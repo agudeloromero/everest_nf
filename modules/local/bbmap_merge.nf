@@ -22,8 +22,8 @@ process BBMAP_MERGE {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bbmerge.sh ${args} \\
-        in1=${reads{0}} \\
-        in2=${reads{1}} \\
+        in1=${reads[0]} \\
+        in2=${reads[1]} \\
         out=${prefix}_unmapped_cat_R1_merge.fastq.gz \\
         outu1=${prefix}_unmapped_cat_unmerge_R1.fastq.gz \\
         outu2=${prefix}_unmapped_cat_unmerge_R2.fastq.gz  \\
@@ -43,7 +43,7 @@ process BBMAP_MERGE {
     """
     touch ${prefix}_unmapped_cat_R1_merge.fastq.gz
     touch ${prefix}_unmapped_cat_unmerge_R1.fastq.gz
-    touch ${prefix}_unmapped_cat_unmerge_R2.fastq.gz 
+    touch ${prefix}_unmapped_cat_unmerge_R2.fastq.gz
     touch ${prefix}.bbmap_merge.log
 
     cat <<-END_VERSIONS > versions.yml
