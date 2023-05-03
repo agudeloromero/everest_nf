@@ -25,7 +25,6 @@ workflow DENOVO_WF {
 
         TRIMM_MERGE( BBMAP_MERGE.out.merged, params.adaptor )
 
-
         ch_trimm_combined = TRIMM_MERGE.out.paired
                                 .join(TRIMM_UNMERGE.out.paired)
                                 .join(TRIMM_UNMERGE.out.unpaired)

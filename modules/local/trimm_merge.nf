@@ -16,14 +16,15 @@ process TRIMM_MERGE {
 
 
         script:
-            def args = task.ext.args ?: ' LEADING:10 TRAILING:10 SLIDINGWINDOW:3:15 MINLEN:50 '
+            def args = task.ext.args ?: '-phred33 LEADING:10 TRAILING:10 SLIDINGWINDOW:3:15 MINLEN:50 '
             def prefix = task.ext.prefix ?: "${meta.id}"
-            def trimmed = meta.single_end ? "SE" : "PE"
+
+            //NOTE: Hard-coded since we only operate upon the R1
+            def trimmed = "SE"
 
             """
             trimmomatic $trimmed \\
             -threads $task.cpus \\
-            -phred33 \\
             ${reads[0]} \\
             ${prefix}_unmapped_cat_R1_merge_trimm.fastq.gz \\
             ILLUMINACLIP:${adaptor}:2:30:10 \\

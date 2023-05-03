@@ -21,7 +21,7 @@ process TRIMM {
             def prefix = task.ext.prefix ?: "${meta.id}"
             def trimmed = meta.single_end ? "SE" : "PE"
             def output = meta.single_end ?
-                "${prefix}._trimm_pair_R1.fastq.gz" 
+                "${prefix}._trimm_pair_R1.fastq.gz"
                 : "${prefix}.trimm_pair_R1.fastq.gz ${prefix}.trimm_unpair_R1.fastq.gz ${prefix}.trimm_pair_R2.fastq.gz ${prefix}.trimm_unpair_R2.fastq.gz"
 
             """
@@ -44,7 +44,7 @@ process TRIMM {
         stub:
             def prefix = task.ext.prefix ?: "${meta.id}"
             def output = meta.single_end ?
-                "${prefix}.trimm_pair_R1.fastq.gz" 
+                "${prefix}.trimm_pair_R1.fastq.gz"
                 : "${prefix}.trimm_pair_R1.fastq.gz ${prefix}.trimm_unpair_R1.fastq.gz ${prefix}.trimm_pair_R2.fastq.gz ${prefix}.trimm_unpair_R2.fastq.gz"
 
 
