@@ -18,9 +18,10 @@ process TRIMM_MERGE {
         script:
             def args = task.ext.args ?: ' LEADING:10 TRAILING:10 SLIDINGWINDOW:3:15 MINLEN:50 '
             def prefix = task.ext.prefix ?: "${meta.id}"
+            def trimmed = meta.single_end ? "SE" : "PE"
 
             """
-            trimmomatic PE \\
+            trimmomatic $trimmed \\
             -threads $task.cpus \\
             -phred33 \\
             ${reads[0]} \\
