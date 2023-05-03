@@ -11,8 +11,8 @@ process TRIMM_MERGE {
 
         output:
         tuple val(meta), path("*_unmapped_cat_R1_merge_trimm.fastq.gz")                 , emit: paired
-        tuple val(meta), path('*.log')						                                      , emit: log
-        path "versions.yml"									                                            , emit: versions
+        tuple val(meta), path('*.log')						                            , emit: log
+        path "versions.yml"									                            , emit: versions
 
 
         script:
