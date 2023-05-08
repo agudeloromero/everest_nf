@@ -42,7 +42,7 @@ workflow DENOVO_WF {
                             .mix(ch_spades_input_se)
                             /* .dump(tag: "ch_spades_input") */
 
-        SPADES_DENOVO ( ch_spades_input )
+        SPADES_DENOVO( ch_spades_input )
 
         MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
 
