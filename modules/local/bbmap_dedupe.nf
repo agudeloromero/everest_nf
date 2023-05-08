@@ -1,8 +1,8 @@
 process BBMAP_DEDUPE {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
 
-    conda "${projectDir}/envs/BBMAP.yml"
+    conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
     /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
     /*         'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0': */
@@ -19,22 +19,22 @@ process BBMAP_DEDUPE {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " ac=f s=5 e=5 minidentity=95 "
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m ac=f s=5 e=5 minidentity=95 "
 
-    def input = meta.single_end ? 
-                "in=${reads{0}}"
-                : "in1=${reads{0}} in2=${reads{1}}" 
+    def input = meta.single_end ?
+                "in=${reads[0]}"
+                : "in1=${reads[0]} in2=${reads[1]}"
 
-    def output = meta.single_end ? 
-                "${prefix}_unmapped_dedup.fastq.gz" 
-                : "${prefix}_unmapped_cat_dedup.fastq.gz" 
+    def output = meta.single_end ?
+                "${prefix}_unmapped_dedup.fastq.gz"
+                : "${prefix}_unmapped_cat_dedup.fastq.gz"
 
     """
-    dedupe.sh ${task.memory} ${args} ${input} out=${output} 
+    dedupe.sh ${args} ${input} out=${output}  2> ${prefix}.bbmap_dedupe.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        BBMAP_DEDUPE: \$(bbmap --version)
+        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
 
@@ -42,17 +42,17 @@ process BBMAP_DEDUPE {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    def output = meta.single_end ? 
-                "${prefix}_unmapped_dedup.fastq.gz" 
-                : "${prefix}_unmapped_cat_dedup.fastq.gz" 
+    def output = meta.single_end ?
+                "${prefix}_unmapped_dedup.fastq.gz"
+                : "${prefix}_unmapped_cat_dedup.fastq.gz"
 
     """
     touch ${output}
-    touch ${prefix}.bbmap_dedupe.out 
+    touch ${prefix}.bbmap_dedupe.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        BBMAP_DEDUPE: \$(bbmap --version)
+        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
 

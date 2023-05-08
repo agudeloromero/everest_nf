@@ -260,8 +260,8 @@
                 }
             }
         },
-        "database_options": {
-            "title": "Database options",
+        "everest_options": {
+            "title": "Everest options",
             "type": "object",
             "description": "",
             "default": "",
@@ -306,11 +306,39 @@
                     "type": "string",
                     "default": "None"
                 },
-                "vrhyme": {
+                "transcriptome": {
                     "type": "string",
                     "default": "None"
                 },
-                "transcriptome": {
+                "genome": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_python3_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_bbmap_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_spades_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_qc_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_kallisto_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_mmseqs_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_minimap2_env": {
                     "type": "string",
                     "default": null
                 }
@@ -334,7 +362,7 @@
             "$ref": "#/definitions/generic_options"
         },
         {
-            "$ref": "#/definitions/database_options"
+            "$ref": "#/definitions/everest_options"
         }
     ]
 }

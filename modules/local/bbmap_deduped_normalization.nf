@@ -2,7 +2,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/BBMAP.yml"
+        conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
         /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
         /*     'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0': */
@@ -17,7 +17,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         path "versions.yml"							                                  , emit: versions
 
         script:
-        def args = task.ext.args ?: "-Xmx${task.memory}m"
+        def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         def input = meta.single_end ?
@@ -33,7 +33,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
           $args \\
           $input\\
           $output \\ 
-          > ${prefix}.bbmap_duduped_normalization.log
+          2> ${prefix}.bbmap_duduped_normalization.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

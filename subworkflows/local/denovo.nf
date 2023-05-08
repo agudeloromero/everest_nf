@@ -2,7 +2,7 @@ include { BBMAP_MERGE       } from "../../modules/local/bbmap_merge"
 include { TRIMM_UNMERGE     } from "../../modules/local/trimm_unmerge"
 include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 include { SPADES_DENOVO     } from "../../modules/local/spades_denovo"
-/* include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust" */
+include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust"
 
 workflow DENOVO_WF {
     take:
@@ -25,7 +25,6 @@ workflow DENOVO_WF {
 
         TRIMM_MERGE( BBMAP_MERGE.out.merged, params.adaptor )
 
-
         ch_trimm_combined = TRIMM_MERGE.out.paired
                                 .join(TRIMM_UNMERGE.out.paired)
                                 .join(TRIMM_UNMERGE.out.unpaired)
@@ -41,17 +40,15 @@ workflow DENOVO_WF {
 
         ch_spades_input =  ch_trimm_combined
                             .mix(ch_spades_input_se)
-                            .dump(tag: "ch_spades_input")
+                            /* .dump(tag: "ch_spades_input") */
 
-        SPADES_DENOVO ( ch_spades_input )
+        SPADES_DENOVO( ch_spades_input )
 
-/* TODO */
-        /* MMSEQ2_ELINCLUST */
-
+        MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
 
 
-    //emit:
-
+    emit:
+        repseq_fasta = MMSEQ2_ELINCLUST.out.rep_seq
 
 }
 

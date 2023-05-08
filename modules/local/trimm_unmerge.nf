@@ -2,11 +2,11 @@ process TRIMM_UNMERGE {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/QC.yml"
-
+        conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml" }
+ 
         input:
         tuple val(meta), path(reads)
-        path adapter
+        path adaptor
 
 
         output:
@@ -29,13 +29,13 @@ process TRIMM_UNMERGE {
             ${prefix}_unmapped_cat_unmerge_unpair_R1.fastq.gz \\
             ${prefix}_unmapped_cat_unmerge_pair_R2.fastq.gz \\
             ${prefix}_unmapped_cat_unmerge_unpair_R2.fastq.gz \\
-            ILLUMINACLIP:${adapter}:2:30:10 \\
+            ILLUMINACLIP:${adaptor}:2:30:10 \\
             ${args} \\
             2> ${prefix}.trimm_unmerge.log
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 
@@ -52,7 +52,7 @@ process TRIMM_UNMERGE {
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic --version)
+              TRIMM_UNMERGE: \$(trimmomatic -version)
             END_VERSIONS
             """
 

@@ -2,7 +2,7 @@ process BBMAP_PHIX {
         tag "$meta.id"
         label 'process_medium'
 
-        conda "${projectDir}/envs/BBMAP.yml"
+        conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -37,7 +37,7 @@ process BBMAP_PHIX {
           ref=artifacts,phix \\
           stats=${prefix}.stats_phix.txt \\
           $args2 \\
-          > ${prefix}.bbmap_phix.log
+          2> ${prefix}.bbmap_phix.log
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

@@ -2,7 +2,7 @@ process BBMAP_MERGE {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "${projectDir}/envs/BBMAP.yml"
+    conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -18,16 +18,16 @@ process BBMAP_MERGE {
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
 
     script:
-    def args = task.ext.args ?: "-Xmx${task.memory}m"
+    def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bbmerge.sh ${args} \\
-        in1=${reads{0}} \\
-        in2=${reads{1}} \\
+        in1=${reads[0]} \\
+        in2=${reads[1]} \\
         out=${prefix}_unmapped_cat_R1_merge.fastq.gz \\
         outu1=${prefix}_unmapped_cat_unmerge_R1.fastq.gz \\
         outu2=${prefix}_unmapped_cat_unmerge_R2.fastq.gz  \\
-        > ${prefix}.bbmap_merge.log
+        2> ${prefix}.bbmap_merge.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -43,7 +43,7 @@ process BBMAP_MERGE {
     """
     touch ${prefix}_unmapped_cat_R1_merge.fastq.gz
     touch ${prefix}_unmapped_cat_unmerge_R1.fastq.gz
-    touch ${prefix}_unmapped_cat_unmerge_R2.fastq.gz 
+    touch ${prefix}_unmapped_cat_unmerge_R2.fastq.gz
     touch ${prefix}.bbmap_merge.log
 
     cat <<-END_VERSIONS > versions.yml
