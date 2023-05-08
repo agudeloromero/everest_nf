@@ -44,11 +44,11 @@ workflow DENOVO_WF {
 
         SPADES_DENOVO ( ch_spades_input )
 
-//        MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
-//
-//
-//    emit:
-//        repseq_fasta = MMSEQ2_ELINCLUST.out.rep_seq
+        MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
+
+
+    emit:
+        repseq_fasta = MMSEQ2_ELINCLUST.out.rep_seq
 
 }
 
