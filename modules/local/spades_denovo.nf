@@ -12,9 +12,9 @@ process SPADES_DENOVO {
     tuple val(meta), path(forward_read), path(paired), path(unpaired)
 
     output:
-    tuple val(meta), path('*.scaffolds.fa')       , optional:true, emit: scaffolds
-    tuple val(meta), path('*.log')                , emit: log
-    path  "versions.yml"                          , emit: versions
+    tuple val(meta), path('*.scaffolds.fasta')       , optional:true, emit: scaffolds
+    tuple val(meta), path('*.log')                   , emit: log
+    path  "versions.yml"                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,8 +24,8 @@ process SPADES_DENOVO {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def maxmem = task.memory.toGiga()
 
-    def input = meta.single_end ? 
-                "--s1 ${forward_read}" 
+    def input = meta.single_end ?
+                "--s1 ${forward_read}"
                 : "--merge ${forward_read} -1 ${paired[0]} -2 ${paired[1]} -s ${unpaired[0]} -s ${unpaired[1]}"
 
     def mode = meta.single_end ? "--careful" : "--meta"
@@ -50,7 +50,7 @@ process SPADES_DENOVO {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.scaffolds.fa
+    touch ${prefix}.scaffolds.fasta
     touch ${prefix}.spades.log
 
     cat <<-END_VERSIONS > versions.yml
