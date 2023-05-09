@@ -1,8 +1,8 @@
-process VIRSORTER_DETECT {
+process CHECKV_VIRAL_SEQ {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
-    conda { params.conda_virsorter2_env ?: "${projectDir}/envs/virsorter2.yml" }
+    conda { params.conda_checkv_env ?: "${projectDir}/envs/checkv.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/seqkit:2.1.0--h9ee0642_0' :
