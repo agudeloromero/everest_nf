@@ -2,7 +2,7 @@ process VIRSORTER_DETECT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda { params.conda_virsorter_env ?: "${projectDir}/envs/virsorter2.yml" }
+    conda { params.conda_virsorter2_env ?: "${projectDir}/envs/virsorter2.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/seqkit:2.1.0--h9ee0642_0' :
