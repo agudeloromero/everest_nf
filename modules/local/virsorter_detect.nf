@@ -1,32 +1,38 @@
-process SEQKIT_FILTER {
+process VIRSORTER_DETECT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda { params.conda_seqkit_env ?: "${projectDir}/envs/seqkit.yml" }
+    conda { params.conda_virsorter_env ?: "${projectDir}/envs/virsorter.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/seqkit:2.1.0--h9ee0642_0' :
         'quay.io/biocontainers/seqkit:2.1.0--h9ee0642_0' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple val(meta), path(filtered_fasta)
+    path(virsorter_db)
 
     output:
-    tuple val(meta), path("*_rep_seq_FilterLen.fasta"), emit: filtered_fasta
-    path "versions.yml"                               , emit: versions
+    tuple val(meta), path("${meta.id}")                        , emit: dir
+    tuple val(meta), path("**/final-viral-combined.fa")        , emit: viral
+    tuple val(meta), path("**/final-viral-score.tsv")          , emit: score
+    tuple val(meta), path("**/final-viral-boundary.tsv")       , emit: boundary
+    path "versions.yml"                                        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args   = task.ext.args   ?: "-m 5000 --threads $task.cpus"
+    def args   = task.ext.args   ?: "--keep-original-seq --include-groups dsDNAphage,NCLDV,RNA,ssDNA --min-length 5000 --min-score 0.5 -j $task.cpus all"
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    seqkit seq
+    virsorter run \\
         $args \\
-        $fasta \\
-        -o ${prefix}_rep_seq_FilterLen.fasta
+        -i ${filtered_fasta} \\
+        -w ${meta.id} \\
+        --db-dir ${virsorter_db} \\
+        2> ${prefix}_virsorter_detect.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -39,7 +45,12 @@ process SEQKIT_FILTER {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    touch ${prefix}_rep_seq_FilterLen.fasta
+    touch ${prefix}_virsorter_detect.log
+
+    mkdir $prefix
+    touch $prefix/final-viral-combined.fa
+    touch $prefix/final-viral-score.tsv
+    touch $prefix/final-viral-boundary.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
