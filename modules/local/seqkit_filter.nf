@@ -23,7 +23,7 @@ process SEQKIT_FILTER {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    seqkit seq
+    seqkit seq \\
         $args \\
         $fasta \\
         -o ${prefix}_rep_seq_FilterLen.fasta
@@ -46,7 +46,5 @@ process SEQKIT_FILTER {
         seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
     END_VERSIONS
     """
-
-
 
 }
