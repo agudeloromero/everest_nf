@@ -1,10 +1,10 @@
 
-workflow CLEANING_CONTIGS { 
+workflow CLEANING_CONTIGS_WF {
 
-    take: 
+    take:
+        repseq_fasta
 
-
-    main: 
+    main:
         SEQKIT_FILTER
 
         VIRSORTER_DETECT
@@ -18,7 +18,7 @@ workflow CLEANING_CONTIGS {
 
         BACPHLIP_LIFE_STYLE
 
-    emit: 
+    //emit:
 
 }
 

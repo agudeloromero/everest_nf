@@ -41,6 +41,7 @@ include { INPUT_CHECK             } from '../subworkflows/local/input_check'
 include { TRIMMING_ADAPTORS_WF    } from '../subworkflows/local/trimming_adaptors'
 include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
 include { DENOVO_WF               } from '../subworkflows/local/denovo'
+include { CLEANING_CONTIGS_WF     } from '../subworkflows/local/cleaning_contigs'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,8 +93,10 @@ workflow EVEREST {
 
     DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
+    CLEANING_CONTIGS( DENOVO_WF.out.repseq_fasta )
+
     /* PILON and ABRICATE didn't work */
-    
+
 }
 
 //============================
