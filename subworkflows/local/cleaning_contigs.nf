@@ -9,7 +9,7 @@ workflow CLEANING_CONTIGS_WF {
     main:
         SEQKIT_FILTER( repseq_fasta )
 
-        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta )
+        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
 //        CHECKV_VIRAL_SEQ
 
