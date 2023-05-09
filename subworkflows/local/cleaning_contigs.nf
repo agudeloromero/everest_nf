@@ -1,4 +1,5 @@
-include { SEQKIT_FILTER  } from "../../modules/local/seqkit_filter.nf"
+include { SEQKIT_FILTER     } from "../../modules/local/seqkit_filter.nf"
+include { VIRSORTER_DETECT  } from "../../modules/local/virsorter_detect.nf"
 
 workflow CLEANING_CONTIGS_WF {
 
@@ -6,9 +7,9 @@ workflow CLEANING_CONTIGS_WF {
         repseq_fasta
 
     main:
-        SEQKIT_FILTER(repseq_fasta)
+        SEQKIT_FILTER( repseq_fasta )
 
-//        VIRSORTER_DETECT
+        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta )
 
 //        CHECKV_VIRAL_SEQ
 
