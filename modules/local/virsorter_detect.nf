@@ -15,11 +15,11 @@ process VIRSORTER_DETECT {
     path(virsorter_db)
 
     output:
-    tuple val(meta), path("${meta.id}")                        , emit: dir
-    tuple val(meta), path("**/final-viral-combined.fa")        , emit: combined
-    tuple val(meta), path("**/final-viral-score.tsv")          , emit: score
-    tuple val(meta), path("**/final-viral-boundary.tsv")       , emit: boundary
-    path "versions.yml"                                        , emit: versions
+    tuple val(meta), path("${prefix}")                                , emit: dir
+    tuple val(meta), path("${prefix}/final-viral-combined.fa")        , emit: combined
+    tuple val(meta), path("${prefix}/final-viral-score.tsv")          , emit: score
+    tuple val(meta), path("${prefix}/final-viral-boundary.tsv")       , emit: boundary
+    path "versions.yml"                                               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
