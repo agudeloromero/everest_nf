@@ -16,7 +16,7 @@ process VIRSORTER_DETECT {
 
     output:
     tuple val(meta), path("${meta.id}")                        , emit: dir
-    tuple val(meta), path("**/final-viral-combined.fa")        , emit: viral
+    tuple val(meta), path("**/final-viral-combined.fa")        , emit: combined
     tuple val(meta), path("**/final-viral-score.tsv")          , emit: score
     tuple val(meta), path("**/final-viral-boundary.tsv")       , emit: boundary
     path "versions.yml"                                        , emit: versions
