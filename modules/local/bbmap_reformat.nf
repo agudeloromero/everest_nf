@@ -13,8 +13,8 @@ process BBMAP_REFORMAT {
 
         output:
         tuple val(meta), path('*_unmapped_singletons_R*.fastq')	                , emit: singleton_pair
-        tuple val(meta), path('*bbmap_singletons.log')			                    , emit: log
-        path "versions.yml"							                                        , emit: versions
+        tuple val(meta), path('*bbmap_singletons.log')			                , emit: log
+        path "versions.yml"							                            , emit: versions
 
         script:
         def args = task.ext.args ?: '-Xmx20000m'
@@ -36,8 +36,8 @@ process BBMAP_REFORMAT {
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
         """
-        touch ${prefix}_unmapped_singletons_R1.fastq 
-        touch ${prefix}_unmapped_singletons_R2.fastq 
+        touch ${prefix}_unmapped_singletons_R1.fastq
+        touch ${prefix}_unmapped_singletons_R2.fastq
         touch ${prefix}.bbmap_singletons.log
 
         cat <<-END_VERSIONS > versions.yml

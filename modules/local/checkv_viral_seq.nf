@@ -14,7 +14,9 @@ process CHECKV_VIRAL_SEQ {
     path(checkv_db)
 
     output:
-    path "versions.yml"                                        , emit: versions
+    tuple val(meta), path("**/viruses.fna")                           , emit: fasta
+    tuple val(meta), path("viruses_renamed.fasta")                    , emit: renamed_fasta
+    path "versions.yml"                                               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,6 +32,8 @@ process CHECKV_VIRAL_SEQ {
         ${fasta} \\
         ${prefix} \\
         2> ${prefix}_checkv_viral_seq.log
+
+    sed 's/||.*//' ${prefix}/viruses.fna > viruses_renamed.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

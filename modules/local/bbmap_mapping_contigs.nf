@@ -1,6 +1,6 @@
-process BBMAP_DEDUPE {
+process BBMAP_MAPPING_CONTIGS {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
     conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 

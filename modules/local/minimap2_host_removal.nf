@@ -13,10 +13,10 @@ process MINIMAP2_HOST_REMOVAL {
         tuple val(meta), path(fastqs)
 
         output:
-        tuple val(meta), path('*_unmapped_R*.fastq')			              , emit: unmapped
+        tuple val(meta), path('*_unmapped_R*.fastq')			        , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
         tuple val(meta), path('*minimap2_host_removal.log')	            , emit: log
-        path "versions.yml"						                                  , emit: versions
+        path "versions.yml"						                        , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -25,8 +25,8 @@ process MINIMAP2_HOST_REMOVAL {
         def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
         def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
 
-        def output = meta.single_end ? 
-                    "${prefix}_unmapped_R1.fastq" 
+        def output = meta.single_end ?
+                    "${prefix}_unmapped_R1.fastq"
                     : "-1 ${prefix}_unmapped_R1.fastq -2 ${prefix}_unmapped_R2.fastq -s ${prefix}_unmapped_singletons.fastq"
 
         """
@@ -46,8 +46,8 @@ process MINIMAP2_HOST_REMOVAL {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def output = meta.single_end ? 
-                    "${prefix}_unmapped_R1.fastq" 
+        def output = meta.single_end ?
+                    "${prefix}_unmapped_R1.fastq"
                     : " ${prefix}_unmapped_R1.fastq ${prefix}_unmapped_R2.fastq ${prefix}_unmapped_singletons.fastq"
 
 

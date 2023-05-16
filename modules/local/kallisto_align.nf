@@ -15,8 +15,8 @@ process KALLISTO_ALIGN {
 
         output:
         tuple val(meta), path('alignment/pseudoalignments.bam')	    , emit: bam
-        path("kallisto_align_*.log")	                              , emit: log
-        path "versions.yml"			                                    , emit: versions
+        path("kallisto_align_*.log")	                            , emit: log
+        path "versions.yml"			                                , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -25,7 +25,7 @@ process KALLISTO_ALIGN {
                     "--single -l 200 -s 200 $reads"
                     : "$reads"
 
-                                       
+
         """
             kallisto quant $args -i $idx \\
             $input \\

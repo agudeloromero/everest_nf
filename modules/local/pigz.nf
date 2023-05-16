@@ -15,13 +15,13 @@ process PIGZ {
 
         output:
         tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
-        path "versions.yml"			                              , emit: versions
+        path "versions.yml"			                          , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
         def args = task.ext.args ?: " -p ${task.cpus} -5 "
 
-                                       
+
         """
             pigz $args $reads
 
@@ -33,8 +33,8 @@ process PIGZ {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def output = meta.single_end ? 
-                        "${prefix}_unmapped_R1.fastq.gz" 
+        def output = meta.single_end ?
+                        "${prefix}_unmapped_R1.fastq.gz"
                         : "${prefix}_unmapped_cat_R1.fastq.gz ${prefix}_unmapped_cat_R2.fastq.gz"
 
         """

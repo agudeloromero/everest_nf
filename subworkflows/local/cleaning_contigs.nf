@@ -1,6 +1,7 @@
-include { SEQKIT_FILTER     } from "../../modules/local/seqkit_filter.nf"
-include { VIRSORTER_DETECT  } from "../../modules/local/virsorter_detect.nf"
-include { CHECKV_VIRAL_SEQ  } from "../../modules/local/checkv_viral_seq.nf"
+include { SEQKIT_FILTER          } from "../../modules/local/seqkit_filter.nf"
+include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect.nf"
+include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq.nf"
+include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_contigs.nf"
 
 workflow CLEANING_CONTIGS_WF {
 
@@ -14,10 +15,7 @@ workflow CLEANING_CONTIGS_WF {
 
         CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
 
-        //TODO: Maybe, not needed
-//        RENAME_VIRAL_SEQ
-
-//        BBMAP_MAPPING_CONTIGS
+        BBMAP_MAPPING_CONTIGS( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
 //        BACPHLIP_LIFE_STYLE
 
