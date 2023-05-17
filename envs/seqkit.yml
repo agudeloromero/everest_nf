@@ -1,4 +1,4 @@
-name: spades
+name: seqkit
 channels:
   - bioconda
   - conda-forge
