@@ -46,6 +46,7 @@ process CHECKV_VIRAL_SEQ {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    touch ${prefix}_viruses_renamed.fasta
     touch ${prefix}_checkv_viral_seq.log
 
     mkdir $prefix
