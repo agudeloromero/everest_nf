@@ -1,23 +1,15 @@
-include { MMSEQ2_ETAXONOMY } from "../../modules/local/mmseq2_etaxonomy.nf"
+include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_AA } from "../../modules/local/mmseq2_etaxonomy.nf"
+include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_NT } from "../../modules/local/mmseq2_etaxonomy.nf"
 
 workflow TAXONOMY_WF {
     take:
         fasta_ch
 
     main:
-         MODE( fasta_ch, 'aa' )
-         MODE( fasta_ch, 'nt' )
 
-    //emit:
-}
+         MMSEQ2_ETAXONOMY_AA( fasta_ch, 'aa', params.mmseq_viral_db_aa )
 
-workflow MODE {
-    take:
-        fasta_ch
-        mode
-
-    main:
-         MMSEQ2_ETAXONOMY( fasta_ch, mode, params.mmseq_viral_db_aa )
+         MMSEQ2_ETAXONOMY_NT( fasta_ch, 'nt', params.mmseq_viral_db_nt )
 
         //MMSEQ_ETAXONOMY_ALN_HEADER_AA
 
@@ -28,5 +20,5 @@ workflow MODE {
         //R_SUMMARY_SINGLE_AA
 
     //emit:
-
 }
+
