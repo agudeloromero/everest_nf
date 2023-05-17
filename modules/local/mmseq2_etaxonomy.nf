@@ -10,8 +10,8 @@ process MMSEQ2_ETAXONOMY {
 
     input:
     tuple val(meta), path(fasta)
-    val(mode)
     path(mmseq2_db)
+    val(mode)
 
     output:
     tuple val(meta), path("*lca")                , emit: lca
