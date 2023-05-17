@@ -46,10 +46,13 @@ process CHECKV_VIRAL_SEQ {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    mkdir $prefix
+
+
+    touch ${prefix}/viruses.fna
     touch ${prefix}_viruses_renamed.fasta
     touch ${prefix}_checkv_viral_seq.log
 
-    mkdir $prefix
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
