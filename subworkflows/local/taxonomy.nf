@@ -6,6 +6,7 @@ workflow TAXONOMY_WF {
 
     main:
          MODE( fasta_ch, 'aa' )
+         MODE( fasta_ch, 'nt' )
 
     //emit:
 }
