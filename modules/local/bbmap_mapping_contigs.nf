@@ -24,13 +24,11 @@ process BBMAP_MAPPING_CONTIGS {
                 "in=${reads[0]}"
                 : "in1=${reads[0]} in2=${reads[1]}"
 
-    def output = "out=${prefix}_contig.sam"
-
     """
     bbmap.sh ${args} \\
         ref=${renamed_fasta} \\
         ${input} \\
-        ${ouput} \\
+        out=${prefix}_contig.sam \\
         rpkm=${prefix}_contig_rpk.txt \\
         scafstats=${prefix}_contig_scafstats.txt \\
         covstats=${prefix}_contig_covstats.txt \\
@@ -45,10 +43,9 @@ process BBMAP_MAPPING_CONTIGS {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def output = "out=${prefix}_contig.sam"
 
     """
-    touch ${output}
+    touch ${prefix}_contig.sam
     touch ${prefix}_contig_rpk.txt
     touch ${prefix}_contig_scafstats.txt
     touch ${prefix}_contig_covstats.txt
