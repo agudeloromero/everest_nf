@@ -35,7 +35,7 @@ process MMSEQ2_ETAXONOMY {
     }
 
     // Common parameters
-    def prefix = task.ext.prefix ?: "${meta.id}_${mode}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def lca = task.ext.lca ?: "--lca-ranks superkingdom,phylum,class,order,family,genus,species"
 	def output_format   = "--format-output query,target,evalue,pident,fident,nident,mismatch,qcov,tcov,qstart,qend,qlen,tstart,tend,tlen,alnlen,bits,qheader,theader,taxid,taxname,taxlineage"
 
@@ -44,7 +44,7 @@ process MMSEQ2_ETAXONOMY {
     mmseqs easy-taxonomy \\
         ${fasta} \\
         ${mmseq2_db} \\
-        ${prefix} \\
+        ${prefix}_${mode} \\
         ${prefix}_tmp \\
         ${args} \\
         ${lca} \\
