@@ -50,7 +50,7 @@ process CHECKV_VIRAL_SEQ {
 
 
     touch ${prefix}/viruses.fna
-    touch ${prefix}_viruses_renamed.fasta
+    touch viruses_renamed.fasta
     touch ${prefix}_checkv_viral_seq.log
 
 
