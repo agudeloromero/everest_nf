@@ -22,13 +22,15 @@ process MMSEQ2_ETAXONOMY {
     script:
 
     // Mode specific parameters
+    def sen
+    def args
 
     if (mode == "aa") {
-		def sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
-        def args = task.ext.args ?: "--threads ${task.cpus} --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
+		sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
+        args = task.ext.args ?: "--threads ${task.cpus} --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
     } else {
-		def sen   = "--start-sens 2 --sens-steps 2 -s 7 --sens-steps 3"
-        def args = task.ext.args ?: "--threads ${task.cpus} --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
+		sen   = "--start-sens 2 --sens-steps 2 -s 7 --sens-steps 3"
+        args = task.ext.args ?: "--threads ${task.cpus} --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
     }
 
     // Common parameters
