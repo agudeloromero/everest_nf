@@ -16,6 +16,8 @@ workflow CLEANING_CONTIGS_WF {
 
         CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
 
+        CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
+
         in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
                                         .join(raw_fastqs)
                                         .dump(tag: "in_bbmap_mapping_contigs_ch")
