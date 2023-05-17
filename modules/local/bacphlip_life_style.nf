@@ -21,7 +21,7 @@ process BACPHLIP_LIFE_STYLE {
     def args = task.ext.args ?: ""
 
     """
-    bacphlip -i ${renamed_fasta} -f --multi-fasta ${args}
+    bacphlip -i ${renamed_fasta} -f --multi_fasta ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

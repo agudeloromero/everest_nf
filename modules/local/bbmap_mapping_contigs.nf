@@ -18,7 +18,7 @@ process BBMAP_MAPPING_CONTIGS {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m nodisk slow=t ambigous=random threads=${task.cpus} "
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m nodisk slow=t ambiguous=random threads=${task.cpus} "
 
     def input = meta.single_end ?
                 "in=${reads[0]}"
