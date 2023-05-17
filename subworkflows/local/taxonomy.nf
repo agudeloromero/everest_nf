@@ -6,7 +6,7 @@ workflow TAXONOMY_WF {
 
     main:
 
-        MMSEQ2_ETAXONOMY( fasta_ch )
+        MMSEQ2_ETAXONOMY( fasta_ch, ['aa', params.mmseq_viral_db_aa] )
 
         //MMSEQ_ETAXONOMY_ALN_HEADER_AA
 
