@@ -6,8 +6,8 @@ include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_conti
 workflow CLEANING_CONTIGS_WF {
 
     take:
-        repseq_fasta
         raw_fastqs
+        repseq_fasta
 
     main:
         SEQKIT_FILTER( repseq_fasta )
