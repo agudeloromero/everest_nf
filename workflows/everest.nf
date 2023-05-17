@@ -42,6 +42,7 @@ include { TRIMMING_ADAPTORS_WF    } from '../subworkflows/local/trimming_adaptor
 include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
 include { DENOVO_WF               } from '../subworkflows/local/denovo'
 include { CLEANING_CONTIGS_WF     } from '../subworkflows/local/cleaning_contigs'
+include { TAXONOMY_WF             } from '../subworkflows/local/taxonomy'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +95,8 @@ workflow EVEREST {
     DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
     CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
+
+    TAXONOMY( CLEANING_CONTIGS_WF.out.fasta )
 
     /* PILON and ABRICATE didn't work */
 

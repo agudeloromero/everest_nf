@@ -17,7 +17,6 @@ workflow CLEANING_CONTIGS_WF {
 
         CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
 
-        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         //CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
         //raw_fastqs.dump(tag: "raw_fastqs")
@@ -28,8 +27,11 @@ workflow CLEANING_CONTIGS_WF {
 
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
+        //FIXME This complains about not receiving multi-fasta sequences
+        //BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
-    //emit:
+    emit:
+        fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
 
 }
 

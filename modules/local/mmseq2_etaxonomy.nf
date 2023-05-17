@@ -1,6 +1,6 @@
-process MMSEQ2_ELINCLUST {
-    tag "$meta.id"
-    label 'process_high'
+process MMSEQ2_ETAXONOMY {
+    tag "$meta.id : ${mode}"
+    label 'process_medium'
 
     conda { params.conda_mmseqs2_env ?: "${projectDir}/envs/MMSEQS.yml" }
 
@@ -9,27 +9,45 @@ process MMSEQ2_ELINCLUST {
     /*     'quay.io/biocontainers/spades:3.15.5--h95f258a_1' }" */
 
     input:
-    tuple val(meta), path(scaffolds)
+    tuple val(meta), path(fasta)
+    tuple val(mode), path(mmseq2_db)
 
     output:
-    tuple val(meta), path("*_all_seqs.fasta")                                                       , emit: all_seqs
-    tuple val(meta), path("*_cluster.tsv")                                                          , emit: cluster
-    tuple val(meta), path("*_rep_seq.fasta")                                                        , emit: rep_seq
-    tuple val(meta), path("*_all_seqs.fasta"), path("*_cluster.tsv"), path("*_rep_seq.fasta")       , emit: all
-    tuple val(meta), path('*.log')                                                                  , emit: log
-    path  "versions.yml"                                                                            , emit: versions
+    tuple val(meta), path("*lca")                , emit: lca
+    tuple val(meta), path("*report")             , emit: report
+    tuple val(meta), path("*tophit_aln")         , emit: tophit_aln
+    tuple val(meta), path("*tophit_report")      , emit: tophit_report
+    path  "versions.yml"                         , emit: versions
 
     script:
-    def args = task.ext.args ?: "--threads ${task.cpus} --min-seq-id 0.98 --kmer-per-seq-scale 0.3 --sort-results 1 --alignment-mode 3 --cov-mode 1"
-    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    // Mode specific parameters
+
+    if (mode == "aa") {
+		def sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
+        def args = task.ext.args ?: "--threads ${task.cpus} --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
+    } else {
+		def sen   = "--start-sens 2 --sens-steps 2 -s 7 --sens-steps 3"
+        def args = task.ext.args ?: "--threads ${task.cpus} --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
+    }
+
+    // Common parameters
+    def prefix = task.ext.prefix ?: "${meta.id}_mode"
+    def lca = task.ext.lca ?: "--lca-ranks superkingdom,phylum,class,order,family,genus,species"
+	def output_format   = "--format-output query,target,evalue,pident,fident,nident,mismatch,qcov,tcov,qstart,qend,qlen,tstart,tend,tlen,alnlen,bits,qheader,theader,taxid,taxname,taxlineage"
+
 
     """
-    mmseqs easy-linclust \\
-        ${scaffolds} \\
+    mmseqs easy-taxonomy \\
+        ${fasta} \\
+        ${mmseq2_db} \\
         ${prefix} \\
         ${prefix}_tmp \\
         ${args} \\
-        2> ${prefix}.mmseqs_linclust.log
+        ${lca} \\
+        ${sen} \\
+        ${output_format} \\
+        2> ${prefix}.mmseqs_etaxonomy_${mode}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -41,10 +59,10 @@ process MMSEQ2_ELINCLUST {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    touch ${prefix}_all_seqs.fasta
-    touch ${prefix}_cluster.tsv
-    touch ${prefix}_rep_seq.fasta
-    touch ${prefix}.mmseqs_linclust.log
+    ${prefix}.lca
+    ${prefix}.report
+    ${prefix}.tophit_aln
+    ${prefix}.tophit_report
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
