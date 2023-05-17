@@ -10,46 +10,50 @@ process BBMAP_MAPPING_CONTIGS {
 
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(renamed_fasta), path(reads)
 
     output:
     tuple val(meta), path("*_dedup.fastq.gz")                   , emit: deduped_fastqgz
-    tuple val(meta), path("*_cat_dedup.fastq.gz")               , emit: cat_deduped_fastqgz, optional: true
-    tuple val(meta), path("*bbmap_dedupe.out")                  , emit: log
     path "versions.yml"                                         , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m ac=f s=5 e=5 minidentity=95 "
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m nodisk slow=t ambigous=random threads=${task.cpus} "
 
     def input = meta.single_end ?
                 "in=${reads[0]}"
                 : "in1=${reads[0]} in2=${reads[1]}"
 
-    def output = meta.single_end ?
-                "${prefix}_unmapped_dedup.fastq.gz"
-                : "${prefix}_unmapped_cat_dedup.fastq.gz"
+    def output = "out=${prefix}_contig.sam"
 
     """
-    dedupe.sh ${args} ${input} out=${output}  2> ${prefix}.bbmap_dedupe.out
+    bbmap.sh ${args} \\
+        ref=${renamed_fasta} \\
+        ${input} \\
+        ${ouput} \\
+        rpkm=${prefix}_contig_rpk.txt \\
+        scafstats=${prefix}_contig_scafstats.txt \\
+        covstats=${prefix}_contig_covstats.txt \\
+    2> ${prefix}.bbmap_mapping_contigs.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
+        bbmap.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
 
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-
-    def output = meta.single_end ?
-                "${prefix}_unmapped_dedup.fastq.gz"
-                : "${prefix}_unmapped_cat_dedup.fastq.gz"
+    def output = "out=${prefix}_contig.sam"
 
     """
     touch ${output}
-    touch ${prefix}.bbmap_dedupe.out
+    touch ${prefix}_contig_rpk.txt
+    touch ${prefix}_contig_scafstats.txt
+    touch ${prefix}_contig_covstats.txt
+
+    touch ${prefix}.bbmap_mapping_contigs.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

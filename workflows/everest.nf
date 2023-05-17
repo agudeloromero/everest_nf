@@ -93,7 +93,7 @@ workflow EVEREST {
 
     DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
-    CLEANING_CONTIGS_WF( DENOVO_WF.out.repseq_fasta )
+    CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
 
     /* PILON and ABRICATE didn't work */
 
