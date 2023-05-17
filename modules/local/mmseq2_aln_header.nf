@@ -1,4 +1,4 @@
-process MMSEQ2_ETAXONOMY {
+process MMSEQ2_ALN_HEADER {
     tag "$meta.id : ${mode}"
     label 'process_medium'
 

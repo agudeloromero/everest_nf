@@ -5,8 +5,18 @@ workflow TAXONOMY_WF {
         fasta_ch
 
     main:
+         MODE( fasta_ch, 'aa' )
 
-        MMSEQ2_ETAXONOMY( fasta_ch, 'aa', params.mmseq_viral_db_aa )
+    //emit:
+}
+
+workflow MODE {
+    take:
+        fasta_ch
+        mode
+
+    main:
+         MMSEQ2_ETAXONOMY( fasta_ch, mode, params.mmseq_viral_db_aa )
 
         //MMSEQ_ETAXONOMY_ALN_HEADER_AA
 
@@ -17,6 +27,5 @@ workflow TAXONOMY_WF {
         //R_SUMMARY_SINGLE_AA
 
     //emit:
+
 }
-
-
