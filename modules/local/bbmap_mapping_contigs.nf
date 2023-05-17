@@ -13,8 +13,11 @@ process BBMAP_MAPPING_CONTIGS {
     tuple val(meta), path(renamed_fasta), path(reads)
 
     output:
-    tuple val(meta), path("*_dedup.fastq.gz")                   , emit: deduped_fastqgz
-    path "versions.yml"                                         , emit: versions
+    tuple val(meta), path("*_contig.sam")               , emit: sam
+    tuple val(meta), path("*_contig_rpk.txt")           , emit: rpk
+    tuple val(meta), path("*_contig_scafstats.txt")     , emit: scafstats
+    tuple val(meta), path("*_contig_covstats.txt")      , emit: covstats
+    path "versions.yml"                                 , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
