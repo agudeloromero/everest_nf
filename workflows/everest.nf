@@ -96,7 +96,7 @@ workflow EVEREST {
 
     CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
 
-    TAXONOMY( CLEANING_CONTIGS_WF.out.fasta )
+    TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
     /* PILON and ABRICATE didn't work */
 
