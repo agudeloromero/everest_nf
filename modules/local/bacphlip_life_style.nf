@@ -18,10 +18,10 @@ process BACPHLIP_LIFE_STYLE {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: ""
+    def args = task.ext.args ?: "-f --multi_fasta"
 
     """
-    bacphlip -i ${renamed_fasta} -f --multi_fasta ${args}
+    bacphlip -i ${renamed_fasta} ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
