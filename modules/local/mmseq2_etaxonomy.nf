@@ -17,6 +17,7 @@ process MMSEQ2_ETAXONOMY {
     tuple val(meta), path("*lca")                , emit: lca
     tuple val(meta), path("*report")             , emit: report
     tuple val(meta), path("*tophit_aln")         , emit: tophit_aln
+    tuple val(meta), path("*tophit_aln.txt")     , emit: tophit_aln_txt
     tuple val(meta), path("*tophit_report")      , emit: tophit_report
     path  "versions.yml"                         , emit: versions
 
@@ -50,7 +51,9 @@ process MMSEQ2_ETAXONOMY {
         ${lca} \\
         ${sen} \\
         ${output_format} \\
-        2> ${prefix}.mmseqs_etaxonomy_${mode}.log
+    2> ${prefix}.mmseqs_etaxonomy_${mode}.log
+
+    sed '1i aln_query\taln_target\taln_evalue\taln_pident\taln_fident\taln_nident\taln_mismatch\taln_qcov\taln_tcov\taln_qstart\taln_qend\taln_qlen\taln_tstart\taln_tend\taln_tlen\taln_alnlen\taln_bits\taln_qheader\taln_theader\taln_taxid\taln_taxname\taln_taxlineage' ${prefix}_tax_viral_${mode}_tophit_aln > ${prefix}_tax_viral_${mode}_tophit_aln.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
