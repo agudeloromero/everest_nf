@@ -12,10 +12,10 @@ workflow TAXONOMY_WF {
     main:
 
          MMSEQ2_ETAXONOMY_AA( fasta_ch, params.mmseq_viral_db_aa, 'aa' )
-         TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca )
+         TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca, params.tax_aa )
 
          MMSEQ2_ETAXONOMY_NT( fasta_ch, params.mmseq_viral_db_nt, 'nt' )
-         TAXONKIT_REFORMAT_NT( MMSEQ2_ETAXONOMY_NT.out.lca )
+         TAXONKIT_REFORMAT_NT( MMSEQ2_ETAXONOMY_NT.out.lca, params.tax_nt )
 
          //R_SUMMARY_SINGLE
 
