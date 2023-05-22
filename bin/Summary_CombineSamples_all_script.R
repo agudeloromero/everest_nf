@@ -1,8 +1,13 @@
 #!/usr/bin/env Rscript
 
-aa_file = snakemake@input[['aa_dir']]
-nt_file  = snakemake@input[['nt_dir']]
-save_file = snakemake@output[[1]]
+args = commandArgs(trailingOnly=TRUE)
+aa_file  = args[1]
+nt_file  = args[2]
+save_file = args[3]
+
+#aa_file = snakemake@input[['aa_dir']]
+#nt_file  = snakemake@input[['nt_dir']]
+#save_file = snakemake@output[[1]]
 
 aa=read.table(file=aa_file,sep="\t",header=T,fill=T)
 nt=read.table(file=nt_file,sep="\t",header=T,fill=T)

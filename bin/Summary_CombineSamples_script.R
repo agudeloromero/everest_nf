@@ -1,10 +1,16 @@
 #!/usr/bin/env Rscript
 
-dir = snakemake@params[['dir']]
+args = commandArgs(trailingOnly=TRUE)
+dir  = args[1]
+pattern.o  = args[2]
+save_file = args[3]
+
+
+#dir = snakemake@params[['dir']]
 print(dir)
-pattern.o  = snakemake@params[['pattern']]
+#pattern.o  = snakemake@params[['pattern']]
 print(pattern.o)
-save_file = snakemake@output[[1]]
+#save_file = snakemake@output[[1]]
 
 #dir = "/Users/pagudeloromero/Downloads/Summary"
 #pattern.o="*_nt_summary_mmseqs2.txt"

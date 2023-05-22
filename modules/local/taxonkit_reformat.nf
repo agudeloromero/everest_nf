@@ -15,7 +15,7 @@ process TAXONKIT_REFORMAT {
 
     output:
     tuple val(meta), path("*_lca_reformatted.tsv")           , emit: lca_reformatted
-    tuple val(meta), path("*_lca_reformatted_header.tsv")    , emit: lca_reformatted
+    tuple val(meta), path("*_lca_reformatted_header.tsv")    , emit: lca_header
     path "versions.yml"                                      , emit: versions
 
     when:

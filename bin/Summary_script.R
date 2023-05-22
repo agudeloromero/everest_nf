@@ -2,16 +2,16 @@
 ##!/usr/bin/Rscript
 ##! /path/to/Rscript
 
-#args = commandArgs(trailingOnly=TRUE)
-#lca_file  = args[1]
-#aln_file  = args[2]
-#name_DB   = args[3]
-#save_file = args[4]
+args = commandArgs(trailingOnly=TRUE)
+lca_file  = args[1]
+aln_file  = args[2]
+name_DB   = args[3]
+save_file = args[4]
 
-lca_file  = snakemake@input[[1]]
-aln_file  = snakemake@input[[2]]
-name_DB   = snakemake@input[[3]]
-save_file = snakemake@output[[1]]
+# lca_file  = snakemake@input[[1]]
+# aln_file  = snakemake@input[[2]]
+# name_DB   = snakemake@input[[3]]
+# save_file = snakemake@output[[1]]
 
 #-- lca
 print("reading file - lca")
