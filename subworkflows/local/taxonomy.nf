@@ -1,10 +1,12 @@
 include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_AA    } from "../../modules/local/mmseq2_etaxonomy.nf"
 include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_AA   } from "../../modules/local/taxonkit_reformat.nf"
 include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_AA } from "../../modules/local/summary_per_sample.nf"
+include { SUMMARY_COHORT as SUMMARY_COHORT_AA         } from "../../modules/local/summary_cohort.nf"
 
-//include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_NT } from "../../modules/local/mmseq2_etaxonomy.nf"
-//include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_NT } from "../../modules/local/taxonkit_reformat.nf"
-//include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_NT } from "../../modules/local/summary_per_sample.nf"
+include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_NT    } from "../../modules/local/mmseq2_etaxonomy.nf"
+include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_NT   } from "../../modules/local/taxonkit_reformat.nf"
+include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_NT } from "../../modules/local/summary_per_sample.nf"
+include { SUMMARY_COHORT as SUMMARY_COHORT_NT         } from "../../modules/local/summary_cohort.nf"
 
 workflow TAXONOMY_WF {
     take:
