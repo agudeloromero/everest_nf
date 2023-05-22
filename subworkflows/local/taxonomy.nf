@@ -6,10 +6,10 @@ include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_AA } from "../../modules/local/
 include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_NT } from "../../modules/local/taxonkit_reformat.nf"
 
 
-
+/*
 include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_NT } from "../../modules/local/summary_per_sample.nf"
 include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_AA } from "../../modules/local/summary_per_sample.nf"
-
+ */
 
 
 workflow TAXONOMY_WF {
