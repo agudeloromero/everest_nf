@@ -14,8 +14,9 @@ process TAXONKIT_REFORMAT {
     path(tax_db)
 
     output:
-    tuple val(meta), path("*_lca_reformatted.tsv")    , emit: lca_reformatted
-    path "versions.yml"                               , emit: versions
+    tuple val(meta), path("*_lca_reformatted.tsv")           , emit: lca_reformatted
+    tuple val(meta), path("*_lca_reformatted_header.tsv")    , emit: lca_reformatted
+    path "versions.yml"                                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,6 +26,7 @@ process TAXONKIT_REFORMAT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output = lca.baseName() + "_reformatted" + ".tsv"
     def log = lca.baseName() + "_reformatted" + ".log"
+    def header = lca.baseName() + "_reformatted_header" + ".tsv"
 
     """
     taxonkit lineage \\
@@ -35,6 +37,8 @@ process TAXONKIT_REFORMAT {
     | cut --complement -f5,6 \\
     > ${output} \\
     2> ${log}
+
+    sed '1 i\lca_query\tlca_taxid\tlca_taxonomic_rank\tlca_taxonomic_name\tlca_taxlineage\tlca_kingdom\tlca_phylum\tlca_class\tlca_order\tlca_family\tlca_genus\tlca_species' ${output} > ${header}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
