@@ -13,12 +13,12 @@ workflow TAXONOMY_WF {
         fasta_ch
 
     main:
-
+/*
          MMSEQ2_ETAXONOMY_AA( fasta_ch, params.mmseq_viral_db_aa, 'aa' )
          TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca, params.tax_aa )
          SUMMARY_PER_SAMPLE_AA( TAXONKIT_REFORMAT_AA.out.lca_header )
          SUMMARY_COHORT_AA( SUMMARY_PER_SAMPLE_AA.out.summary )
-
+*/
 
          MMSEQ2_ETAXONOMY_NT( fasta_ch, params.mmseq_viral_db_nt, 'nt' )
          TAXONKIT_REFORMAT_NT(  MMSEQ2_ETAXONOMY_NT.out.lca, params.tax_nt )
