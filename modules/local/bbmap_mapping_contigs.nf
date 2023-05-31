@@ -13,7 +13,7 @@ process BBMAP_MAPPING_CONTIGS {
     tuple val(meta), path(renamed_fasta), path(reads)
 
     output:
-    tuple val(meta), path("*_contig.sam")               , emit: sam
+    tuple val(meta), path(renamed_fasta), path("*_contig.sam")               , emit: sam
     tuple val(meta), path("*_contig_rpkm.txt")          , emit: rpkm
     tuple val(meta), path("*_contig_scafstats.txt")     , emit: scafstats
     tuple val(meta), path("*_contig_covstats.txt")      , emit: covstats
