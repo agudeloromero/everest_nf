@@ -18,7 +18,6 @@ process SUMMARY_COHORT {
         path "versions.yml"			                          , emit: versions
 
         script:
-        def prefix = task.ext.prefix ?: "${meta.id}"
         def args = task.ext.args ?: ""
 
 
@@ -32,7 +31,6 @@ process SUMMARY_COHORT {
         """
 
         stub:
-        def prefix = task.ext.prefix ?: "${meta.id}"
 
         """
             touch Summary_mmseqs2_${mode}.log
