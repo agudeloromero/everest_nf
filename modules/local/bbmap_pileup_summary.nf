@@ -20,7 +20,7 @@ process BBMAP_PILEUP_SUMMARY {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus} binsize=500 header=t stdev=t countgc=t threads=7"
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus} binsize=500 header=t stdev=t countgc=t"
 
     """
     bbmap.sh \\
