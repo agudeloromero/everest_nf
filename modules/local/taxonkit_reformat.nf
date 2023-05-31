@@ -24,9 +24,9 @@ process TAXONKIT_REFORMAT {
     script:
     def args   = task.ext.args   ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def output = lca.baseName() + "_reformatted" + ".tsv"
-    def log = lca.baseName() + "_reformatted" + ".log"
-    def header = lca.baseName() + "_reformatted_header" + ".tsv"
+    def output = lca.baseName + "_reformatted" + ".tsv"
+    def log = lca.baseName + "_reformatted" + ".log"
+    def header = lca.baseName + "_reformatted_header" + ".tsv"
 
     """
     taxonkit lineage \\
