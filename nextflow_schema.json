@@ -312,35 +312,47 @@
                 },
                 "genome": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_python3_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_bbmap_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_spades_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_qc_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_kallisto_env": {
                     "type": "string",
+                    "default": "None"
+                },
+                "conda_mmseqs2_env": {
+                    "type": "string",
                     "default": null
                 },
-                "conda_mmseqs_env": {
+                "conda_virsorter2_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_checkv_env": {
+                    "type": "string",
+                    "default": null
+                },
+                "conda_bacphlip_env": {
                     "type": "string",
                     "default": null
                 },
                 "conda_minimap2_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 }
             }
         }

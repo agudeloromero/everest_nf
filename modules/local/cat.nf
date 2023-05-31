@@ -14,7 +14,7 @@ process CAT {
 
         output:
         tuple val(meta), path('*_unmapped_cat_R*.fastq')	                    , emit: fastq
-        path "versions.yml"			                                              , emit: versions
+        path "versions.yml"			                                            , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"

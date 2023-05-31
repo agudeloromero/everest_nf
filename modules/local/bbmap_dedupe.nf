@@ -16,6 +16,7 @@ process BBMAP_DEDUPE {
     tuple val(meta), path("*_dedup.fastq.gz")                   , emit: deduped_fastqgz
     tuple val(meta), path("*_cat_dedup.fastq.gz")               , emit: cat_deduped_fastqgz, optional: true
     tuple val(meta), path("*bbmap_dedupe.out")                  , emit: log
+    path "versions.yml"                                         , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

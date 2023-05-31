@@ -1,24 +1,40 @@
+include { SEQKIT_FILTER          } from "../../modules/local/seqkit_filter.nf"
+include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect.nf"
+include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq.nf"
+include { BACPHLIP_LIFE_STYLE    } from "../../modules/local/bacphlip_life_style.nf"
+include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_contigs.nf"
+include { BBMAP_PILEUP_SUMMARY   } from "../../modules/local/bbmap_pileup_summary.nf"
 
-workflow CLEANING_CONTIGS { 
+workflow CLEANING_CONTIGS_WF {
 
-    take: 
+    take:
+        raw_fastqs
+        repseq_fasta
+
+    main:
+        SEQKIT_FILTER( repseq_fasta )
+
+        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
+
+        CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
 
 
-    main: 
-        SEQKIT_FILTER
+        //CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
+        //raw_fastqs.dump(tag: "raw_fastqs")
 
-        VIRSORTER_DETECT
+        in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
+                                        .join(raw_fastqs)
+                                        .dump(tag: "in_bbmap_mapping_contigs_ch")
 
-        CHECKV_VIRAL_SEQ
+        BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
-        //TODO: Maybe, not needed
-        RENAME_VIRAL_SEQ
+        //BBMAP_PILEUP_SUMMARY( BBMAP_MAPPING_CONTIGS.out.sam )
 
-        BBMAP_MAPPING_CONTIGS
+        //FIXME This complains about not receiving multi-fasta sequences
+        //BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
-        BACPHLIP_LIFE_STYLE
-
-    emit: 
+    emit:
+        fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
 
 }
 

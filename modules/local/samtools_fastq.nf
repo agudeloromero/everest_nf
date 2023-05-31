@@ -12,9 +12,9 @@ process SAMTOOLS_FASTQ {
         tuple val(meta), path(bam)
 
         output:
-        tuple val(meta), path('*_unmapped_R*.fastq')			              , emit: unmapped
+        tuple val(meta), path('*_unmapped_R*.fastq')			        , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
-        tuple val(meta), path('*samtools_fastq.log')	                  , emit: log
+        tuple val(meta), path('*samtools_fastq.log')	                , emit: log
         path "versions.yml"                                             , emit: versions
 
         script:
@@ -23,8 +23,8 @@ process SAMTOOLS_FASTQ {
         def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
         def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
 
-        def output = meta.single_end ? 
-                    "${prefix}_unmapped_R1.fastq" 
+        def output = meta.single_end ?
+                    "${prefix}_unmapped_R1.fastq"
                     : "-1 ${prefix}_unmapped_R1.fastq -2 ${prefix}_unmapped_R2.fastq -s ${prefix}_unmapped_singletons.fastq"
 
         """
@@ -42,8 +42,8 @@ process SAMTOOLS_FASTQ {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def output = meta.single_end ? 
-                    "${prefix}_unmapped_R1.fastq" 
+        def output = meta.single_end ?
+                    "${prefix}_unmapped_R1.fastq"
                     : " ${prefix}_unmapped_R1.fastq ${prefix}_unmapped_R2.fastq ${prefix}_unmapped_singletons.fastq"
 
 

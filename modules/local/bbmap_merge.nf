@@ -16,6 +16,7 @@ process BBMAP_MERGE {
     tuple val(meta), path("*_unmapped_cat_unmerge_R*.fastq.gz")             , emit: unmerged
     tuple val(meta), path("*_unmapped_cat_R1_merge.fastq.gz")               , emit: merged
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
+    path "versions.yml"							                            , emit: versions
 
     script:
     def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"

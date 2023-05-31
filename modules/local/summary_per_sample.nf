@@ -1,9 +1,9 @@
-process PIGZ {
+process SUMMARY_PER_SAMPLE {
         tag "$meta.id"
         label 'process_medium'
         stageInMode "copy"
 
-        conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
+        conda { params.conda_r_env ?: "${projectDir}/envs/R.yml" }
 
  //       container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
  //           'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -11,38 +11,38 @@ process PIGZ {
 
 
         input:
-        tuple val(meta), path(reads)
+        tuple val(meta), val(mode), path(aln_file), path(lca_file)
+        path(baltimore_db)
 
         output:
-        tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
+        path("${prefix}_summary_${mode}.txt")                 , emit: summary
         path "versions.yml"			                          , emit: versions
 
         script:
-        def prefix = task.ext.prefix ?: "${meta.id}"
-        def args = task.ext.args ?: " -p ${task.cpus} -5 "
+        prefix = task.ext.prefix ?: "${meta.id}"
+        def args = task.ext.args ?: ""
 
 
         """
-            pigz $args $reads
+            Summary_script.R ${lca_file} ${aln_file} ${baltimore_db} ${prefix}_summary_${mode}.txt \\
+            2> ${prefix}_summary_${mode}.log
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    FIXME: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
         """
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def output = meta.single_end ?
-                        "${prefix}_unmapped_R1.fastq.gz"
-                        : "${prefix}_unmapped_cat_R1.fastq.gz ${prefix}_unmapped_cat_R2.fastq.gz"
 
         """
-            touch ${output}
+            touch ${prefix}_summary_${mode}.txt
+            touch ${prefix}_summary_${mode}.log
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    FIXME: \$( pigz --version 2>&1 | sed 's/pigz //g' )
             END_VERSIONS
         """
 

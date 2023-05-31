@@ -13,11 +13,11 @@ process BBMAP_PHIX {
         tuple val(meta), path(reads)
 
         output:
-        tuple val(meta), path('*_clean_R*.fastq.gz')	                                , emit: clean
+        tuple val(meta), path('*_clean_R*.fastq.gz')	                              , emit: clean
         tuple val(meta), path('*_noclean_R*.fastq.gz')	                              , emit: unclean
-        tuple val(meta), path('*stats_phix.txt')		                                  , emit: stats_phix
-        tuple val(meta), path('*bbmap_phix.log')					                            , emit: log
-        path "versions.yml"								                                            , emit: versions
+        tuple val(meta), path('*stats_phix.txt')		                              , emit: stats_phix
+        tuple val(meta), path('*bbmap_phix.log')					                  , emit: log
+        path "versions.yml"								                              , emit: versions
 
         script:
         def args = task.ext.args ?: '-Xmx20000m'
