@@ -25,8 +25,8 @@ workflow TAXONOMY_WF {
                                         .join(MMSEQ2_ETAXONOMY_AA.out.tophit_aln_txt)
                                         .join(TAXONKIT_REFORMAT_AA.out.lca_header)
 
-         SUMMARY_PER_SAMPLE_NT( in_summary_per_sample_aa_ch,  params.baltimore_db)
-         SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect(), 'aa')
+         SUMMARY_PER_SAMPLE_AA( in_summary_per_sample_aa_ch,  params.baltimore_db)
+         SUMMARY_COHORT_AA( SUMMARY_PER_SAMPLE_NT.out.summary.collect(), 'aa')
 
 
     //===================
