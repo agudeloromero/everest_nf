@@ -33,12 +33,12 @@ process TAXONKIT_REFORMAT {
         $lca \\
         --data-dir ${tax_db} \\
         -i 2 \\
-    | taxonkit reformat --data-dir ${tax_db} -i 7 -f '{{k}}\\t{{p}}\\t{{c}}\\t{{o}}\\t{{f}}\\t{{g}}\\t{{s}}' -F --fill-miss-rank \\
+    | taxonkit reformat --data-dir ${tax_db} -i 7 -f "{{k}}\\t{{p}}\\t{{c}}\\t{{o}}\\t{{f}}\\t{{g}}\\t{{s}}" -F --fill-miss-rank \\
     | cut --complement -f5,6 \\
     > ${output} \\
     2> ${log}
 
-    sed '1 i\lca_query\tlca_taxid\tlca_taxonomic_rank\tlca_taxonomic_name\tlca_taxlineage\tlca_kingdom\tlca_phylum\tlca_class\tlca_order\tlca_family\tlca_genus\tlca_species' ${output} > ${header}
+    sed '1 i\\lca_query\tlca_taxid\tlca_taxonomic_rank\tlca_taxonomic_name\tlca_taxlineage\tlca_kingdom\tlca_phylum\tlca_class\tlca_order\tlca_family\tlca_genus\tlca_species' ${output} > ${header}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
