@@ -15,7 +15,7 @@ process MMSEQ2_ETAXONOMY {
 
     output:
     tuple val(meta), val(mode)                   , emit: mode_tuple
-    tuple val(meta), path("*lca")                , emit: lca
+    tuple val(meta), path("*lca.tsv")            , emit: lca
     tuple val(meta), path("*report")             , emit: report
     tuple val(meta), path("*tophit_aln")         , emit: tophit_aln
     tuple val(meta), path("*tophit_aln.txt")     , emit: tophit_aln_txt
