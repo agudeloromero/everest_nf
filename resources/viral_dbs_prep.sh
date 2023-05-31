@@ -23,6 +23,9 @@ gzip -d viral.1.1.genomic.fna.gz
 #grep ">" viral.1.1.genomic.fna | wc -l
 #16398
 
+#NOTE: REFseq fasta file
+#wget "https://rest.uniprot.org/uniprotkb/stream?compressed=true&download=true&format=fasta&query=%28taxonomy_id%3A10239%29" -O refseq.fasta
+
 #echo "-- remove seq duplicated --"
 #dedupe.sh -Xmx20g in=${DIR}/DB_virus/refseq/viral/Viral_seq.fasta \
 #out=${DIR}/DB_virus/refseq/viral/Viral_seq_dup.fasta ac=f
@@ -76,3 +79,4 @@ rm -r ${DIR}/tmp
 
 #uniprot
 #https://www.uniprot.org/uniprotkb?query=taxonomy_id%3A10239
+#https://www.uniprot.org/help/api_queries
