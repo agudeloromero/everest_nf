@@ -57,7 +57,7 @@ process MMSEQ2_ETAXONOMY {
         ${output_format} \\
     2> ${prefix}.mmseqs_etaxonomy_${mode}.log
 
-    sed '1i aln_query\taln_target\taln_evalue\taln_pident\taln_fident\taln_nident\taln_mismatch\taln_qcov\taln_tcov\taln_qstart\taln_qend\taln_qlen\taln_tstart\taln_tend\taln_tlen\taln_alnlen\taln_bits\taln_qheader\taln_theader\taln_taxid\taln_taxname\taln_taxlineage' ${prefix}_tax_viral_${mode}_tophit_aln > ${prefix}_tax_viral_${mode}_tophit_aln.txt
+    sed '1i aln_query\taln_target\taln_evalue\taln_pident\taln_fident\taln_nident\taln_mismatch\taln_qcov\taln_tcov\taln_qstart\taln_qend\taln_qlen\taln_tstart\taln_tend\taln_tlen\taln_alnlen\taln_bits\taln_qheader\taln_theader\taln_taxid\taln_taxname\taln_taxlineage' ${prefix}_${mode}_tophit_aln > ${prefix}_${mode}_tophit_aln.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
