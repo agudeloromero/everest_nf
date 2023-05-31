@@ -32,7 +32,7 @@ workflow TAXONOMY_WF {
 
          SUMMARY_PER_SAMPLE_NT( in_summary_per_sample_nt_ch,  params.baltimore_db)
 
-         SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect() )
+         SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect(), 'nt')
 
 
 
