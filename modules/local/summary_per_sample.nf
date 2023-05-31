@@ -11,7 +11,7 @@ process SUMMARY_PER_SAMPLE {
 
 
         input:
-        tuple val(meta), val(mode), path(lca_file), path(aln_file)
+        tuple val(meta), val(mode), path(aln_file), path(lca_file)
         path(baltimore_db)
 
         output:
