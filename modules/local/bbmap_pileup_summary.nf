@@ -23,12 +23,13 @@ process BBMAP_PILEUP_SUMMARY {
     def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus} binsize=500 header=t stdev=t countgc=t threads=7"
 
     """
-    bbmap.sh ${args} \\
+    bbmap.sh \\
         ref=${contigs} \\
         in=${sam} \\
         out=${prefix}_contig.stats.txt \\
         rpkm=${prefix}_contig_rpkm.txt \\
         normcov=${prefix}_contig_normcov.txt \\
+        ${args}
     2> ${prefix}.bbmap_pileup_summary.out
 
     cat <<-END_VERSIONS > versions.yml
