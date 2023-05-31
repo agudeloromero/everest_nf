@@ -31,7 +31,8 @@ workflow TAXONOMY_WF {
                                         .join(TAXONKIT_REFORMAT_NT.out.lca_header)
 
          SUMMARY_PER_SAMPLE_NT( in_summary_per_sample_nt_ch,  params.baltimore_db)
-         //SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary )
+
+         SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect() )
 
 
 
