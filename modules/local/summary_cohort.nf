@@ -1,5 +1,4 @@
 process SUMMARY_COHORT {
-        tag "$meta.id"
         label 'process_medium'
         stageInMode "copy"
 
