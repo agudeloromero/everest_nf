@@ -13,8 +13,8 @@ process BACPHLIP_LIFE_STYLE {
     tuple val(meta), path(renamed_fasta)
 
     output:
-    tuple val(meta), path("viruses_rename.fasta.bacphlip")                   , emit: fasta_bacphlip
-    path "versions.yml"                                                      , emit: versions
+    tuple val(meta), path("viruses_renamed.fasta.bacphlip")                   , emit: fasta_bacphlip
+    path "versions.yml"                                                       , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
