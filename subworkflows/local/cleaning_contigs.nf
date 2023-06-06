@@ -1,5 +1,5 @@
 include { ABRICATE_RUN           } from "../../modules/nf-core/abricate/run/main.nf"
-include { ABRICATE_SUMMARY       } from '../modules/nf-core/abricate/summary/main'
+include { ABRICATE_SUMMARY       } from '../../modules/nf-core/abricate/summary/main'
 include { SEQKIT_FILTER          } from "../../modules/local/seqkit_filter.nf"
 include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect.nf"
 include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq.nf"
