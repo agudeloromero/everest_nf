@@ -1,4 +1,5 @@
 include { ABRICATE_RUN           } from "../../modules/nf-core/abricate/run/main.nf"
+include { ABRICATE_SUMMARY       } from '../modules/nf-core/abricate/summary/main'
 include { SEQKIT_FILTER          } from "../../modules/local/seqkit_filter.nf"
 include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect.nf"
 include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq.nf"
@@ -35,6 +36,11 @@ workflow CLEANING_CONTIGS_WF {
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+
+        ABRICATE_SUMMARY (
+            ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'test_summary'], report]}
+        )
+
 
     emit:
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta

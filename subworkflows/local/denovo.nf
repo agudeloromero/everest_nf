@@ -44,6 +44,9 @@ workflow DENOVO_WF {
 
         SPADES_DENOVO( ch_spades_input )
 
+        //NOTE: Optional
+        //PHABLES / RENEO => PILON
+
         MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
 
 
