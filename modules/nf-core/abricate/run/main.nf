@@ -2,7 +2,8 @@ process ABRICATE_RUN {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "bioconda::abricate=1.0.1"
+    conda { params.conda_abricate_env ?: "${projectDir}/envs/abricate.yml" }
+
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/abricate%3A1.0.1--ha8f3691_1':
         'quay.io/biocontainers/abricate:1.0.1--ha8f3691_1' }"
