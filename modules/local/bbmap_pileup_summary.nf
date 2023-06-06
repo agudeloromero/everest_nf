@@ -20,7 +20,7 @@ process BBMAP_PILEUP_SUMMARY {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus} binsize=500 header=t stdev=t countgc=t"
+    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus}"
 
     """
     bbmap.sh \\
@@ -29,7 +29,7 @@ process BBMAP_PILEUP_SUMMARY {
         out=${prefix}_contig.stats.txt \\
         rpkm=${prefix}_contig_rpkm.txt \\
         normcov=${prefix}_contig_normcov.txt \\
-        ${args}
+        ${args} \\
     2> ${prefix}.bbmap_pileup_summary.out
 
     cat <<-END_VERSIONS > versions.yml
