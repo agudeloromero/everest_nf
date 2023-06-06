@@ -38,7 +38,7 @@ workflow CLEANING_CONTIGS_WF {
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         ABRICATE_SUMMARY (
-            ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'test_summary'], report]}
+            ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'summary'], report]}
         )
 
 
