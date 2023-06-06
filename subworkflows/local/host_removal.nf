@@ -19,7 +19,7 @@ workflow HOST_REMOVAL_WF {
 
     main:
 
-        //FIXME Add this param to the schema
+        //FIXME Add this param to the schema OR samplesheet
         if(!params.rnaseq) {
             MINIMAP2_INDEX( ref_fasta_ch  )
 
@@ -64,7 +64,7 @@ workflow HOST_REMOVAL_WF {
 
             ch_pigz_input = CAT.out.fastq
                                 .concat(ch_unmapped_se)
-                                //.dump(tag: "ch_pigz_input") 
+                                //.dump(tag: "ch_pigz_input")
 
         }
 

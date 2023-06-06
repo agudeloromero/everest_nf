@@ -29,7 +29,7 @@ process SUMMARY_PER_SAMPLE {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    FIXME: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
             END_VERSIONS
         """
 
@@ -42,7 +42,7 @@ process SUMMARY_PER_SAMPLE {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    FIXME: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
             END_VERSIONS
         """
 

@@ -274,14 +274,6 @@
                     "type": "string",
                     "default": "None"
                 },
-                "mmseq_viral_db_nt": {
-                    "type": "string",
-                    "default": "None"
-                },
-                "mmseq_viral_db_aa": {
-                    "type": "string",
-                    "default": "None"
-                },
                 "virsorter_db": {
                     "type": "string",
                     "default": "None"
@@ -291,10 +283,6 @@
                     "default": "None"
                 },
                 "diamond_db_aa": {
-                    "type": "string",
-                    "default": "None"
-                },
-                "baltimore": {
                     "type": "string",
                     "default": "None"
                 },
@@ -336,23 +324,43 @@
                 },
                 "conda_mmseqs2_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_virsorter2_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_checkv_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_bacphlip_env": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "conda_minimap2_env": {
                     "type": "string",
                     "default": "None"
+                },
+                "baltimore_db": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mmseq_viral_db_nt": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mmseq_viral_db_nt_ref_name": {
+                    "type": "string",
+                    "default": "viral.nt.fnaDB"
+                },
+                "mmseq_viral_db_aa": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mmseq_viral_db_aa_ref_name": {
+                    "type": "string",
+                    "default": "virus_uniprot"
                 }
             }
         }
