@@ -28,10 +28,10 @@ workflow CLEANING_CONTIGS_WF {
 
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
-        //BBMAP_PILEUP_SUMMARY( BBMAP_MAPPING_CONTIGS.out.sam )
+        BBMAP_PILEUP_SUMMARY( BBMAP_MAPPING_CONTIGS.out.sam )
 
         //FIXME This complains about not receiving multi-fasta sequences
-        //BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
     emit:
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
