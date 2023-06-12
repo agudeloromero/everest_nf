@@ -36,7 +36,7 @@ workflow CLEANING_CONTIGS_WF {
         // to be fixed by filtering out multi-lined fasta files
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
-        BACPHLIP_LIFE_STYLE.out.fasta_bacphlip.splitFasta()
+        BACPHLIP_LIFE_STYLE.out.fasta_bacphlip.splitFasta().count()
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
