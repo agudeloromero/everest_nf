@@ -37,8 +37,8 @@ workflow CLEANING_CONTIGS_WF {
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         BACPHLIP_LIFE_STYLE.out.fasta_bacphlip
-         .splitFasta()
-         .view { it -> it.count() }
+         .splitFasta(record: [id: true])
+         .view { it -> it.size }
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
