@@ -32,13 +32,16 @@ workflow CLEANING_CONTIGS_WF {
 
         BBMAP_PILEUP_SUMMARY( BBMAP_MAPPING_CONTIGS.out.sam )
 
+
+
         //FIXME This complains about not receiving multi-fasta sequences
         // to be fixed by filtering out multi-lined fasta files
-        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
-        BACPHLIP_LIFE_STYLE.out.fasta_bacphlip
+        CHECKV_VIRAL_SEQ.out.renamed_fasta
          .splitFasta(record: [id: true])
-         .view { it -> [it, it.size] }
+         .filter { it.size >= 2 }
+
+        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
