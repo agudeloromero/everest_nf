@@ -40,6 +40,7 @@ workflow CLEANING_CONTIGS_WF {
         CHECKV_VIRAL_SEQ.out.renamed_fasta
          .splitFasta(record: [id: true])
          .filter { it.size >= 2 }
+         .view()
 
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
