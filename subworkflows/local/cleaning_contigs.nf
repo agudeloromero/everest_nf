@@ -38,8 +38,7 @@ workflow CLEANING_CONTIGS_WF {
         // to be fixed by filtering out multi-lined fasta files
 
         CHECKV_VIRAL_SEQ.out.renamed_fasta
-         .splitFasta()
-         .collect()
+         .countFasta()
          .view()
          //.filter { !(it.size >= 2) }
 
