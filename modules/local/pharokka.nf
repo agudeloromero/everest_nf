@@ -27,7 +27,7 @@ process PHAROKKA {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    pharokka: FIXME
             END_VERSIONS
         """
 
@@ -42,7 +42,7 @@ process PHAROKKA {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
+                    pharokka: FIXME
             END_VERSIONS
         """
 
