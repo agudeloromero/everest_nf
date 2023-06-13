@@ -40,10 +40,10 @@ workflow CLEANING_CONTIGS_WF {
 
         //FIXME Filtering out non multi-lined fasta files
 
-        ch_BACPHLIP_LIFE_STYLE = CHECKV_VIRAL_SEQ.out.renamed_fasta
+        ch_bacphlip_life_style = CHECKV_VIRAL_SEQ.out.renamed_fasta
                                      .filter{ it[1].text.split("\\n").size() > 2 }
 
-        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+        BACPHLIP_LIFE_STYLE( ch_bacphlip_life_style )
 
 
 
