@@ -1,9 +1,8 @@
-process PIGZ {
+process PHAROKKA {
         tag "$meta.id"
         label 'process_medium'
-        stageInMode "copy"
 
-        conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
+        conda { params.conda_pharokka_env ?: "${projectDir}/envs/pharokka.yml" }
 
  //       container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
  //           'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
@@ -11,7 +10,7 @@ process PIGZ {
 
 
         input:
-        tuple val(meta), path(reads)
+        tuple val(meta), path(fasta)
 
         output:
         tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
@@ -19,11 +18,12 @@ process PIGZ {
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def args = task.ext.args ?: "  -5 "
+        def args = task.ext.args ?: " -p  "
 
 
         """
-            pigz -p ${task.cpus} $args $reads
+            pharokka.py -i ${fasta} -o ${prefix} -t ${task.cpus}
+
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":

@@ -20,7 +20,7 @@ process BBMAP_PHIX {
         path "versions.yml"								                              , emit: versions
 
         script:
-        def args = task.ext.args ?: '-Xmx20000m'
+        def args = task.ext.args ?: ''
         def args2 = task.ext.args ?: 'ordered=t cardinality=t k=31 hdist=1'
         def prefix = task.ext.prefix ?: "${meta.id}"
 
@@ -30,6 +30,7 @@ process BBMAP_PHIX {
 
         """
         bbduk.sh \\
+          -Xmx${task.memory.toMega()}m \\
           $args \\
           ${input} \\
           ${output_clean} \\

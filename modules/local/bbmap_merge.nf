@@ -19,10 +19,12 @@ process BBMAP_MERGE {
     path "versions.yml"							                            , emit: versions
 
     script:
-    def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"
+    def args = task.ext.args ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    bbmerge.sh ${args} \\
+    bbmerge.sh \\
+        -Xmx${task.memory.toMega()}m \\
+        ${args} \\
         in1=${reads[0]} \\
         in2=${reads[1]} \\
         out=${prefix}_unmapped_cat_R1_merge.fastq.gz \\

@@ -20,10 +20,12 @@ process BBMAP_PILEUP_SUMMARY {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: " -Xmx${task.memory.toMega()}m threads=${task.cpus}"
+    def args = task.ext.args ?: " "
 
     """
     bbmap.sh \\
+        -Xmx${task.memory.toMega()}m \\
+        threads=${task.cpus} \\
         ref=${contigs} \\
         in=${sam} \\
         out=${prefix}_contig.stats.txt \\

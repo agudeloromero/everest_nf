@@ -20,8 +20,8 @@ process SAMTOOLS_FASTQ {
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
         def args_samtools_view = task.ext.args_samtools_view ?: ' -f 4 -h'
-        def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
-        def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
+        def args_samtools_sort = task.ext.args_samtools_sort ?: " "
+        def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO "
 
         def output = meta.single_end ?
                     "${prefix}_unmapped_R1.fastq"
@@ -29,8 +29,8 @@ process SAMTOOLS_FASTQ {
 
         """
           samtools view $args_samtools_view $bam
-          | samtools sort $args_samtools_sort \\
-          | samtools $args_samtools_fastq - \\
+          | samtools sort -@ ${task.cpus} $args_samtools_sort \\
+          | samtools -@ ${task.cpus} $args_samtools_fastq - \\
           ${output} \\
           > ${prefix}.samtools_fastq.log
 

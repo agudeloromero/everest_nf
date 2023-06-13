@@ -20,17 +20,19 @@ process KALLISTO_ALIGN {
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def args = task.ext.args ?: " -t ${task.cpus}"
+        def args = task.ext.args ?: " "
         def input = meta.single_end ?
                     "--single -l 200 -s 200 $reads"
                     : "$reads"
 
 
         """
-            kallisto quant $args -i $idx \\
-            $input \\
-            -o alignment \\
-            --pseudobam \\
+            kallisto quant \\
+                -t ${task.cpus} \\
+                $args -i $idx \\
+                $input \\
+                -o alignment \\
+                --pseudobam \\
             2> kallisto_align_${prefix}.log
 
             cat <<-END_VERSIONS > versions.yml

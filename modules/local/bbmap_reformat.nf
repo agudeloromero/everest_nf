@@ -17,11 +17,12 @@ process BBMAP_REFORMAT {
         path "versions.yml"							                            , emit: versions
 
         script:
-        def args = task.ext.args ?: '-Xmx20000m'
+        def args = task.ext.args ?: ''
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         """
         reformat.sh \\
+          -Xmx${task.memory.toMega()}m \\
           $args \\
           in1=$unmapped_single \\
           out=${prefix}_unmapped_singletons_R1.fastq out2=${prefix}_unmapped_singletons_R2.fastq  \\

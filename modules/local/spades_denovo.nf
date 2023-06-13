@@ -34,7 +34,7 @@ process SPADES_DENOVO {
     spades.py \\
         $mode \\
         $args \\
-        --threads $task.cpus \\
+        --threads ${task.cpus} \\
         --memory $maxmem \\
         $input \\
         -o ./

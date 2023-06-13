@@ -19,11 +19,12 @@ process SEQKIT_FILTER {
     task.ext.when == null || task.ext.when
 
     script:
-    def args   = task.ext.args   ?: "-m 5000 --threads $task.cpus"
+    def args   = task.ext.args   ?: "-m 5000 "
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     seqkit seq \\
+        --threads $task.cpus \\
         $args \\
         $fasta \\
         -o ${prefix}_rep_seq_FilterLen.fasta

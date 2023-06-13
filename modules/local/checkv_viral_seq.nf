@@ -22,11 +22,12 @@ process CHECKV_VIRAL_SEQ {
     task.ext.when == null || task.ext.when
 
     script:
-    def args   = task.ext.args   ?: "-t $task.cpus"
+    def args   = task.ext.args   ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     checkv end_to_end \\
+        -t ${task.cpus} \\
         $args \\
         -d ${checkv_db} \\
         ${fasta} \\

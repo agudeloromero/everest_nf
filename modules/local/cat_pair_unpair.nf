@@ -14,6 +14,7 @@ process CAT_PAIR_UNPAIR {
         script:
         def args = task.ext.args ?: '-7'
         def prefix = task.ext.prefix ?: "${meta.id}"
+
         """
         cat ${paired[0]} ${unpaired[0]} > ${prefix}_trimm_cat_R1.fastq.gz
         cat ${paired[0]} ${unpaired[1]} > ${prefix}_trimm_cat_R2.fastq.gz

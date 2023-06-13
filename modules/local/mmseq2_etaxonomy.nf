@@ -32,11 +32,11 @@ process MMSEQ2_ETAXONOMY {
     if (mode == "aa") {
         ref_name = params.mmseq_viral_db_aa_ref_name
 		sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
-        args = task.ext.args ?: "--threads ${task.cpus} --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
+        args = task.ext.args ?: " --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
     } else {
         ref_name = params.mmseq_viral_db_nt_ref_name
 		sen   = "--start-sens 2 -s 7 --sens-steps 3"
-        args = task.ext.args ?: "--threads ${task.cpus} --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
+        args = task.ext.args ?: " --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
     }
 
     // Common parameters
@@ -47,6 +47,7 @@ process MMSEQ2_ETAXONOMY {
 
     """
     mmseqs easy-taxonomy \\
+        --threads ${task.cpus} \\
         ${fasta} \\
         ${mmseq2_db}/${ref_name} \\
         ${prefix}_${mode} \\

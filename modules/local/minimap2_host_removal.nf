@@ -22,8 +22,8 @@ process MINIMAP2_HOST_REMOVAL {
         def prefix = task.ext.prefix ?: "${meta.id}"
         def args_minimap2 = task.ext.args_minimap2 ?: '-ax sr --secondary=no'
         def args_samtools_view = task.ext.args_samtools_view ?: ' -f 4 -h'
-        def args_samtools_sort = task.ext.args_samtools_sort ?: " -@ ${task.cpus}"
-        def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO -@ ${task.cpus}"
+        def args_samtools_sort = task.ext.args_samtools_sort ?: " "
+        def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO "
 
         def output = meta.single_end ?
                     "${prefix}_unmapped_R1.fastq"
@@ -32,8 +32,8 @@ process MINIMAP2_HOST_REMOVAL {
         """
         minimap2 $args_minimap2 -t ${task.cpus} $index ${fastqs} \\
           | samtools view $args_samtools_view - \\
-          | samtools sort $args_samtools_sort \\
-          | samtools fastq $args_samtools_fastq - \\
+          | samtools sort -@ ${task.cpus} $args_samtools_sort \\
+          | samtools fastq -@ ${task.cpus} $args_samtools_fastq - \\
           ${output} \\
           > ${prefix}.minimap2_host_removal.log
 

@@ -33,7 +33,6 @@ workflow DENOVO_WF {
 
         //NOTE: Merge the fastq file channels again
 
-
         ch_spades_input_se = ch_deduped.se
                                 .map { it -> [it[0], it[1], [], []]}
                                 /* .dump(tag: "ch_deduped.se.map") */

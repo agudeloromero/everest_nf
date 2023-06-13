@@ -17,7 +17,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         path "versions.yml"							                          , emit: versions
 
         script:
-        def args = task.ext.args ?: "-Xmx${task.memory.toMega()}m"
+        def args = task.ext.args ?: ""
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         def input = meta.single_end ?
@@ -30,6 +30,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
 
         """
         bbnorm.sh \\
+          -Xmx${task.memory.toMega()}m \\
           $args \\
           $input\\
           $output \\

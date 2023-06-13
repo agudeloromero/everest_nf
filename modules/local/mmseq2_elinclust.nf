@@ -20,11 +20,12 @@ process MMSEQ2_ELINCLUST {
     path  "versions.yml"                                                                            , emit: versions
 
     script:
-    def args = task.ext.args ?: "--threads ${task.cpus} --min-seq-id 0.98 --kmer-per-seq-scale 0.3 --sort-results 1 --alignment-mode 3 --cov-mode 1"
+    def args = task.ext.args ?: " --min-seq-id 0.98 --kmer-per-seq-scale 0.3 --sort-results 1 --alignment-mode 3 --cov-mode 1"
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     mmseqs easy-linclust \\
+        --threads ${task.cpus} \\
         ${scaffolds} \\
         ${prefix} \\
         ${prefix}_tmp \\

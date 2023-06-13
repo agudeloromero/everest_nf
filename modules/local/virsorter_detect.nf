@@ -25,11 +25,12 @@ process VIRSORTER_DETECT {
     task.ext.when == null || task.ext.when
 
     script:
-    def args   = task.ext.args   ?: "--keep-original-seq --include-groups dsDNAphage,NCLDV,RNA,ssDNA --min-length 5000 --min-score 0.5 -j $task.cpus all"
+    def args   = task.ext.args   ?: "--keep-original-seq --include-groups dsDNAphage,NCLDV,RNA,ssDNA --min-length 5000 --min-score 0.5  all"
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     virsorter run \\
+        -j ${task.cpus} \\
         $args \\
         -i ${filtered_fasta} \\
         -w ${meta.id} \\
