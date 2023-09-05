@@ -5,7 +5,6 @@ include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect.nf
 include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq.nf"
 include { BACPHLIP_LIFE_STYLE    } from "../../modules/local/bacphlip_life_style.nf"
 include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_contigs.nf"
-include { BBMAP_PILEUP_SUMMARY   } from "../../modules/local/bbmap_pileup_summary.nf"
 
 workflow CLEANING_CONTIGS_WF {
 
@@ -30,7 +29,6 @@ workflow CLEANING_CONTIGS_WF {
 
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
-        BBMAP_PILEUP_SUMMARY( BBMAP_MAPPING_CONTIGS.out.sam )
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
