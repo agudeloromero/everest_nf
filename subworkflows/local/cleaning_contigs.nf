@@ -28,7 +28,6 @@ workflow CLEANING_CONTIGS_WF {
                                         .join(raw_fastqs)
                                         .dump(tag: "in_bbmap_mapping_contigs_ch")
 
-        PHAROKKA( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
@@ -43,6 +42,13 @@ workflow CLEANING_CONTIGS_WF {
 
         ch_bacphlip_life_style = CHECKV_VIRAL_SEQ.out.renamed_fasta
                                      .filter { it[1].text.split("\\n").size() > 2 }
+
+/* EXAMPLE FOR branching
+        ch_deduped = ch_deduped_normalized_fastqgz.branch {
+                                    se: it[0].single_end == true
+                                    pe: it[0].single_end == false
+                                }
+*/
 
 
 

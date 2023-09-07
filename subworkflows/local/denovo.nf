@@ -3,6 +3,7 @@ include { TRIMM_UNMERGE     } from "../../modules/local/trimm_unmerge"
 include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 include { SPADES_DENOVO     } from "../../modules/local/spades_denovo"
 include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust"
+include { PHAROKKA          } from "../../modules/local/pharokka.nf"
 
 workflow DENOVO_WF {
     take:
@@ -42,6 +43,8 @@ workflow DENOVO_WF {
                             /* .dump(tag: "ch_spades_input") */
 
         SPADES_DENOVO( ch_spades_input )
+
+        PHAROKKA( SPADES_DENOVO.out.scaffolds )
 
         //NOTE: Optional
         //PHABLES / RENEO => PILON
