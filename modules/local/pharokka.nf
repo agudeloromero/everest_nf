@@ -20,9 +20,8 @@ process PHAROKKA {
         def prefix = task.ext.prefix ?: "${meta.id}"
         def args = task.ext.args ?: " -p  "
 
-
         """
-            pharokka.py -i ${fasta} -o ${prefix} -t ${task.cpus}
+            pharokka.py -i ${fasta} -o ${prefix} -t ${task.cpus} -d ${params.pharokka_db}
 
 
             cat <<-END_VERSIONS > versions.yml
@@ -33,12 +32,9 @@ process PHAROKKA {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-        def output = meta.single_end ?
-                        "${prefix}_unmapped_R1.fastq.gz"
-                        : "${prefix}_unmapped_cat_R1.fastq.gz ${prefix}_unmapped_cat_R2.fastq.gz"
 
         """
-            touch ${output}
+            mkdir ${prefix}
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":

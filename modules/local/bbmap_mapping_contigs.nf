@@ -14,10 +14,10 @@ process BBMAP_MAPPING_CONTIGS {
 
     output:
     tuple val(meta), path(renamed_fasta), path("*_contig.sam")               , emit: sam
-    tuple val(meta), path("*_contig_rpkm.txt")          , emit: rpkm
-    tuple val(meta), path("*_contig_scafstats.txt")     , emit: scafstats
-    tuple val(meta), path("*_contig_covstats.txt")      , emit: covstats
-    path "versions.yml"                                 , emit: versions
+    tuple val(meta), path("*_contig_rpkm.txt")                               , emit: rpkm
+    tuple val(meta), path("*_contig_scafstats.txt")                          , emit: scafstats
+    tuple val(meta), path("*_contig_covstats.txt")                           , emit: covstats
+    path "versions.yml"                                                      , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
