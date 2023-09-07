@@ -41,9 +41,6 @@ process SPADES_DENOVO {
 
     mv spades.log ${prefix}.spades.log
 
-    #FIXME
-    #mv assembly_graph_with_scaffolds.gfa
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         spades: \$(spades.py --version 2>&1 | sed 's/^.*SPAdes genome assembler v//; s/ .*\$//')
