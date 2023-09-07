@@ -109,7 +109,6 @@ workflow EVEREST {
 
 
 //FIXME Enable these once EVEREST is completed
-/*
     //
     // MODULE: Run FastQC
     //
@@ -149,7 +148,7 @@ workflow EVEREST {
     )
     multiqc_report = MULTIQC.out.report.toList()
 }
-*/
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
