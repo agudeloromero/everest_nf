@@ -107,8 +107,6 @@ workflow EVEREST {
 //============================
 
 
-
-//FIXME Enable these once EVEREST is completed
     //
     // MODULE: Run FastQC
     //
