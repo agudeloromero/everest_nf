@@ -4,9 +4,9 @@ process PHAROKKA {
 
         conda { params.conda_pharokka_env ?: "${projectDir}/envs/pharokka.yml" }
 
- //       container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
- //           'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
- //           'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+            'https://depot.galaxyproject.org/singularity/pharokka:1.3.2--hdfd78af_0':
+           'quay.io/biocontainers/pharokka:1.3.2--hdfd78af_0' }"
 
 
         input:
