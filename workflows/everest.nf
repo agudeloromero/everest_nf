@@ -100,7 +100,7 @@ workflow EVEREST {
 
     /* PILON and ABRICATE didn't work */
 
-}
+
 
 //============================
 // FINISH: EVEREST WORKFLOW
@@ -147,8 +147,10 @@ workflow EVEREST {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
-}
 
+
+
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
