@@ -13,11 +13,11 @@ process PHAROKKA {
         tuple val(meta), path(fasta)
 
         output:
-        tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
+        tuple val(meta), path("${meta.id}")	                  , emit: fastqgz
         path "versions.yml"			                          , emit: versions
 
         script:
-        def prefix = task.ext.prefix ?: "${meta.id}"
+        prefix = task.ext.prefix ?: "${meta.id}"
         def args = task.ext.args ?: " -p  "
 
         """
