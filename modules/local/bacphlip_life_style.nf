@@ -21,7 +21,7 @@ process BACPHLIP_LIFE_STYLE {
 
     def args = task.ext.args ?: "-f "
 
-    def isMultiFasta = ( renamed_fasta.text.split("\\n").size() < 2 )
+    def isMultiFasta = ( file(renamed_fasta).text.split("\\n").size() < 2 )
 
     """
     bacphlip -i ${renamed_fasta} ${args} ${isMultiFasta ? '--multi_fasta' : ''}
