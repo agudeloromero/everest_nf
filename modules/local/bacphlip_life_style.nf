@@ -25,8 +25,8 @@ process BACPHLIP_LIFE_STYLE {
     """
 
     if [ "\$(cat viruses_renamed.fasta  | grep '>' | wc -l )" -le 2 ];
-        then bacphlip -i ${renamed_fasta} ${args} ;
-        else bacphlip -i ${renamed_fasta} ${args} --multi_fasta ;
+        then echo "NOT multifasta" && bacphlip -i ${renamed_fasta} ${args} ;
+        else echo "YES multifasta" && bacphlip -i ${renamed_fasta} ${args} --multi_fasta ;
     fi
 
 
