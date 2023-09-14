@@ -23,7 +23,8 @@ process BACPHLIP_LIFE_STYLE {
 
 
     """
-    bacphlip -i ${renamed_fasta} ${args} ${(renamed_fasta.text.split("\\n").size() < 2 ) ? '--multi_fasta' : ''}
+
+    bacphlip -i ${renamed_fasta} ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
