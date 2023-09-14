@@ -38,23 +38,7 @@ workflow CLEANING_CONTIGS_WF {
             ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'summary'], report]}
         )
 
-        //NOTE: Filtering out non multi-lined fasta files into two different channels
-
-        ch_bacphlip_life_style = CHECKV_VIRAL_SEQ.out.renamed_fasta
-                                     .filter { it[1].text.split("\\n").size() > 2 }
-
-/* EXAMPLE FOR branching
-        ch_deduped = ch_deduped_normalized_fastqgz.branch {
-                                    se: it[0].single_end == true
-                                    pe: it[0].single_end == false
-                                }
-*/
-
-
-
-        //FIXME adapt the process to accommodate the single-contiga nd multi-contig fasta files
-        //BACPHLIP_LIFE_STYLE( ch_bacphlip_life_style )
-        //PHAROKKA(CHECKV_VIRAL_SEQ.out.renamed_fasta, params.pharokka_db)
+        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
 
     emit:

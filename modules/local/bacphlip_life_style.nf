@@ -19,12 +19,12 @@ process BACPHLIP_LIFE_STYLE {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    //FIXME Exception: Input fasta file appears to contain a single sequence record.Please re-run analysis without the '--multi' flag.
-    //cat viruses_renamed.fasta | wc -l
-    def args = task.ext.args ?: "-f --multi_fasta"
+    def args = task.ext.args ?: "-f "
+
+    def isMultiFasta = ( renamed_fasta.text.split("\\n").size() < 2 )
 
     """
-    bacphlip -i ${renamed_fasta} ${args}
+    bacphlip -i ${renamed_fasta} ${args} ${isMultiFasta ? '--multi_fasta' : ''}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

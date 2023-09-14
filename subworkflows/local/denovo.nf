@@ -47,7 +47,7 @@ workflow DENOVO_WF {
         PHAROKKA( SPADES_DENOVO.out.scaffolds )
 
         //NOTE: Optional
-        //PHABLES / RENEO => PILON
+        //RENEO => PILON
 
         MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
 
