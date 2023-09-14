@@ -24,7 +24,11 @@ process BACPHLIP_LIFE_STYLE {
 
     """
 
-    bacphlip -i ${renamed_fasta} ${args}
+    if [ "$(cat viruses_renamed.fasta  | grep '>' | wc -l )" -le 2 ];
+        then bacphlip -i ${renamed_fasta} ${args} ;
+        else bacphlip -i ${renamed_fasta} ${args} --multi_fasta ;
+    fi
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
