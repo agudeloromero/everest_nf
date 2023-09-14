@@ -40,7 +40,7 @@ workflow DENOVO_WF {
 
         ch_spades_input =  ch_trimm_combined
                             .mix(ch_spades_input_se)
-                            /* .dump(tag: "ch_spades_input") */
+                            .dump(tag: "ch_spades_input")
 
         SPADES_DENOVO( ch_spades_input )
 

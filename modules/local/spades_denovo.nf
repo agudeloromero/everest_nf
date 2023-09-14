@@ -12,9 +12,10 @@ process SPADES_DENOVO {
     tuple val(meta), path(forward_read), path(paired), path(unpaired)
 
     output:
-    tuple val(meta), path('scaffolds.fasta')       , optional:true, emit: scaffolds
-    tuple val(meta), path('*.log')                 , emit: log
-    path  "versions.yml"                           , emit: versions
+    tuple val(meta), path('scaffolds.fasta')                         , optional:true, emit: scaffolds
+    tuple val(meta), path('assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds
+    tuple val(meta), path('*.log')                                   , emit: log
+    path  "versions.yml"                                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
