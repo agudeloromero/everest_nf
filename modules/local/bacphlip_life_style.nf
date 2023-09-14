@@ -21,10 +21,9 @@ process BACPHLIP_LIFE_STYLE {
 
     def args = task.ext.args ?: "-f "
 
-    def isMultiFasta = ( file(renamed_fasta).text.split("\\n").size() < 2 )
 
     """
-    bacphlip -i ${renamed_fasta} ${args} ${isMultiFasta ? '--multi_fasta' : ''}
+    bacphlip -i ${renamed_fasta} ${args} ${(renamed_fasta.text.split("\\n").size() < 2 ) ? '--multi_fasta' : ''}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
