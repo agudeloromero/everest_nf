@@ -4,6 +4,7 @@ include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 include { SPADES_DENOVO     } from "../../modules/local/spades_denovo"
 include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust"
 include { PHAROKKA          } from "../../modules/local/pharokka.nf"
+include { RENEO             } from "../../modules/local/reneo.nf"
 
 workflow DENOVO_WF {
     take:
