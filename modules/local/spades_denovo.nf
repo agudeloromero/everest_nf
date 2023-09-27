@@ -13,7 +13,7 @@ process SPADES_DENOVO {
 
     output:
     tuple val(meta), path('scaffolds.fasta')                         , optional:true, emit: scaffolds
-    tuple val(meta), path('assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds
+    tuple val(meta), path('assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds_graph
     tuple val(meta), path('*.log')                                   , emit: log
     path  "versions.yml"                                             , emit: versions
 

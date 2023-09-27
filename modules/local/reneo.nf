@@ -10,7 +10,7 @@ process RENEO {
 
 
         input:
-        tuple val(meta), path(fasta)
+        tuple val(meta), path(scaffolds_graph), path("fastq/*")
 
         output:
         tuple val(meta), path("${meta.id}")	                  , emit: fastqgz
@@ -21,7 +21,7 @@ process RENEO {
         def args = task.ext.args ?: " -p  "
 
         """
-            reneo run --input assembly_graph.gfa --reads fastq/ --threads 8
+            reneo run --input ${scaffolds_graph} --reads fastq/ --threads ${task.cpus}
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":

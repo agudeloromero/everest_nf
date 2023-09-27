@@ -46,10 +46,13 @@ workflow DENOVO_WF {
 
         PHAROKKA( SPADES_DENOVO.out.scaffolds )
 
-        //NOTE: Optional
-        //RENEO => PILON
 
-        MMSEQ2_ELINCLUST(SPADES_DENOVO.out.scaffolds)
+        ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
+                            .join(TRIMM_UNMERGE.out.paired)
+
+        RENEO( ch_reneo_input )
+
+        MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
 
     emit:
