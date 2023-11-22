@@ -4,11 +4,10 @@ process VIRSORTER_DETECT {
 
     conda { params.conda_virsorter2_env ?: "${projectDir}/envs/virsorter2.yml" }
 
-/*
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/seqkit:2.1.0--h9ee0642_0' :
-        'quay.io/biocontainers/seqkit:2.1.0--h9ee0642_0' }"
-*/
+        'https://depot.galaxyproject.org/singularity/virsorter:2.2.4--pyhdfd78af_1' :
+        'quay.io/biocontainers/virsorter:2.2.4--pyhdfd78af_1' }"
+
 
     input:
     tuple val(meta), path(filtered_fasta)

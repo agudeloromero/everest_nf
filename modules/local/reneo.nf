@@ -5,8 +5,8 @@ process RENEO {
         conda { params.conda_reneo_env ?: "${projectDir}/envs/reneo.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'https://depot.galaxyproject.org/singularity/reneo:1.3.2--hdfd78af_0':
-           'quay.io/biocontainers/reneo:1.3.2--hdfd78af_0' }"
+            'https://depot.galaxyproject.org/singularity/reneo:0.2.0--pyhdfd78af_0':
+           'quay.io/biocontainers/reneo:0.2.0--pyhdfd78af_0' }"
 
 
         input:

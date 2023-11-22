@@ -5,9 +5,9 @@ process SUMMARY_PER_SAMPLE {
 
         conda { params.conda_r_env ?: "${projectDir}/envs/R.yml" }
 
- //       container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
- //           'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
- //           'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+           'build_R--ec6ca86def5d06b7.sif':
+           'FIXME' }"
 
 
         input:

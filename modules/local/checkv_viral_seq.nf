@@ -4,11 +4,10 @@ process CHECKV_VIRAL_SEQ {
 
     conda { params.conda_checkv_env ?: "${projectDir}/envs/checkv.yml" }
 
-/*
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/seqkit:2.1.0--h9ee0642_0' :
-        'quay.io/biocontainers/seqkit:2.1.0--h9ee0642_0' }"
-*/
+        'https://depot.galaxyproject.org/singularity/checkv:1.0.1--pyhdfd78af_0' :
+        'quay.io/biocontainers/checkv:1.0.1--pyhdfd78af_0' }"
+
     input:
     tuple val(meta), path(fasta)
     path(checkv_db)

@@ -4,9 +4,10 @@ process SPADES_DENOVO {
 
     conda { params.conda_spades_env ?: "${projectDir}/envs/spades.yml" }
 
-    /* container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? */
-    /*     'https://depot.galaxyproject.org/singularity/spades:3.15.5--h95f258a_1' : */
-    /*     'quay.io/biocontainers/spades:3.15.5--h95f258a_1' }" */
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+         ' build_spades--a0ac894afca66dcb.sif' :
+         'FIXME' }"
+
 
     input:
     tuple val(meta), path(forward_read), path(paired), path(unpaired)

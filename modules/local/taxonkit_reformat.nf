@@ -4,11 +4,11 @@ process TAXONKIT_REFORMAT {
 
     conda { params.conda_taxonkit_env ?: "${projectDir}/envs/taxonkit.yml" }
 
-/*
+
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/taxonkit:2.1.0--h9ee0642_0' :
         'quay.io/biocontainers/taxonkit:2.1.0--h9ee0642_0' }"
-*/
+
     input:
     tuple val(meta), path(lca)
     path(tax_db)
