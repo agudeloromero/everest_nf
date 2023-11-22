@@ -4,6 +4,11 @@ process TRIMM {
 
         conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml"  }
 
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+           'build_QC--42b949eb782fbdd0.sif':
+           'FIXME' }"
+
+
         input:
         tuple val(meta), path(cleaned_reads)
         path adaptor

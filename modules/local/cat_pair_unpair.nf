@@ -2,7 +2,13 @@ process CAT_PAIR_UNPAIR {
         tag "$meta.id"
         label 'process_medium'
 
-        conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
+        //NOTE: For the cat utility, we simply reuse the bbmap container
+        conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
+
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+            'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
+            'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+
 
         input:
         tuple val(meta), path(paired), path(unpaired)

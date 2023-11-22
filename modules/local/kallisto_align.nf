@@ -4,9 +4,9 @@ process KALLISTO_ALIGN {
 
         conda { params.conda_kallisto_env ?: "${projectDir}/envs/kallisto.yml" }
 
- //       container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
- //           'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
- //           'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+        container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+           'https://depot.galaxyproject.org/singularity/kallisto:0.48.0--h15996b6_2':
+           'quay.io/biocontainers/kallisto:0.48.0--h15996b6_2' }"
 
 
         input:

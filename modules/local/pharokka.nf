@@ -26,7 +26,7 @@ process PHAROKKA {
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
-                    pharokka: FIXME
+                    pharokka: 1.3.2
             END_VERSIONS
         """
 
