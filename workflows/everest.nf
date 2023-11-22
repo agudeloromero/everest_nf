@@ -87,18 +87,25 @@ workflow EVEREST {
     // BINNING_WF -> Optional
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
+    if(input_contigs) {
+        CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, input_contigs )
 
-    TRIMMING_ADAPTORS_WF( INPUT_CHECK.out.reads )
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
-    HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
+    } else {
+        TRIMMING_ADAPTORS_WF( INPUT_CHECK.out.reads )
 
-    DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+        HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
 
-    CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
+        DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
-    TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
 
-    /* PILON and ABRICATE didn't work */
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+
+        /* PILON didn't work */
+
+    }
 
 
 
