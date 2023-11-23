@@ -87,7 +87,7 @@ workflow EVEREST {
     // BINNING_WF -> Optional
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
-    if(input_contigs) {
+    if(params.input_contigs) {
         CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, input_contigs )
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
