@@ -5,7 +5,7 @@ process MINIMAP2_HOST_REMOVAL {
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'https://depot.galaxyproject.org/singularity/minimap2:2.24--h7132678_1' :
+            'build_minimap2--fa20d70c984719cd.sif' :
             'quay.io/biocontainers/minimap2:2.24--h7132678_1' }"
 
         input:
