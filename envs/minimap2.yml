@@ -7,4 +7,3 @@ dependencies:
   - minimap2=2.24
   - samtools=1.9
   - pigz=2.6
-  - procps-ng
