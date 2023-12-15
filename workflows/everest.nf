@@ -95,7 +95,7 @@ workflow EVEREST {
     } else {
         TRIMMING_ADAPTORS_WF( INPUT_CHECK.out.reads )
 
-        //HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
+        HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
 
         //DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
