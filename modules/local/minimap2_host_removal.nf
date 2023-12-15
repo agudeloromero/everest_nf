@@ -5,7 +5,7 @@ process MINIMAP2_HOST_REMOVAL {
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
+            'mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4-1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
             'quay.io/biocontainers/minimap2:2.24--h7132678_1' }"
 
         input:
