@@ -5,7 +5,7 @@ process TRIMM {
         conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml"  }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_QC--42b949eb782fbdd0.sif':
+           'https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2':
            'FIXME' }"
 
 
