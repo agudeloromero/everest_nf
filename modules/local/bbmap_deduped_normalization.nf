@@ -32,6 +32,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         bbnorm.sh \\
           -Xmx${task.memory.toMega()}m \\
           $args \\
+          tmpdir=tmp \\
           $input\\
           $output \\
           2> ${prefix}.bbmap_duduped_normalization.log
