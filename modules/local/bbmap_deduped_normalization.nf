@@ -1,6 +1,7 @@
 process BBMAP_DUDUPED_NORMALIZATION {
         tag "$meta.id"
         label 'process_high'
+        label 'error_retry'
 
         conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
