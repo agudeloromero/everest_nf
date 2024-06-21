@@ -34,9 +34,7 @@ process CHECKV_VIRAL_SEQ {
         ${prefix} \\
         2> ${prefix}_checkv_viral_seq.log
 
-    sed 's/||.*//' ${prefix}/viruses.fna > viruses_renamed.fasta
-
-    mv viruses_renamed.fasta ${prefix}_viruses_renamed.fasta
+    sed 's/||.*//' ${prefix}/viruses.fna >  ${prefix}/viruses_renamed.fna
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
