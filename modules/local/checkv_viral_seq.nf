@@ -15,7 +15,7 @@ process CHECKV_VIRAL_SEQ {
     output:
     tuple val(meta), path("**/viruses.fna")                           , emit: fasta
     tuple val(meta), path("viruses_renamed.fasta")                    , emit: renamed_fasta
-    path("**/*.fna")                                                  , emit: fnas
+    path("**/viruses*.fna")                                           , emit: fnas
     path "versions.yml"                                               , emit: versions
 
     when:
