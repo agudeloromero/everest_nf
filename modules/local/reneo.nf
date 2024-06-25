@@ -25,7 +25,7 @@ process RENEO {
         def args = task.ext.args ?: " -p  "
 
         """
-            reneo run --input ${scaffolds_graph} --reads fastq/ --threads ${task.cpus}
+            reneo run --input ${scaffolds_graph} --reads fastq/ --threads ${task.cpus} --databases ${params.reneo_db}
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
