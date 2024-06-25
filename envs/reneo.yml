@@ -3,5 +3,7 @@ channels:
   - conda-forge
   - anaconda
   - bioconda
+  - gurobi
 dependencies:
-  - reneo=0.2.0
+  - reneo=0.4.0
+  - gurobi=11.0.2
