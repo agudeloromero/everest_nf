@@ -32,9 +32,17 @@ workflow DENOVO_WF {
         PHAROKKA( SPADES_DENOVO.out.scaffolds )
 
 
+        SPADES_DENOVO.out.scaffolds_graph.dump(tag: "spades_denovo_scaffolds_graph")
+
+
+        TRIMM_UNMERGE.out.paired.dump(tag: "trimm_unmerge_out")
+
+    /*
         ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
                             .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_reneo_input")
+*/
+
 
         //RENEO( ch_reneo_input )
 
