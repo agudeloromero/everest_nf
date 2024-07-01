@@ -1,6 +1,7 @@
 process BBMAP_DEDUPED_REFORMAT {
         tag "$meta.id"
         label 'process_medium'
+        label 'error_retry'
 
         conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 

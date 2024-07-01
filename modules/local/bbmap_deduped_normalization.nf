@@ -1,12 +1,13 @@
 process BBMAP_DUDUPED_NORMALIZATION {
         tag "$meta.id"
-        label 'process_medium'
+        label 'process_high'
+        label 'error_retry'
 
         conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-             'https://depot.galaxyproject.org/singularity/bbmap:38.96--h5c4e2a8_0':
-             'quay.io/biocontainers/bbmap:38.96--h5c4e2a8_0' }"
+            'https://depot.galaxyproject.org/singularity/mulled-v2-008daec56b7aaf3f162d7866758142b9f889d690:e8a286b2e789c091bac0a57302cdc78aa0112353-0':
+            'biocontainers/mulled-v2-008daec56b7aaf3f162d7866758142b9f889d690:e8a286b2e789c091bac0a57302cdc78aa0112353-0' }"
 
         input:
         tuple val(meta), path(reads)
@@ -32,6 +33,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         bbnorm.sh \\
           -Xmx${task.memory.toMega()}m \\
           $args \\
+          tmpdir=tmp \\
           $input\\
           $output \\
           2> ${prefix}.bbmap_duduped_normalization.log
