@@ -32,7 +32,7 @@ workflow CLEANING_CONTIGS_WF {
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
 
-        ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+        ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )
 
         ABRICATE_SUMMARY (
             ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'summary'], report]}

@@ -7,13 +7,13 @@
                 "nf-core": {
                     "abricate/run": {
                         "branch": "master",
-                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "git_sha": "d19df066e54d6682cb534778418b586cadf30daa",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/abricate/run/abricate-run.diff"
                     },
                     "abricate/summary": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "d19df066e54d6682cb534778418b586cadf30daa",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/abricate/summary/abricate-summary.diff"
                     },
