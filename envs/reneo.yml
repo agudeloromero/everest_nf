@@ -7,3 +7,4 @@ channels:
 dependencies:
   - reneo=0.4.0
   - gurobi=11.0.2
+  - numpy=1.26.4
