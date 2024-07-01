@@ -29,7 +29,7 @@
                     },
                     "checkv/endtoend": {
                         "branch": "master",
-                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "git_sha": "56cf5a89c2646ad50195635cf18df4028a6928ce",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
