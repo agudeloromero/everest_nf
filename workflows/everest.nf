@@ -97,11 +97,11 @@ workflow EVEREST {
 
         HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
 
-        //DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+        DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
-        //CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
+        CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
 
-        //TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
         /* PILON didn't work */
 
