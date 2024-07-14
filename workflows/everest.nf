@@ -145,6 +145,7 @@ workflow EVEREST {
     //FIXME: CUSTOM FILES
     //ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTORS_WF.out.fastqc_trimm_zip)
 
+    /*
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
@@ -154,6 +155,7 @@ workflow EVEREST {
         []
     )
     multiqc_report = MULTIQC.out.report.toList()
+   */
 
 
 
