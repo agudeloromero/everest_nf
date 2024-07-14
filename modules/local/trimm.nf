@@ -5,9 +5,8 @@ process TRIMM {
         conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml"  }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2':
-           'FIXME' }"
-
+        'https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2':
+        'biocontainers/trimmomatic:0.39--hdfd78af_2' }"
 
         input:
         tuple val(meta), path(cleaned_reads)
@@ -16,9 +15,9 @@ process TRIMM {
 
         output:
         tuple val(meta), path('*.trimm_pair_R*.fastq.gz')                                       , emit: paired
-        tuple val(meta), path('*.trimm_unpair_R*.fastq.gz')	                                    , emit: unpaired, optional: true
-        tuple val(meta), path('*.log')						                                              , emit: log
-        path "versions.yml"									                                                    , emit: versions
+        tuple val(meta), path('*.trimm_unpair_R*.fastq.gz')                                     , emit: unpaired, optional: true
+        tuple val(meta), path('*.log')                                                                    , emit: log
+        path "versions.yml"                                                                                     , emit: versions
 
 
         script:
