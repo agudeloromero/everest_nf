@@ -3,10 +3,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     nf-core/everest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/everest
+    Github : https://github.com/agudeloromero/everest-nf
 
-    Website: https://nf-co.re/everest
-    Slack  : https://nfcore.slack.com/channels/everest
+    Website: https://agudeloromero.github.io/everest-nf
 ----------------------------------------------------------------------------------------
 */
 

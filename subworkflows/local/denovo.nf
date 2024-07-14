@@ -61,7 +61,7 @@ workflow DENOVO_WF {
                             .dump(tag: "ch_reneo_input")
 
 
-        RENEO( ch_reneo_input )
+        //RENEO( ch_reneo_input )
 
         MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
