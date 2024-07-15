@@ -28,7 +28,7 @@ process VIRSORTER_DETECT {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    virsorter run \\
+    virsorter run --use-conda-off  \\
         -j ${task.cpus} \\
         $args \\
         -i ${filtered_fasta} \\
