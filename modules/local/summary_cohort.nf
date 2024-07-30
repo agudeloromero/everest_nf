@@ -5,8 +5,9 @@ process SUMMARY_COHORT {
         conda { params.conda_r_env ?: "${projectDir}/envs/R.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_R--ec6ca86def5d06b7.sif':
-           'FIXME' }"
+           'docker://quay.io/biocontainers/r-base:4.2.1':
+           'quay.io/biocontainers/r-base:4.2.1' }"
+
 
 
         input:
@@ -14,7 +15,7 @@ process SUMMARY_COHORT {
         val(mode)
 
         output:
-        path "versions.yml"			                          , emit: versions
+        path "versions.yml"                                   , emit: versions
 
         script:
         def args = task.ext.args ?: ""
@@ -41,4 +42,3 @@ process SUMMARY_COHORT {
         """
 
 }
-
