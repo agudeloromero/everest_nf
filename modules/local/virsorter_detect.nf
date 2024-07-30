@@ -5,8 +5,8 @@ process VIRSORTER_DETECT {
     conda { params.conda_virsorter2_env ?: "${projectDir}/envs/virsorter2.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/abhi18av/biocontainer-virsorter:2.2.4-1' :
-        'ghcr.io/abhi18av/biocontainer-virsorter:2.2.4-1' }"
+        'docker://ghcr.io/abhi18av/everest-virsorter:2.2.4-1' :
+        'ghcr.io/abhi18av/everest-virsorter:2.2.4-1' }"
 
 
     input:
