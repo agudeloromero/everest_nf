@@ -5,8 +5,8 @@ process BACPHLIP_LIFE_STYLE {
     conda { params.conda_bacphlip_env ?: "${projectDir}/envs/bacphlip.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-             'build_bacphlip--4570b5dace548e96.sif':
-             'FIXME' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-e16bfb0f667f2f3c236b32087aaf8c76a0cd2864:c64689d7d5c51670ff5841ec4af982edbe7aa406-0':
+        'biocontainers/mulled-v2-e16bfb0f667f2f3c236b32087aaf8c76a0cd2864:c64689d7d5c51670ff5841ec4af982edbe7aa406-0' }"
 
 
     input:
