@@ -18,6 +18,9 @@ workflow CLEANING_CONTIGS_WF {
 
         //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
+
+
+    //NOTE: The output of nanopore analysis should be the the input for CHECKV
         CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
 
 

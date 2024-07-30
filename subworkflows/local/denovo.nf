@@ -46,7 +46,7 @@ workflow DENOVO_WF {
 
         SPADES_DENOVO( ch_spades_input )
 
-        PHAROKKA( SPADES_DENOVO.out.scaffolds )
+        PHAROKKA( SPADES_DENOVO.out.scaffolds, params.pharokka_db )
 
 
     /*
