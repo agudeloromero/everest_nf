@@ -6,8 +6,8 @@ process TAXONKIT_REFORMAT {
 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/taxonkit:2.1.0--h9ee0642_0' :
-        'quay.io/biocontainers/taxonkit:2.1.0--h9ee0642_0' }"
+        'https://depot.galaxyproject.org/singularity/taxonkit:0.12.0--h9ee0642_0' :
+        'quay.io/biocontainers/taxonkit:0.12.0--h9ee0642_0' }"
 
     input:
     tuple val(meta), path(lca)
