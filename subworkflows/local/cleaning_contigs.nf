@@ -16,9 +16,9 @@ workflow CLEANING_CONTIGS_WF {
     main:
         SEQKIT_FILTER( repseq_fasta )
 
-        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
+        //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
-        CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
+        CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
 
 
         //CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
@@ -45,4 +45,3 @@ workflow CLEANING_CONTIGS_WF {
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
 
 }
-
