@@ -5,8 +5,8 @@ process MMSEQ2_ETAXONOMY {
     conda { params.conda_mmseqs2_env ?: "${projectDir}/envs/MMSEQS.yml" }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-         'https://depot.galaxyproject.org/singularity/mmseqs2:14.7e284--pl5321hf1761c0_1' :
-         'quay.io/biocontainers/mmseqs2:14.7e284--pl5321hf1761c0_1' }"
+         'https://depot.galaxyproject.org/singularity/mmseqs2:13.45111--h2d02072_0' :
+         'quay.io/biocontainers/mmseqs2:13.45111--h2d02072_0' }"
 
 
 
@@ -33,18 +33,18 @@ process MMSEQ2_ETAXONOMY {
 
     if (mode == "aa") {
         ref_name = params.mmseq_viral_db_aa_ref_name
-		sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
+        sen   = "--start-sens 1 --sens-steps 3 -s 7 --lca-mode 3 --shuffle 0"
         args = task.ext.args ?: " --min-length 30 -a --tax-lineage 1 --search-type 2 -e 1e-5 --majority 0.5 --vote-mode 1"
     } else {
         ref_name = params.mmseq_viral_db_nt_ref_name
-		sen   = "--start-sens 2 -s 7 --sens-steps 3"
+        sen   = "--start-sens 2 -s 7 --sens-steps 3"
         args = task.ext.args ?: " --min-length 100 -a --tax-lineage 2 --search-type 2 -e 1e-20"
     }
 
     // Common parameters
     def prefix = task.ext.prefix ?: "${meta.id}"
     def lca = task.ext.lca ?: "--lca-ranks superkingdom,phylum,class,order,family,genus,species"
-	def output_format   = "--format-output query,target,evalue,pident,fident,nident,mismatch,qcov,tcov,qstart,qend,qlen,tstart,tend,tlen,alnlen,bits,qheader,theader,taxid,taxname,taxlineage"
+    def output_format   = "--format-output query,target,evalue,pident,fident,nident,mismatch,qcov,tcov,qstart,qend,qlen,tstart,tend,tlen,alnlen,bits,qheader,theader,taxid,taxname,taxlineage"
 
 
     """
