@@ -11,17 +11,18 @@ process PHAROKKA {
 
         input:
         tuple val(meta), path(fasta)
+        path(pharokka_db)
 
         output:
-        tuple val(meta), path("${meta.id}")	                  , emit: fastqgz
-        path "versions.yml"			                          , emit: versions
+        tuple val(meta), path("${meta.id}")                   , emit: fastqgz
+        path "versions.yml"                                   , emit: versions
 
         script:
         prefix = task.ext.prefix ?: "${meta.id}"
         def args = task.ext.args ?: " -p  "
 
         """
-            pharokka.py -i ${fasta} -o ${prefix} -t ${task.cpus} -d ${params.pharokka_db}
+            pharokka.py -i ${fasta} -o ${prefix} -t ${task.cpus} -d ${pharokka_db}
 
 
             cat <<-END_VERSIONS > versions.yml
@@ -43,4 +44,3 @@ process PHAROKKA {
         """
 
 }
-

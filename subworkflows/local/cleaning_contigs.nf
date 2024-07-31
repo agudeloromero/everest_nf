@@ -16,9 +16,12 @@ workflow CLEANING_CONTIGS_WF {
     main:
         SEQKIT_FILTER( repseq_fasta )
 
-        VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
+        //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
-        CHECKV_VIRAL_SEQ( VIRSORTER_DETECT.out.combined, params.checkv_db )
+
+
+    //NOTE: The output of nanopore analysis should be the the input for CHECKV
+        CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
 
 
         //CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
@@ -32,7 +35,7 @@ workflow CLEANING_CONTIGS_WF {
         BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
 
-        ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+        ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )
 
         ABRICATE_SUMMARY (
             ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'summary'], report]}
@@ -45,4 +48,3 @@ workflow CLEANING_CONTIGS_WF {
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
 
 }
-

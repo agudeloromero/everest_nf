@@ -5,4 +5,4 @@ channels:
   - defaults
 dependencies:
   - python=3.7
-  - spades=3.13.0
+  - spades=3.13.2

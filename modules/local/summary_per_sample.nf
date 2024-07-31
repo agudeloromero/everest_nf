@@ -6,8 +6,8 @@ process SUMMARY_PER_SAMPLE {
         conda { params.conda_r_env ?: "${projectDir}/envs/R.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_R--ec6ca86def5d06b7.sif':
-           'FIXME' }"
+           'docker://quay.io/biocontainers/r-base:4.2.1':
+           'quay.io/biocontainers/r-base:4.2.1' }"
 
 
         input:
@@ -16,7 +16,7 @@ process SUMMARY_PER_SAMPLE {
 
         output:
         path("${prefix}_summary_${mode}.txt")                 , emit: summary
-        path "versions.yml"			                          , emit: versions
+        path "versions.yml"                                   , emit: versions
 
         script:
         prefix = task.ext.prefix ?: "${meta.id}"
@@ -47,4 +47,3 @@ process SUMMARY_PER_SAMPLE {
         """
 
 }
-

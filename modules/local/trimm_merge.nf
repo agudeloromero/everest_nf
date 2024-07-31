@@ -5,8 +5,8 @@ process TRIMM_MERGE {
         conda { params.conda_qc_env ?: "${projectDir}/envs/QC.yml"  }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_QC--42b949eb782fbdd0.sif':
-           'FIXME' }"
+        'https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2':
+        'biocontainers/trimmomatic:0.39--hdfd78af_2' }"
 
 
         input:
@@ -16,8 +16,8 @@ process TRIMM_MERGE {
 
         output:
         tuple val(meta), path("*_unmapped_cat_R1_merge_trimm.fastq.gz")                 , emit: paired
-        tuple val(meta), path('*.log')						                            , emit: log
-        path "versions.yml"									                            , emit: versions
+        tuple val(meta), path('*.log')                                                  , emit: log
+        path "versions.yml"                                                             , emit: versions
 
 
         script:

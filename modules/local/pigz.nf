@@ -8,8 +8,8 @@ process PIGZ {
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_minimap2--65abc6499991bbbc.sif':
-           'FIXME' }"
+            'https://depot.galaxyproject.org/singularity/pigz:2.8':
+            'biocontainers/pigz:2.8' }"
 
         input:
         tuple val(meta), path(reads)

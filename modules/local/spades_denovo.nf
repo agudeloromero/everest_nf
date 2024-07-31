@@ -4,9 +4,11 @@ process SPADES_DENOVO {
 
     conda { params.conda_spades_env ?: "${projectDir}/envs/spades.yml" }
 
+
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-         ' build_spades--a0ac894afca66dcb.sif' :
-         'FIXME' }"
+        'https://depot.galaxyproject.org/singularity/spades:3.13.2--h2d02072_0' :
+        'biocontainers/spades:3.13.2--h2d02072_0' }"
+
 
 
     input:
