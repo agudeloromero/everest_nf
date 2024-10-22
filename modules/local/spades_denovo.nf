@@ -1,6 +1,6 @@
 process SPADES_DENOVO {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_high_memory'
 
     conda { params.conda_spades_env ?: "${projectDir}/envs/spades.yml" }
 
