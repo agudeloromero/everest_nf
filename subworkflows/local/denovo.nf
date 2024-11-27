@@ -44,28 +44,28 @@ workflow DENOVO_WF {
                             .mix(ch_spades_input_se)
                             .dump(tag: "ch_spades_input")
 
-    /*
+        SPADES_DENOVO( ch_spades_input )
+
+
         //TODO: Reenable this once we have implemented vibrant software to replace virsorter2 pipeline.
-        //SPADES_DENOVO( ch_spades_input )
         //PHAROKKA( SPADES_DENOVO.out.scaffolds, params.pharokka_db )
 
 
+    /*
         SPADES_DENOVO.out.scaffolds_graph.dump(tag: "spades_denovo_scaffolds_graph")
 
         TRIMM_UNMERGE.out.paired.dump(tag: "trimm_unmerge_out")
 
+*/
 
         ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
                             .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_reneo_input")
 
+
         //RENEO( ch_reneo_input )
 
-
         MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
-*/
-
-
 
 
     emit:
