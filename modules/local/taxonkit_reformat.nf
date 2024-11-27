@@ -6,7 +6,7 @@ process TAXONKIT_REFORMAT {
 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/taxonkit:0.12.0--h9ee0642_0' :
+        'docker://community.wave.seqera.io/library/coreutils_taxonkit:f9e457f496196bee' :
         'community.wave.seqera.io/library/coreutils_taxonkit:f9e457f496196bee' }"
 
     input:
