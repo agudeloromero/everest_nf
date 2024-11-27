@@ -7,7 +7,7 @@ process TAXONKIT_REFORMAT {
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/taxonkit:0.12.0--h9ee0642_0' :
-        'quay.io/biocontainers/taxonkit:0.12.0--h9ee0642_0' }"
+        'community.wave.seqera.io/library/coreutils_taxonkit:f9e457f496196bee' }"
 
     input:
     tuple val(meta), path(lca)
@@ -34,7 +34,7 @@ process TAXONKIT_REFORMAT {
         --data-dir ${tax_db} \\
         -i 2 \\
     | taxonkit reformat --data-dir ${tax_db} -i 7 -f "{k}\\t{p}\\t{c}\\t{o}\\t{f}\\t{g}\\t{s}" -F --fill-miss-rank \\
-    | awk 'BEGIN {OFS="\\t"} {\$5=\$6=""; sub(/\\t\\t/, "\\t"); print}'
+    | cut --complement -f5,6 \\
     > ${output} \\
     2> ${log}
 
