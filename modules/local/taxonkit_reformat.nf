@@ -34,7 +34,7 @@ process TAXONKIT_REFORMAT {
         --data-dir ${tax_db} \\
         -i 2 \\
     | taxonkit reformat --data-dir ${tax_db} -i 7 -f "{k}\\t{p}\\t{c}\\t{o}\\t{f}\\t{g}\\t{s}" -F --fill-miss-rank \\
-    | cut --complement -f5,6 \\
+    | awk 'BEGIN {OFS="\\t"} {\$5=\$6=""; sub(/\\t\\t/, "\\t"); print}'
     > ${output} \\
     2> ${log}
 
