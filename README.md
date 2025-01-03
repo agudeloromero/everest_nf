@@ -14,7 +14,8 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
+Dataset
+[![Zenodo Dataset](http://img.shields.io/badge/DOI-10.5281/zenodo.14279485-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.14279485)
 
 **nf-core/everest** is a bioinformatics best-practice analysis pipeline for pipEline for Viral assEmbly and chaRactEriSaTion.
 
