@@ -24,7 +24,7 @@ process SPADES_DENOVO {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: '--only-assembler'
+    def args = '' // FIXME task.ext.args ?: '--only-assembler'
     def prefix = task.ext.prefix ?: "${meta.id}"
     def maxmem = task.memory.toGiga()
 
