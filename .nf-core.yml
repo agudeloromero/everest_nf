@@ -1,11 +1,15 @@
 nf_core_version: 3.2.0
 repository_type: pipeline
 template:
-  author: Patricia Agudelo-Romero
-  description: pipEline for Viral assEmbly and chaRactEriSaTion
-  force: false
-  is_nfcore: true
+  author: agudeloromero
+  org: agudeloromero
+  description: everest-nf is a bioinformatics best-practice analysis pipeline for
+    pipEline for Viral assEmbly and chaRactEriSaTion.
+  force: true
+  is_nfcore: false
   name: everest
-  org: tki
   outdir: .
+  skip_features:
+  - igenomes
   version: 1.0dev
+  website:
