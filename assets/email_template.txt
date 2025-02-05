@@ -1,18 +1,10 @@
-----------------------------------------------------
-                                        ,--./,-.
-        ___     __   __   __   ___     /,-._.--~\\
-  |\\ | |__  __ /  ` /  \\ |__) |__         }  {
-  | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
-                                        `._,._,'
-  tki/everest ${version}
-----------------------------------------------------
 Run Name: $runName
 
 <% if (success){
-    out << "## tki/everest execution completed successfully! ##"
+    out << "## agudeloromero/everest execution completed successfully! ##"
 } else {
     out << """####################################################
-## tki/everest execution completed unsuccessfully! ##
+## agudeloromero/everest execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -35,5 +27,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-tki/everest
-https://github.com/tki/everest
+agudeloromero/everest
+https://github.com/agudeloromero/everest

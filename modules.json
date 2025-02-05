@@ -1,6 +1,6 @@
 {
-    "name": "tki/everest",
-    "homePage": "https://github.com/tki/everest",
+    "name": "agudeloromero/everest",
+    "homePage": "https://github.com/agudeloromero/everest",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
