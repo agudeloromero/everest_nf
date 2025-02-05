@@ -6,7 +6,7 @@ template:
     pipEline for Viral assEmbly and chaRactEriSaTion.
   force: false
   is_nfcore: false
-  name: everest
+  name: everest_nf
   org: agudeloromero
   outdir: .
   skip_features:
