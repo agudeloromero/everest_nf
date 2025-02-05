@@ -2,7 +2,7 @@ nf_core_version: 3.2.0
 repository_type: pipeline
 template:
   author: agudeloromero
-  org: agudeloromero
+  org: tki
   description: everest-nf is a bioinformatics best-practice analysis pipeline for
     pipEline for Viral assEmbly and chaRactEriSaTion.
   force: true
