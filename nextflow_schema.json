@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/everest/master/nextflow_schema.json",
-    "title": "nf-core/everest pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/tki/everest/master/nextflow_schema.json",
+    "title": "tki/everest pipeline parameters",
     "description": "pipEline for Viral assEmbly and chaRactEriSaTion",
     "type": "object",
     "$defs": {

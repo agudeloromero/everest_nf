@@ -1,4 +1,4 @@
-# nf-core/everest: Output
+# tki/everest: Output
 
 ## Introduction
 

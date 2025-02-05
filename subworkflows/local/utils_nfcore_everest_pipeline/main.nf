@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the nf-core/everest pipeline
+// Subworkflow with functionality specific to the tki/everest pipeline
 //
 
 /*

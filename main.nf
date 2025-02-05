@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/everest
+    tki/everest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/everest
+    Github : https://github.com/tki/everest
     Website: https://nf-co.re/everest
     Slack  : https://nfcore.slack.com/channels/everest
 ----------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_EVEREST {
+workflow TKI_EVEREST {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -80,7 +80,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_EVEREST (
+    TKI_EVEREST (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
@@ -93,7 +93,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_EVEREST.out.multiqc_report
+        TKI_EVEREST.out.multiqc_report
     )
 }
 

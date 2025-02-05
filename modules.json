@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/everest",
-    "homePage": "https://github.com/nf-core/everest",
+    "name": "tki/everest",
+    "homePage": "https://github.com/tki/everest",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
