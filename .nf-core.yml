@@ -6,6 +6,6 @@ template:
   force: false
   is_nfcore: true
   name: everest
-  org: nf-core
+  org: tki
   outdir: .
   version: 1.0dev
