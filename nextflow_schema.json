@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/agudeloromero/everest/master/nextflow_schema.json",
-    "title": "agudeloromero/everest pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/agudeloromero/everest_nf/master/nextflow_schema.json",
+    "title": "agudeloromero/everest_nf pipeline parameters",
     "description": "everest-nf is a bioinformatics best-practice analysis pipeline for pipEline for Viral assEmbly and chaRactEriSaTion.",
     "type": "object",
     "$defs": {

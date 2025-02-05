@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    agudeloromero/everest
+    agudeloromero/everest_nf
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/agudeloromero/everest
+    Github : https://github.com/agudeloromero/everest_nf
 ----------------------------------------------------------------------------------------
 */
 
@@ -13,9 +13,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { EVEREST  } from './workflows/everest'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_everest_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_everest_pipeline'
+include { EVEREST_NF  } from './workflows/everest_nf'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_everest_nf_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_everest_nf_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ever
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow AGUDELOROMERO_EVEREST {
+workflow AGUDELOROMERO_EVEREST_NF {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -35,11 +35,11 @@ workflow AGUDELOROMERO_EVEREST {
     //
     // WORKFLOW: Run pipeline
     //
-    EVEREST (
+    EVEREST_NF (
         samplesheet
     )
     emit:
-    multiqc_report = EVEREST.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = EVEREST_NF.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    AGUDELOROMERO_EVEREST (
+    AGUDELOROMERO_EVEREST_NF (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
@@ -78,7 +78,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        AGUDELOROMERO_EVEREST.out.multiqc_report
+        AGUDELOROMERO_EVEREST_NF.out.multiqc_report
     )
 }
 

@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the agudeloromero/everest pipeline
+// Subworkflow with functionality specific to the agudeloromero/everest_nf pipeline
 //
 
 /*

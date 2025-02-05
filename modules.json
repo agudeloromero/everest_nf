@@ -1,6 +1,6 @@
 {
-    "name": "agudeloromero/everest",
-    "homePage": "https://github.com/agudeloromero/everest",
+    "name": "agudeloromero/everest_nf",
+    "homePage": "https://github.com/agudeloromero/everest_nf",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
