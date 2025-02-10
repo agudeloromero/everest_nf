@@ -3,8 +3,17 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+
+
+//
+// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+//
+include { INPUT_CHECK             } from '../subworkflows/local/input_check'
+include { TRIMMING_ADAPTORS_WF    } from '../subworkflows/local/trimming_adaptors'
+include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
+include { DENOVO_WF               } from '../subworkflows/local/denovo'
+include { CLEANING_CONTIGS_WF     } from '../subworkflows/local/cleaning_contigs'
+include { TAXONOMY_WF             } from '../subworkflows/local/taxonomy'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -24,6 +33,48 @@ workflow EVEREST_NF {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    INPUT_CHECK (
+        ch_samplesheet
+    )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+
+    //============================
+    // START: EVEREST WORKFLOW
+    //============================
+
+
+    // BINNING_WF -> Optional
+    // PRE_TRIMMING_QC_WF -> Optional, reuse the module
+
+    if(params.input_contigs) {
+        CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, input_contigs )
+
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+
+    } else {
+        TRIMMING_ADAPTORS_WF( INPUT_CHECK.out.reads )
+
+        HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
+
+        DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+
+        CLEANING_CONTIGS_WF( INPUT_CHECK.out.reads, DENOVO_WF.out.repseq_fasta )
+
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+
+        /* PILON didn't work */
+
+    }
+
+
+    //============================
+    // FINISH: EVEREST WORKFLOW
+    //============================
+
+
+
     //
     // MODULE: Run FastQC
     //
