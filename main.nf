@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ever
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow AGUDELOROMERO_EVEREST_NF {
+workflow TKI {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -65,7 +65,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    AGUDELOROMERO_EVEREST_NF (
+    TKI (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
@@ -78,7 +78,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        AGUDELOROMERO_EVEREST_NF.out.multiqc_report
+        TKI.out.multiqc_report
     )
 }
 
