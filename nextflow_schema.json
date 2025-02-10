@@ -304,7 +304,7 @@
             "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/definitions/everest_options"
+            "$ref": "#/$defs/everest_options"
         }
     ]
 }
