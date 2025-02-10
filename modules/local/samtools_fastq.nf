@@ -6,16 +6,18 @@ process SAMTOOLS_FASTQ {
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-           'build_minimap2--65abc6499991bbbc.sif':
-           'FIXME' }"
+            'https://depot.galaxyproject.org/singularity/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
+            'biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' }"
+
+
 
         input:
         tuple val(meta), path(bam)
 
         output:
-        tuple val(meta), path('*_unmapped_R*.fastq')			        , emit: unmapped
+        tuple val(meta), path('*_unmapped_R*.fastq')                    , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
-        tuple val(meta), path('*samtools_fastq.log')	                , emit: log
+        tuple val(meta), path('*samtools_fastq.log')                    , emit: log
         path "versions.yml"                                             , emit: versions
 
         script:
@@ -59,4 +61,3 @@ process SAMTOOLS_FASTQ {
         """
 
 }
-
