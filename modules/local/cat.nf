@@ -14,8 +14,8 @@ process CAT {
         tuple val(meta), path(unmapped_pair), path(singleton_pair)
 
         output:
-        tuple val(meta), path('*_unmapped_cat_R*.fastq')	                    , emit: fastq
-        path "versions.yml"			                                            , emit: versions
+        tuple val(meta), path('*_unmapped_cat_R*.fastq')                        , emit: fastq
+        path "versions.yml"                                                     , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -23,7 +23,7 @@ process CAT {
         """
             cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
 
-            cat ${unmapped_pair[0]} ${singleton_pair[0]} > ${prefix}_unmapped_cat_R1.fastq
+            cat ${unmapped_pair[1]} ${singleton_pair[1]} > ${prefix}_unmapped_cat_R2.fastq
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
@@ -46,4 +46,3 @@ process CAT {
         """
 
 }
-

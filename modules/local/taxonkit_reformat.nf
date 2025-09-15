@@ -6,8 +6,8 @@ process TAXONKIT_REFORMAT {
 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://ghcr.io/abhi18av/everest-misc:0.0.1' :
-        'ghcr.io/abhi18av/everest-misc:0.0.1' }"
+        'docker://community.wave.seqera.io/library/coreutils_taxonkit:f9e457f496196bee' :
+        'community.wave.seqera.io/library/coreutils_taxonkit:f9e457f496196bee' }"
 
     input:
     tuple val(meta), path(lca)

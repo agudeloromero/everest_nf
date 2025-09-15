@@ -1,6 +1,6 @@
 process BBMAP_DEDUPE {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_high_memory'
     label 'error_retry'
 
     conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }

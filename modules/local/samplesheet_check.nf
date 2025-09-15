@@ -9,7 +9,7 @@ process SAMPLESHEET_CHECK {
         'quay.io/biocontainers/python:3.8.3' }"
 
     input:
-    path samplesheet
+    tuple val(meta), path(samplesheet)
 
     output:
     path '*.csv'       , emit: csv

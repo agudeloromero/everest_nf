@@ -18,9 +18,9 @@ workflow TRIMMING_ADAPTORS_WF {
         /* reads_ch.dump(tag:"reads_ch") */
 
         //TODO: Replace with the nf-core module
-        BBMAP_PHIX( reads_ch ) 
+        BBMAP_PHIX( reads_ch )
 
-        TRIMM( BBMAP_PHIX.out.clean, params.adaptor ) 
+        TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
 
         //Filter single_end and paired_end samples using branch operator
         ch_trimmed = TRIMM.out.paired
@@ -36,7 +36,7 @@ workflow TRIMMING_ADAPTORS_WF {
         CAT_PAIR_UNPAIR( ch_trimm_all_pe )
 
 
-        //TODO 
+        //TODO
         /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
         /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 

@@ -1,22 +1,22 @@
 process MINIMAP2_HOST_REMOVAL {
         tag "$meta.id"
-        label 'process_medium'
+        label 'process_high_memory'
 
         conda { params.conda_minimap2_env ?: "${projectDir}/envs/minimap2.yml" }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
-            'quay.io/biocontainers/minimap2:2.24--h7132678_1' }"
+            'biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' }"
 
         input:
         path index
         tuple val(meta), path(fastqs)
 
         output:
-        tuple val(meta), path('*_unmapped_R*.fastq')			        , emit: unmapped
+        tuple val(meta), path('*_unmapped_R*.fastq')                    , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
-        tuple val(meta), path('*minimap2_host_removal.log')	            , emit: log
-        path "versions.yml"						                        , emit: versions
+        tuple val(meta), path('*minimap2_host_removal.log')             , emit: log
+        path "versions.yml"                                             , emit: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -63,4 +63,3 @@ process MINIMAP2_HOST_REMOVAL {
         """
 
 }
-

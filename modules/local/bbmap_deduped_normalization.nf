@@ -1,6 +1,6 @@
 process BBMAP_DUDUPED_NORMALIZATION {
         tag "$meta.id"
-        label 'process_high'
+        label 'process_high_memory'
         label 'error_retry'
 
         conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
@@ -13,9 +13,9 @@ process BBMAP_DUDUPED_NORMALIZATION {
         tuple val(meta), path(reads)
 
         output:
-        tuple val(meta), path('*_dedup_norm_R*.fastq.gz')		              , emit: norm_fastqgz
-        tuple val(meta), path('*bbmap_duduped_normalization.log')		      , emit: log
-        path "versions.yml"							                          , emit: versions
+        tuple val(meta), path('*_dedup_norm_R*.fastq.gz')                     , emit: norm_fastqgz
+        tuple val(meta), path('*bbmap_duduped_normalization.log')             , emit: log
+        path "versions.yml"                                                   , emit: versions
 
         script:
         def args = task.ext.args ?: ""
@@ -62,4 +62,3 @@ process BBMAP_DUDUPED_NORMALIZATION {
         END_VERSIONS
         """
 }
-

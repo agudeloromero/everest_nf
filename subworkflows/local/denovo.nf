@@ -46,7 +46,9 @@ workflow DENOVO_WF {
 
         SPADES_DENOVO( ch_spades_input )
 
-        PHAROKKA( SPADES_DENOVO.out.scaffolds, params.pharokka_db )
+
+        //TODO: Reenable this once we have implemented vibrant software to replace virsorter2 pipeline.
+        //PHAROKKA( SPADES_DENOVO.out.scaffolds, params.pharokka_db )
 
 
     /*

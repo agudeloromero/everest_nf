@@ -93,6 +93,7 @@ workflow EVEREST {
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
     } else {
+
         TRIMMING_ADAPTORS_WF( INPUT_CHECK.out.reads )
 
         HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
