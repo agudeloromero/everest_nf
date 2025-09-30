@@ -8,17 +8,17 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { TRIMMING_ADAPTORS_WF    } from '../subworkflows/local/trimming_adaptors'
-include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
-include { DENOVO_WF               } from '../subworkflows/local/denovo'
-include { CLEANING_CONTIGS_WF     } from '../subworkflows/local/cleaning_contigs'
-include { TAXONOMY_WF             } from '../subworkflows/local/taxonomy'
+include { TRIMMING_ADAPTORS_WF   } from '../subworkflows/local/trimming_adaptors'
+include { HOST_REMOVAL_WF        } from '../subworkflows/local/host_removal'
+include { DENOVO_WF              } from '../subworkflows/local/denovo'
+include { CLEANING_CONTIGS_WF    } from '../subworkflows/local/cleaning_contigs'
+include { TAXONOMY_WF            } from '../subworkflows/local/taxonomy'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_everest_nf_pipeline'
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,18 +56,23 @@ workflow EVEREST_NF {
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
     if(params.input_contigs) {
+
         CLEANING_CONTIGS_WF( ch_samplesheet, input_contigs )
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
     } else {
+
         TRIMMING_ADAPTORS_WF( ch_samplesheet )
 
-        HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
+        HOST_REMOVAL_WF( params.fasta,
+                         TRIMMING_ADAPTORS_WF.out.ch_all_fastq,
+                         TRIMMING_ADAPTORS_WF.out.trim_fastq )
 
         DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
-        CLEANING_CONTIGS_WF( ch_samplesheet, DENOVO_WF.out.repseq_fasta )
+        CLEANING_CONTIGS_WF( ch_samplesheet,
+                             DENOVO_WF.out.repseq_fasta )
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
