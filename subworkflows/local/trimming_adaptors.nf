@@ -29,6 +29,19 @@ workflow TRIMMING_ADAPTORS_WF {
         ch_long_reads.dump(tag:"long_reads")
 
 
+        LONGREAD_PREPROCESSING(
+            ch_long_reads,
+            ch_lambda_db,
+            ch_host_fasta,
+            params.skip_longread_qc,
+        )
+        ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        ch_long_reads = LONGREAD_PREPROCESSING.out.long_reads
+
+
+
+
     //-------------
     // SHORT-READS
     //-------------
