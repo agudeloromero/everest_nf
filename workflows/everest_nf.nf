@@ -33,6 +33,15 @@ workflow EVEREST_NF {
 
     main:
 
+
+    ch_samplesheet.branch {
+        short_reads: it[0].is_long_read == false
+        long_reads: it[0].is_long_read == true
+    }
+   .set {ch_samplesheet_branched}
+
+    // ch_samplesheet_branched.dump(tag: "ch_samplesheet_branched")
+
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -40,7 +49,7 @@ workflow EVEREST_NF {
     // MODULE: Run FastQC
     //
     FASTQC (
-        ch_samplesheet
+        ch_samplesheet_branched.short_reads
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
@@ -63,18 +72,21 @@ workflow EVEREST_NF {
 
     } else {
 
-        TRIMMING_ADAPTORS_WF( ch_samplesheet )
+        TRIMMING_ADAPTORS_WF(
+            ch_samplesheet_branched.short_reads,
+            ch_samplesheet_branched.long_reads,
+        )
 
-        HOST_REMOVAL_WF( params.fasta,
-                         TRIMMING_ADAPTORS_WF.out.ch_all_fastq,
-                         TRIMMING_ADAPTORS_WF.out.trim_fastq )
+        // HOST_REMOVAL_WF( params.fasta,
+        //                  TRIMMING_ADAPTORS_WF.out.ch_all_fastq,
+        //                  TRIMMING_ADAPTORS_WF.out.trim_fastq )
 
-        DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+        // DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
-        CLEANING_CONTIGS_WF( ch_samplesheet,
-                             DENOVO_WF.out.repseq_fasta )
+        // CLEANING_CONTIGS_WF( ch_samplesheet,
+        //                      DENOVO_WF.out.repseq_fasta )
 
-        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        // TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
         /* PILON didn't work */
 

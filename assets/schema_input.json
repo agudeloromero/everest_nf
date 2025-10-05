@@ -33,7 +33,17 @@
                     "exists": true,
                     "pattern": "^\\S+\\.f(ast)?q\\.gz$",
                     "errorMessage": "FastQ file for long_reads cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-                }
+            },
+            "long_read_platform": {
+                "type": "string",
+                "enum": [
+                    "OXFORD_NANOPORE",
+                    "OXFORD_NANOPORE_HQ",
+                    "PACBIO",
+                    "PACBIO_CLR",
+                    "PACBIO_HIFI"
+                ]
+            }
         },
         "required": ["sample"]
     }

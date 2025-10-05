@@ -11,53 +11,66 @@ include { CAT_PAIR_UNPAIR                     } from '../../modules/local/cat_pa
 workflow TRIMMING_ADAPTORS_WF {
 
     take:
-        reads_ch // [ val(meta), [ reads ] ]
+        ch_short_reads // [ val(meta), [ reads ] ]
+        ch_long_reads // [ val(meta), [ reads ] ]
 
     main:
 
-//FOR LONG READS
-// - no need to concatenate
-    // use nf-core/mag setup for long-read QC (step-2)
+
+    //-------------
+    // LONG-READS
+
+        //NOTE FOR LONG READS
+        // - no need to concatenate
+        // - use nf-core/mag setup for long-read QC (step-2)
+
+    //-------------
+
+        ch_long_reads.dump(tag:"long_reads")
 
 
-        /* reads_ch.dump(tag:"reads_ch") */
+    //-------------
+    // SHORT-READS
+    //-------------
 
-        //TODO: Replace with the nf-core module
-        BBMAP_PHIX( reads_ch )
+        ch_short_reads.dump(tag:"short_reads")
 
-        TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
+    //     //TODO: Replace with the nf-core module
+    //     BBMAP_PHIX( ch_short_reads )
 
-        //Filter single_end and paired_end samples using branch operator
-        ch_trimmed = TRIMM.out.paired
-                                .branch {
-                                         se: it[0].single_end == true
-                                         pe: it[0].single_end == false
-                                     }
+    //     TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
 
-        ch_trimm_all_pe = ch_trimmed.pe
-                            .join(TRIMM.out.unpaired)
+    //     //Filter single_end and paired_end samples using branch operator
+    //     ch_trimmed = TRIMM.out.paired
+    //                             .branch {
+    //                                      se: it[0].single_end == true
+    //                                      pe: it[0].single_end == false
+    //                                  }
 
-
-        CAT_PAIR_UNPAIR( ch_trimm_all_pe )
-
-
-        //TODO
-        /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
-        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
+    //     ch_trimm_all_pe = ch_trimmed.pe
+    //                         .join(TRIMM.out.unpaired)
 
 
+    //     CAT_PAIR_UNPAIR( ch_trimm_all_pe )
 
-       all_fastq_ch = ch_trimmed.se
-                        .mix(CAT_PAIR_UNPAIR.out.concatenated)
-                        /* .dump(tag:"all_fastq_ch") */
+
+    //     //TODO
+    //     /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
+    //     /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 
 
 
-    emit:
-        /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
-        trimm_se_fastq  = ch_trimmed.se
-        cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
-        ch_all_fastq = all_fastq_ch
-        trim_fastq = TRIMM.out.paired
+    //    all_fastq_ch = ch_trimmed.se
+    //                     .mix(CAT_PAIR_UNPAIR.out.concatenated)
+    //                     /* .dump(tag:"all_fastq_ch") */
+
+
+
+    // emit:
+    //     /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
+    //     trimm_se_fastq  = ch_trimmed.se
+    //     cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
+    //     ch_all_fastq = all_fastq_ch
+    //     trim_fastq = TRIMM.out.paired
 
 }
