@@ -28,6 +28,14 @@ workflow TRIMMING_ADAPTORS_WF {
 
         ch_long_reads.dump(tag:"long_reads")
 
+        if (!params.keep_lambda) {
+            ch_lambda_db = params.lambda_reference ? Channel.value(file("${params.lambda_reference}", checkIfExists: true)) : Channel.value(file("${projectDir}/assets/data/GCA_000840245.1_ViralProj14204_genomic.fna.gz", checkIfExists: true))
+        }
+        else {
+            ch_lambda_db = Channel.value([])
+        }
+
+
 
         LONGREAD_PREPROCESSING(
             ch_long_reads,
