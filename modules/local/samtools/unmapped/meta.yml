@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "samtools_unmapped"
+## TODO nf-core: Add a description of the module and list keywords
+description: write your description here
+keywords:
+  - sort
+  - example
+  - genomics
+tools:
+  - "samtools":
+      ## TODO nf-core: Add a description and other details for the software below
+      description: "Tools for dealing with SAM, BAM and CRAM files"
+      homepage: "None"
+      documentation: "None"
+      tool_dev_url: "None"
+      doi: ""
+      licence: ["MIT"]
+      identifier: biotools:samtools
+
+## TODO nf-core: Add a description of all of the variables used as input
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+
+    - sequence_trace:
+        # TODO nf-core: Update the information obtained from bio.tools and make sure that it is correct
+        type: file
+        description: sequence_trace file
+        pattern: "*.{bam,sam,cram}"
+        ontologies:
+          - edam: "http://edamontology.org/data_0924" # Sequence trace
+          - edam: "http://edamontology.org/format_2572" # BAM
+          - edam: "http://edamontology.org/format_2573" # SAM
+          - edam: "http://edamontology.org/format_3462" # CRAM
+
+## TODO nf-core: Add a description of all of the variables used as output
+output:
+  - sequence_trace:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.{bam,sam,cram}":
+          # TODO nf-core: Update the information obtained from bio.tools and make sure that it is correct
+          type: file
+          description: sequence_trace file
+          pattern: "*.{bam,sam,cram}"
+          ontologies:
+            - edam: "http://edamontology.org/data_0924" # Sequence trace
+            - edam: "http://edamontology.org/format_2572" # BAM
+            - edam: "http://edamontology.org/format_2573" # SAM
+            - edam: "http://edamontology.org/format_3462" # CRAM
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@abhi18av"
+maintainers:
+  - "@abhi18av"
