@@ -19,6 +19,11 @@ workflow HOST_REMOVAL_WF {
 
     main:
 
+
+//FOR LONG-READS
+    // refer nf-core/taxprofiler use minimap2 for host removal and then proceed to spades-hybrid
+// - refer the use of -ax parameters https://github.com/lh3/minimap2?tab=readme-ov-file#map-long-noisy-genomic-reads
+
         //FIXME Add this param to the schema OR samplesheet
         if(!params.rnaseq) {
             MINIMAP2_INDEX( ref_fasta_ch  )
@@ -44,6 +49,9 @@ workflow HOST_REMOVAL_WF {
                                 /* .dump(tag: "ch_pigz_input") */
 
         } else {
+
+            //LONG-READ use the MINIMAP as default, and make Kallisto optional
+
             KALLISTO_INDEX( params.transcriptome )
             KALLISTO_ALIGN( trim_fastq_ch, KALLISTO_INDEX.out.idx )
             SAMTOOLS_FASTQ( KALLISTO_ALIGN.out.bam )
@@ -68,6 +76,11 @@ workflow HOST_REMOVAL_WF {
 
         }
 
+
+
+    //NOTE: LONG-READS we are not sure if long-reads need deduplication and normalization
+    // We can possibly use these commands as if long-reads are single-end reads
+
         PIGZ(ch_pigz_input)
 
         BBMAP_DEDUPE( PIGZ.out.fastqgz )
@@ -88,4 +101,3 @@ workflow HOST_REMOVAL_WF {
     emit:
         deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
    }
-

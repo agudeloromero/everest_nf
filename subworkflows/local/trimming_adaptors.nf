@@ -15,6 +15,11 @@ workflow TRIMMING_ADAPTORS_WF {
 
     main:
 
+//FOR LONG READS
+// - no need to concatenate
+    // use nf-core/mag setup for long-read QC (step-2)
+
+
         /* reads_ch.dump(tag:"reads_ch") */
 
         //TODO: Replace with the nf-core module

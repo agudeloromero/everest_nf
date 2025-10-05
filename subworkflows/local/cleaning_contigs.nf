@@ -14,13 +14,17 @@ workflow CLEANING_CONTIGS_WF {
         repseq_fasta
 
     main:
+
+//LONG-READ we shouldn't need to change this workflow since the output of SPADES
+//should have the same structure regardless of SR/LR
+
         SEQKIT_FILTER( repseq_fasta )
 
         //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
 
 
-    //NOTE: The output of nanopore analysis should be the the input for CHECKV
+        //NOTE: The output of nanopore analysis should be the the input for CHECKV
         CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
 
 

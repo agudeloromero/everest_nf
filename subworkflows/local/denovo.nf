@@ -21,7 +21,9 @@ workflow DENOVO_WF {
 
 
 
-        //NOTE: PE specific processes
+    //----------------------------------------
+    //NOTE: PE specific processes
+    //----------------------------------------
          BBMAP_MERGE( ch_deduped.pe )
 
          TRIMM_UNMERGE( BBMAP_MERGE.out.unmerged, params.adaptor )
@@ -33,7 +35,9 @@ workflow DENOVO_WF {
                                  .join(TRIMM_UNMERGE.out.unpaired)
                                  /* .dump(tag:'ch_trimm_combined') */
 
+    //----------------------------------------
 
+        //NOTE: SE specific processes
          //NOTE: Merge the fastq file channels again
 
          ch_spades_input_se = ch_deduped.se
