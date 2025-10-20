@@ -44,7 +44,7 @@ workflow LONGREAD_HOSTREMOVAL {
 
     emit:
     // stats         = SAMTOOLS_HOSTREMOVED_STATS.out.stats //channel: [val(meta), [reads  ] ]
-    reads         = SAMTOOLS_HOSTREMOVED_UNMAPPED.out.fastq // channel: [ val(meta), [ reads ] ]
+    reads         = SAMTOOLS_HOSTREMOVED_UNMAPPED.out.fastqgz // channel: [ val(meta), [ reads ] ]
     versions      = ch_versions // channel: [ versions.yml ]
     multiqc_files = ch_multiqc_files
 }

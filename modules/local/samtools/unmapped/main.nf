@@ -11,7 +11,7 @@ process SAMTOOLS_UNMAPPED {
     tuple val(meta), path(input), path(index)
 
     output:
-    tuple val(meta), path("*hostremoved.fastq.gz"), emit: fastq
+    tuple val(meta), path("*hostremoved.fastq.gz"), emit: fastqgz
     path "versions.yml"                           , emit: versions
 
     when:
