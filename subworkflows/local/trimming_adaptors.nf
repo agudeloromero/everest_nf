@@ -1,5 +1,6 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
+include { LONGREAD_PREPROCESSING              } from './preprocessing_longread'
 include { BBMAP_PHIX                          } from '../../modules/local/bbmap_phix'
 /* include { BBMAP_BBDUK as BBMAP_PHIX        } from '../../modules/nf-core/bbmap/bbduk' */
 include { TRIMM                               } from '../../modules/local/trimm'
@@ -7,6 +8,7 @@ include { CAT_PAIR_UNPAIR                     } from '../../modules/local/cat_pa
 /* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc' */
 /* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
 /* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
+
 
 workflow TRIMMING_ADAPTORS_WF {
 
@@ -26,7 +28,7 @@ workflow TRIMMING_ADAPTORS_WF {
 
     //-------------
 
-        ch_long_reads.dump(tag:"long_reads")
+        ch_long_reads.dump(tag:"ch_long_reads")
 
         if (!params.keep_lambda) {
             ch_lambda_db = params.lambda_reference ? Channel.value(file("${params.lambda_reference}", checkIfExists: true)) : Channel.value(file("${projectDir}/assets/data/GCA_000840245.1_ViralProj14204_genomic.fna.gz", checkIfExists: true))
@@ -39,13 +41,14 @@ workflow TRIMMING_ADAPTORS_WF {
 
         LONGREAD_PREPROCESSING(
             ch_long_reads,
+            ch_short_reads,
             ch_lambda_db,
-            ch_host_fasta,
+            params.host_genome,
             params.skip_longread_qc,
         )
-        ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
-        ch_long_reads = LONGREAD_PREPROCESSING.out.long_reads
+        // ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
+        // ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        // ch_long_reads = LONGREAD_PREPROCESSING.out.long_reads
 
 
 

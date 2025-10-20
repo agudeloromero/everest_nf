@@ -33,12 +33,15 @@ workflow EVEREST_NF {
 
     main:
 
+    // ch_samplesheet.dump(tag: 'ch_samplesheet')
 
     ch_samplesheet.branch {
-        short_reads: it[0].is_long_read == false
-        long_reads: it[0].is_long_read == true
+        short_reads: !it[0].is_long_read
+        long_reads: it[0].is_long_read
     }
-   .set {ch_samplesheet_branched}
+   .set { ch_samplesheet_branched }
+
+    // ch_samplesheet_branched.long_reads.dump(tag: 'ch_samplesheet_branched.long_reads')
 
     // ch_samplesheet_branched.dump(tag: "ch_samplesheet_branched")
 
@@ -72,7 +75,7 @@ workflow EVEREST_NF {
 
     } else {
 
-        TRIMMING_ADAPTORS_WF(
+        TRIMMING_ADAPTORS_WF (
             ch_samplesheet_branched.short_reads,
             ch_samplesheet_branched.long_reads,
         )
