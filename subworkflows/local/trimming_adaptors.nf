@@ -18,6 +18,10 @@ workflow TRIMMING_ADAPTORS_WF {
 
     main:
 
+        ch_versions = Channel.empty()
+        ch_multiqc_files = Channel.empty()
+        ch_long_reads_preprocessed = Channel.empty()
+        ch_short_reads_preprocessed = Channel.empty()
 
     //-------------
     // LONG-READS
@@ -30,27 +34,14 @@ workflow TRIMMING_ADAPTORS_WF {
 
         ch_long_reads.dump(tag:"ch_long_reads")
 
-        if (!params.keep_lambda) {
-            ch_lambda_db = params.lambda_reference ? Channel.value(file("${params.lambda_reference}", checkIfExists: true)) : Channel.value(file("${projectDir}/assets/data/GCA_000840245.1_ViralProj14204_genomic.fna.gz", checkIfExists: true))
-        }
-        else {
-            ch_lambda_db = Channel.value([])
-        }
 
-
-
-        LONGREAD_PREPROCESSING(
+        LONGREAD_PREPROCESSING (
             ch_long_reads,
-            ch_short_reads,
-            ch_lambda_db,
-            params.host_genome,
             params.skip_longread_qc,
         )
-        // ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
-        // ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
-        // ch_long_reads = LONGREAD_PREPROCESSING.out.long_reads
-
-
+        ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        ch_long_reads_preprocessed = LONGREAD_PREPROCESSING.out.long_reads
 
 
     //-------------
@@ -90,11 +81,13 @@ workflow TRIMMING_ADAPTORS_WF {
 
 
 
-    // emit:
-    //     /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
-    //     trimm_se_fastq  = ch_trimmed.se
-    //     cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
-    //     ch_all_fastq = all_fastq_ch
-    //     trim_fastq = TRIMM.out.paired
+    emit:
+        longreads_preprocessed = ch_long_reads_preprocessed
+        shortreads_preprocessed = ch_short_reads_preprocessed
+        /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
+        // trimm_se_fastq  = ch_trimmed.se
+        // cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
+        // ch_all_fastq = all_fastq_ch
+        // trim_fastq = TRIMM.out.paired
 
 }
