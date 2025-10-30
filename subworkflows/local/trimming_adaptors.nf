@@ -50,44 +50,42 @@ workflow TRIMMING_ADAPTORS_WF {
 
         ch_short_reads.dump(tag:"short_reads")
 
-    //     //TODO: Replace with the nf-core module
-    //     BBMAP_PHIX( ch_short_reads )
+        //TODO: Replace with the nf-core module
+        BBMAP_PHIX( ch_short_reads )
 
-    //     TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
+        TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
 
-    //     //Filter single_end and paired_end samples using branch operator
-    //     ch_trimmed = TRIMM.out.paired
-    //                             .branch {
-    //                                      se: it[0].single_end == true
-    //                                      pe: it[0].single_end == false
-    //                                  }
+        //Filter single_end and paired_end samples using branch operator
+        ch_trimmed = TRIMM.out.paired
+                                .branch {
+                                         se: it[0].single_end == true
+                                         pe: it[0].single_end == false
+                                     }
 
-    //     ch_trimm_all_pe = ch_trimmed.pe
-    //                         .join(TRIMM.out.unpaired)
-
-
-    //     CAT_PAIR_UNPAIR( ch_trimm_all_pe )
+        ch_trimm_all_pe = ch_trimmed.pe
+                            .join(TRIMM.out.unpaired)
 
 
-    //     //TODO
-    //     /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
-    //     /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
+        CAT_PAIR_UNPAIR( ch_trimm_all_pe )
+
+
+        //TODO
+        /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
+        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
 
 
 
-    //    all_fastq_ch = ch_trimmed.se
-    //                     .mix(CAT_PAIR_UNPAIR.out.concatenated)
-    //                     /* .dump(tag:"all_fastq_ch") */
+       ch_short_reads_preprocessed = ch_trimmed.se
+                                        .mix(CAT_PAIR_UNPAIR.out.concatenated)
+                                        /* .dump(tag:"all_fastq_ch") */
 
 
 
     emit:
         longreads_preprocessed = ch_long_reads_preprocessed
-        shortreads_preprocessed = ch_short_reads_preprocessed
+        shortreads_preprocessed_se_pe = ch_short_reads_preprocessed
+        shortreads_trimmed_pe = TRIMM.out.paired
+        // shortreads_trimmed_single = ch_trimmed.se
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
-        // trimm_se_fastq  = ch_trimmed.se
-        // cat_trimm_pe_fastq  = CAT_PAIR_UNPAIR.out.concatenated
-        // ch_all_fastq = all_fastq_ch
-        // trim_fastq = TRIMM.out.paired
 
 }

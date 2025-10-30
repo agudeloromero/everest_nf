@@ -16,6 +16,7 @@ workflow HOST_REMOVAL_WF {
         ref_fasta_ch
         all_fastq_ch
         trim_fastq_ch
+        longreads_ch
 
     main:
 

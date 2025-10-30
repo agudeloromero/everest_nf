@@ -39,6 +39,7 @@ workflow EVEREST_NF {
     ch_samplesheet.branch {
         short_reads: !it[0].is_long_read
         long_reads: it[0].is_long_read
+        contigs: it[0].is_contig
     }
    .set { ch_samplesheet_branched }
 
@@ -76,20 +77,17 @@ workflow EVEREST_NF {
 
     } else {
 
-        TRIMMING_ADAPTORS_WF (
-            ch_samplesheet_branched.short_reads,
-            ch_samplesheet_branched.long_reads,
-        )
+        TRIMMING_ADAPTORS_WF ( ch_samplesheet_branched.short_reads,
+                               ch_samplesheet_branched.long_reads )
 
-        LONGREAD_HOSTREMOVAL (
-            TRIMMING_ADAPTORS_WF.out.longreads_preprocessed,
-            params.genome,
-        )
+        LONGREAD_HOSTREMOVAL ( TRIMMING_ADAPTORS_WF.out.longreads_preprocessed,
+                               params.genome )
 
 
-        // HOST_REMOVAL_WF( params.fasta,
-        //                  TRIMMING_ADAPTORS_WF.out.ch_all_fastq,
-        //                  TRIMMING_ADAPTORS_WF.out.trim_fastq )
+        HOST_REMOVAL_WF( params.fasta,
+                         TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
+                         TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe,
+                         TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
 
         // DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 
