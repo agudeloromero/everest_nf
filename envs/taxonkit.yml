@@ -1,8 +1,0 @@
-name: taxonkit
-channels:
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies:
-- bioconda::coreutils
-- bioconda::taxonkit=0.12.0
