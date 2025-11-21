@@ -10,7 +10,7 @@
 //
 include { TRIMMING_ADAPTORS_WF   } from '../subworkflows/local/trimming_adaptors'
 include { HOST_REMOVAL_WF        } from '../subworkflows/local/host_removal'
-include { LONGREAD_HOSTREMOVAL   } from '../subworkflows/local/hostremoval_longread'
+include { LONGREAD_HOSTREMOVAL as LONGREAD_HOSTREMOVAL_WF  } from '../subworkflows/local/hostremoval_longread'
 include { DENOVO_WF              } from '../subworkflows/local/denovo'
 include { CLEANING_CONTIGS_WF    } from '../subworkflows/local/cleaning_contigs'
 include { TAXONOMY_WF            } from '../subworkflows/local/taxonomy'
@@ -71,23 +71,23 @@ workflow EVEREST_NF {
 
     if(params.input_contigs) {
 
-        CLEANING_CONTIGS_WF( ch_samplesheet, input_contigs )
+        CLEANING_CONTIGS_WF ( ch_samplesheet, input_contigs )
 
-        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        TAXONOMY_WF ( CLEANING_CONTIGS_WF.out.fasta )
 
     } else {
 
         TRIMMING_ADAPTORS_WF ( ch_samplesheet_branched.short_reads,
                                ch_samplesheet_branched.long_reads )
 
-        LONGREAD_HOSTREMOVAL ( TRIMMING_ADAPTORS_WF.out.longreads_preprocessed,
-                               params.genome )
+        LONGREAD_HOSTREMOVAL_WF ( params.genome,
+                                  TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
 
 
-        HOST_REMOVAL_WF( params.fasta,
-                         TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
-                         TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe,
-                         TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
+        HOST_REMOVAL_WF ( params.fasta,
+                          TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
+                          TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe,
+                          TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
 
         // DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
 

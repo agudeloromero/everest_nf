@@ -53,9 +53,26 @@ workflow HOST_REMOVAL_WF {
 
             //LONG-READ use the MINIMAP as default, and make Kallisto optional
 
-            KALLISTO_INDEX( params.transcriptome )
-            KALLISTO_ALIGN( trim_fastq_ch, KALLISTO_INDEX.out.idx )
-            SAMTOOLS_FASTQ( KALLISTO_ALIGN.out.bam )
+                if( params.long_read_aligner == "kallisto" ) {
+
+                        KALLISTO_INDEX( params.transcriptome )
+                        KALLISTO_ALIGN( trim_fastq_ch, KALLISTO_INDEX.out.idx )
+                        SAMTOOLS_FASTQ( KALLISTO_ALIGN.out.bam )
+
+                    } else {
+
+                        MINIMAP2_INDEX( ref_fasta_ch  )
+
+                        MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, all_fastq_ch )
+
+                        //NOTE: Process the PE-singletons here
+                        BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.singleton )
+
+                        ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
+                                                    .join(BBMAP_SINGLETONS.out.singleton_pair)
+                                                    /* .dump(tag: "HOST_REMOVAL: ch_cat_input" ) */
+
+                    }
 
             //NOTE: Process the PE-singletons here
             BBMAP_SINGLETONS( SAMTOOLS_FASTQ.out.singleton )
