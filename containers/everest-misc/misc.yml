@@ -1,0 +1,7 @@
+name: vs2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - taxonkit=0.12.0
