@@ -1,0 +1,20 @@
+project:
+  type: website
+
+website:
+  title: "EVEREST-nf"
+
+  sidebar:
+      style: "docked"
+      search: true
+      contents:
+        - text: "Usage"
+          href: usage.md
+        - text: "Output"
+          href: output.md
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
