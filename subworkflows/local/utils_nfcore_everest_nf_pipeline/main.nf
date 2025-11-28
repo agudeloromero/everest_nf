@@ -70,25 +70,28 @@ workflow PIPELINE_INITIALISATION {
     Channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
-            meta, short_read_1, short_read_2, contig, long_read, long_read_platform ->
+            type, meta, short_read_1, short_read_2, contig, long_read, long_read_platform ->
+
+                // def meta_type = meta.type.toLowerCase()
+
                 if (long_read && long_read_platform) {
 
-                    return [ meta.id, meta + [ single_end: true,
+                    return [ meta.id, meta.type, meta + [ single_end: true,
                                                is_long_read: true,
                                                platform: long_read_platform ],
                             [ long_read ] ]
 
                 } else if (contig) {
 
-                    return [ meta.id, meta + [ single_end: true, is_contig: true ], [ contig ] ]
+                    return [ meta.id, meta.type, meta + [ single_end: true, is_contig: true ], [ contig ] ]
 
                 } else if (short_read_1 && !short_read_2) {
 
-                    return [ meta.id, meta + [ single_end: true ], [ short_read_1 ] ]
+                    return [ meta.id, meta.type, meta + [ single_end: true ], [ short_read_1 ] ]
 
                 } else {
 
-                    return [ meta.id, meta + [ single_end: false ], [ short_read_1, short_read_2 ] ]
+                    return [ meta.id, meta.type, meta + [ single_end: false ], [ short_read_1, short_read_2 ] ]
 
                 }
         }

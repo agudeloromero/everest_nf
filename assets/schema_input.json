@@ -7,6 +7,14 @@
     "items": {
         "type": "object",
         "properties": {
+            "type": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "DNA or RNA",
+                "meta": [
+                    "type"
+                ]
+            },
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
@@ -32,14 +40,15 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.f(ast)?a$",
-                "errorMessage": "FastA file cannot contain spaces and must have extension '.fa' or '.fasta'"
+                "errorMessage": "FastA file cannot contain spaces and must have extension '.fa' or '.fasta'",
             },
             "long_read": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                    "errorMessage": "FastQ file for long_reads cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                    "errorMessage": "FastQ file for long_reads cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+
             },
             "long_read_platform": {
                 "type": "string",
