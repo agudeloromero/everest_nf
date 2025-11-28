@@ -8,3 +8,7 @@ testing*
 *.pyc
 null/
 _resources/
+
+
+_site
+.quarto
