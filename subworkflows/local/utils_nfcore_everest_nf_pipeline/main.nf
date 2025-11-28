@@ -70,28 +70,29 @@ workflow PIPELINE_INITIALISATION {
     Channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
-            type, meta, short_read_1, short_read_2, contig, long_read, long_read_platform ->
+            meta, type, short_read_1, short_read_2, contig, long_read, long_read_platform ->
 
                 // def meta_type = meta.type.toLowerCase()
 
                 if (long_read && long_read_platform) {
 
-                    return [ meta.id, meta.type, meta + [ single_end: true,
+                    return [ meta.id, meta + [ seq_type: type,
+                                               single_end: true,
                                                is_long_read: true,
                                                platform: long_read_platform ],
                             [ long_read ] ]
 
                 } else if (contig) {
 
-                    return [ meta.id, meta.type, meta + [ single_end: true, is_contig: true ], [ contig ] ]
+                    return [ meta.id, meta + [seq_type: type, single_end: true, is_contig: true ], [ contig ] ]
 
                 } else if (short_read_1 && !short_read_2) {
 
-                    return [ meta.id, meta.type, meta + [ single_end: true ], [ short_read_1 ] ]
+                    return [ meta.id, meta + [seq_type: type, single_end: true ], [ short_read_1 ] ]
 
                 } else {
 
-                    return [ meta.id, meta.type, meta + [ single_end: false ], [ short_read_1, short_read_2 ] ]
+                    return [ meta.id, meta + [seq_type: type, single_end: false ], [ short_read_1, short_read_2 ] ]
 
                 }
         }
@@ -120,7 +121,7 @@ workflow PIPELINE_COMPLETION {
     email           //  string: email address
     email_on_fail   //  string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir          //    path: Path to output directory where results will be published
+    outdir          //  path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     hook_url        //  string: hook URL for notifications
     multiqc_report  //  string: Path to MultiQC report
@@ -168,11 +169,11 @@ workflow PIPELINE_COMPLETION {
 def validateInputSamplesheet(input) {
     def (metas, fastqs) = input[1..2]
 
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    }
+    // // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
+    // def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
+    // if (!endedness_ok) {
+    //     error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
+    // }
 
     return [ metas[0], fastqs ]
 }
