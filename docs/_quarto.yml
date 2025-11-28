@@ -8,10 +8,16 @@ website:
       style: "docked"
       search: true
       contents:
+        - text: "Installation"
+          href: installation.md
         - text: "Usage"
           href: usage.md
         - text: "Output"
           href: output.md
+        - text: "Databases"
+          href: databases.md
+        - text: "Parameters"
+          href: parameters.md
 
 format:
   html:
