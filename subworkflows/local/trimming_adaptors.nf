@@ -1,10 +1,7 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
 include { LONGREAD_PREPROCESSING              } from './preprocessing_longread'
-include { BBMAP_PHIX                          } from '../../modules/local/bbmap_phix'
-/* include { BBMAP_BBDUK as BBMAP_PHIX        } from '../../modules/nf-core/bbmap/bbduk' */
-include { TRIMM                               } from '../../modules/local/trimm'
-include { CAT_PAIR_UNPAIR                     } from '../../modules/local/cat_pair_unpair'
+include { SHORTREAD_PREPROCESSING              } from './preprocessing_shortread'
 /* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc' */
 /* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
 /* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
@@ -50,29 +47,13 @@ workflow TRIMMING_ADAPTORS_WF {
 
         ch_short_reads.dump(tag:"short_reads")
 
-        //TODO: Replace with the nf-core module
-        BBMAP_PHIX( ch_short_reads )
-
-        TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
-
-        //Filter single_end and paired_end samples using branch operator
-        ch_trimmed = TRIMM.out.paired
-                                .branch {
-                                         se: it[0].single_end == true
-                                         pe: it[0].single_end == false
-                                     }
-
-        ch_trimm_all_pe = ch_trimmed.pe
-                            .join(TRIMM.out.unpaired)
-
-
-        CAT_PAIR_UNPAIR( ch_trimm_all_pe )
-
-
-        //TODO
-        /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
-        /* MULTIQC_TRIMM( FASTQC_TRIMM.out.zip.collect{it[1]}, [], [], [] ) */
-
+        SHORTREAD_PREPROCESSING (
+            ch_short_reads,
+            params.skip_shortread_qc,
+        )
+        ch_versions = ch_versions.mix(SHORTREAD_PREPROCESSING.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(SHORTREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        ch_short_reads_preprocessed = SHORTREAD_PREPROCESSING.out.short_reads
 
 
        ch_short_reads_preprocessed = ch_trimmed.se
