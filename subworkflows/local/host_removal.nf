@@ -1,14 +1,17 @@
-include { BBMAP_DEDUPE                                 } from "../../modules/local/bbmap_dedupe"
-include { BBMAP_DEDUPED_REFORMAT                       } from "../../modules/local/bbmap_deduped_reformat"
-include { BBMAP_DUDUPED_NORMALIZATION                  } from "../../modules/local/bbmap_deduped_normalization"
-include { BBMAP_REFORMAT as BBMAP_SINGLETONS           } from "../../modules/local/bbmap_reformat"
-include { CAT                                          } from "../../modules/local/cat"
-include { KALLISTO_ALIGN                               } from "../../modules/local/kallisto_align"
-include { KALLISTO_INDEX                               } from "../../modules/nf-core/kallisto/index/main"
-include { MINIMAP2_INDEX                               } from "../../modules/nf-core/minimap2/index"
-include { MINIMAP2_HOST_REMOVAL                        } from "../../modules/local/minimap2_host_removal"
-include { PIGZ                                         } from "../../modules/local/pigz"
-include { SAMTOOLS_FASTQ                               } from "../../modules/local/samtools_fastq"
+#!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+
+include { BBMAP_DEDUPE } from "../../modules/local/bbmap_dedupe"
+include { BBMAP_DEDUPED_REFORMAT } from "../../modules/local/bbmap_deduped_reformat"
+include { BBMAP_DUDUPED_NORMALIZATION } from "../../modules/local/bbmap_deduped_normalization"
+include { BBMAP_REFORMAT as BBMAP_SINGLETONS } from "../../modules/local/bbmap_reformat"
+include { CAT } from "../../modules/local/cat"
+include { KALLISTO_ALIGN } from "../../modules/local/kallisto_align"
+include { KALLISTO_INDEX } from "../../modules/nf-core/kallisto/index/main"
+include { MINIMAP2_INDEX } from "../../modules/nf-core/minimap2/index"
+include { MINIMAP2_HOST_REMOVAL } from "../../modules/local/minimap2_host_removal"
+include { PIGZ } from "../../modules/local/pigz"
+include { SAMTOOLS_FASTQ } from "../../modules/local/samtools_fastq"
 
 
 workflow HOST_REMOVAL_WF {
@@ -16,106 +19,72 @@ workflow HOST_REMOVAL_WF {
         ref_fasta_ch
         all_fastq_ch
         trim_fastq_ch
-        longreads_ch
 
     main:
+        // Determine workflow branch by meta.seq_type
 
+        all_fastq_ch.branch {
+            dna: it[0].seq_type == "DNA"
+            rna: it[0].seq_type == "RNA"
+        }
+        .set { ch_all_fastq_branched }
 
-//FOR LONG-READS
-    // refer nf-core/taxprofiler use minimap2 for host removal and then proceed to spades-hybrid
-// - refer the use of -ax parameters https://github.com/lh3/minimap2?tab=readme-ov-file#map-long-noisy-genomic-reads
+        trim_fastq_ch.branch {
+            dna: it[0].seq_type == "DNA"
+            rna: it[0].seq_type == "RNA"
+        }
+        .set { ch_trim_fastq_branched }
 
-        //FIXME Add this param to the schema OR samplesheet
-        if(!params.rnaseq) {
-            MINIMAP2_INDEX( ref_fasta_ch  )
-
-            MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, all_fastq_ch )
-
-            //NOTE: Process the PE-singletons here
-            BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.singleton )
+//--------------------
+// DNA branch
+//--------------------
+        //TODO: Implement an option to provide the pre-indexed file
+            MINIMAP2_INDEX(ref_fasta_ch)
+            MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index, ch_all_fastq_branched.dna)
+            BBMAP_SINGLETONS(MINIMAP2_HOST_REMOVAL.out.singleton)
 
             ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
-                                        .join(BBMAP_SINGLETONS.out.singleton_pair)
-                                        /* .dump(tag: "HOST_REMOVAL: ch_cat_input" ) */
+                        .join(BBMAP_SINGLETONS.out.singleton_pair)
 
-            CAT( ch_cat_input )
-
-
-            //NOTE: Combine the SE and PE_Singletons FASTQ files here
-
+            CAT(ch_cat_input)
             ch_unmapped_se = MINIMAP2_HOST_REMOVAL.out.unmapped.filter { it[0].single_end == true }
-
-            ch_pigz_input = CAT.out.fastq
-                                .concat(ch_unmapped_se)
-                                /* .dump(tag: "ch_pigz_input") */
-
-        } else {
-
-            //LONG-READ use the MINIMAP as default, and make Kallisto optional
-
-                if( params.long_read_aligner == "kallisto" ) {
-
-                        KALLISTO_INDEX( params.transcriptome )
-                        KALLISTO_ALIGN( trim_fastq_ch, KALLISTO_INDEX.out.idx )
-                        SAMTOOLS_FASTQ( KALLISTO_ALIGN.out.bam )
-
-                    } else {
-
-                        MINIMAP2_INDEX( ref_fasta_ch  )
-
-                        MINIMAP2_HOST_REMOVAL( MINIMAP2_INDEX.out.index, all_fastq_ch )
-
-                        //NOTE: Process the PE-singletons here
-                        BBMAP_SINGLETONS( MINIMAP2_HOST_REMOVAL.out.singleton )
-
-                        ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
-                                                    .join(BBMAP_SINGLETONS.out.singleton_pair)
-                                                    /* .dump(tag: "HOST_REMOVAL: ch_cat_input" ) */
-
-                    }
-
-            //NOTE: Process the PE-singletons here
-            BBMAP_SINGLETONS( SAMTOOLS_FASTQ.out.singleton )
-
-            ch_cat_input = SAMTOOLS_FASTQ.out.unmapped
-                                        .join(BBMAP_SINGLETONS.out.singleton_pair)
-                                        /* .dump(tag: "HOST_REMOVAL: ch_cat_input" ) */
-
-            CAT( ch_cat_input )
+            ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
 
 
-            //NOTE: Combine the SE and PE_Singletons FASTQ files here
+ //--------------------
+// RNA branch
+//--------------------
 
-            ch_unmapped_se = SAMTOOLS_FASTQ.out.unmapped.filter { it[0].single_end == true }
+            if (params.long_read_aligner == "kallisto") {
+        //TODO: Implement an option to provide the pre-indexed file
+                KALLISTO_INDEX(params.transcriptome)
+                KALLISTO_ALIGN(ch_trim_fastq_branched.rna, KALLISTO_INDEX.out.idx)
+                SAMTOOLS_FASTQ(KALLISTO_ALIGN.out.bam)
+                BBMAP_SINGLETONS(SAMTOOLS_FASTQ.out.singleton)
+                ch_cat_input = SAMTOOLS_FASTQ.out.unmapped
+                    .join(BBMAP_SINGLETONS.out.singleton_pair)
+                CAT(ch_cat_input)
+                ch_unmapped_se = SAMTOOLS_FASTQ.out.unmapped.filter { it[0].single_end == true }
+                ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
+            } else {
+                MINIMAP2_INDEX(ref_fasta_ch)
+                MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index, ch_all_fastq_branched.rna)
+                BBMAP_SINGLETONS(MINIMAP2_HOST_REMOVAL.out.singleton)
+                ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
+                    .join(BBMAP_SINGLETONS.out.singleton_pair)
+                CAT(ch_cat_input)
+                ch_unmapped_se = MINIMAP2_HOST_REMOVAL.out.unmapped.filter { it[0].single_end == true }
+                ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
+            }
 
-            ch_pigz_input = CAT.out.fastq
-                                .concat(ch_unmapped_se)
-                                //.dump(tag: "ch_pigz_input")
-
-        }
-
-
-
-    //NOTE: LONG-READS we are not sure if long-reads need deduplication and normalization
-    // We can possibly use these commands as if long-reads are single-end reads
-
+        // Deduplication and normalization (applies to both branches)
         PIGZ(ch_pigz_input)
-
-        BBMAP_DEDUPE( PIGZ.out.fastqgz )
-
-        //NOTE: Only needed for concatenated PE samples
-        BBMAP_DEDUPED_REFORMAT( BBMAP_DEDUPE.out.cat_deduped_fastqgz )
-
+        BBMAP_DEDUPE(PIGZ.out.fastqgz)
+        BBMAP_DEDUPED_REFORMAT(BBMAP_DEDUPE.out.cat_deduped_fastqgz)
         ch_deduped_se = BBMAP_DEDUPE.out.deduped_fastqgz.filter { it[0].single_end == true }
-
-        ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq
-                            .concat(ch_unmapped_se)
-                            /* .dump(tag: "ch_bbmap_norm_input") */
-
-
-        BBMAP_DUDUPED_NORMALIZATION( ch_bbmap_norm_input )
-
+        ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq.concat(ch_unmapped_se)
+        BBMAP_DUDUPED_NORMALIZATION(ch_bbmap_norm_input)
 
     emit:
         deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
-   }
+}

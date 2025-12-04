@@ -15,7 +15,6 @@ workflow SHORTREAD_PREPROCESSING {
 
     take:
         ch_raw_short_reads
-        val_skip_qc
 
     main:
         // Collect version and QC output files

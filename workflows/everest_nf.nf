@@ -9,8 +9,8 @@
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { TRIMMING_ADAPTORS_WF   } from '../subworkflows/local/trimming_adaptors'
-include { HOST_REMOVAL_WF        } from '../subworkflows/local/host_removal'
-include { LONGREAD_HOSTREMOVAL as LONGREAD_HOSTREMOVAL_WF  } from '../subworkflows/local/hostremoval_longread'
+include { HOST_REMOVAL_WF as HOSTREMOVAL_SHORTREAD_WF      } from '../subworkflows/local/host_removal'
+include { LONGREAD_HOSTREMOVAL as HOSTREMOVAL_LONGREAD_WF  } from '../subworkflows/local/hostremoval_longread'
 include { DENOVO_WF              } from '../subworkflows/local/denovo'
 include { CLEANING_CONTIGS_WF    } from '../subworkflows/local/cleaning_contigs'
 include { TAXONOMY_WF            } from '../subworkflows/local/taxonomy'
@@ -41,11 +41,13 @@ workflow EVEREST_NF {
         long_reads: it[0].is_long_read
         contigs: it[0].is_contig
     }
-   .set { ch_samplesheet_branched }
+   .set { ch_reads_branched }
 
-    // ch_samplesheet_branched.long_reads.dump(tag: 'ch_samplesheet_branched.long_reads')
+    ch_reads_branched.long_reads.dump(tag: 'ch_reads_branched.long_reads')
+    ch_reads_branched.short_reads.dump(tag: 'ch_reads_branched.short_reads')
+    ch_reads_branched.contigs.dump(tag: 'ch_reads_branched.contigs')
 
-    // ch_samplesheet_branched.dump(tag: "ch_samplesheet_branched")
+    // ch_reads_branched.dump(tag: "ch_reads_branched")
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
@@ -54,7 +56,7 @@ workflow EVEREST_NF {
     // MODULE: Run FastQC
     //
     FASTQC (
-        ch_samplesheet_branched.short_reads
+        ch_reads_branched.short_reads
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
@@ -69,27 +71,24 @@ workflow EVEREST_NF {
     // BINNING_WF -> Optional
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
-    if(params.input_contigs) {
+       // CLEANING_CONTIGS_WF ( ch_samplesheet, ch_reads_branched.contigs )
+       // TAXONOMY_WF ( CLEANING_CONTIGS_WF.out.fasta )
 
-        CLEANING_CONTIGS_WF ( ch_samplesheet, input_contigs )
 
-        TAXONOMY_WF ( CLEANING_CONTIGS_WF.out.fasta )
+        TRIMMING_ADAPTORS_WF ( ch_reads_branched.short_reads,
+                               ch_reads_branched.long_reads )
 
-    } else {
-
-        TRIMMING_ADAPTORS_WF ( ch_samplesheet_branched.short_reads,
-                               ch_samplesheet_branched.long_reads )
-
-        LONGREAD_HOSTREMOVAL_WF ( params.genome,
+        HOSTREMOVAL_LONGREAD_WF ( params.genome,
                                   TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
 
 
-        HOST_REMOVAL_WF ( params.fasta,
-                          TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
-                          TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe,
-                          TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
+        HOSTREMOVAL_SHORTREAD_WF ( params.fasta,
+                                   TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
+                                   TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe )
 
-        // DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+
+        // DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
+
 
         // CLEANING_CONTIGS_WF( ch_samplesheet,
         //                      DENOVO_WF.out.repseq_fasta )
@@ -98,7 +97,6 @@ workflow EVEREST_NF {
 
         /* PILON didn't work */
 
-    }
 
 
     //============================

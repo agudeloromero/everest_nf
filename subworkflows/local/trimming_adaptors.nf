@@ -1,7 +1,7 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
-include { LONGREAD_PREPROCESSING              } from './preprocessing_longread'
-include { SHORTREAD_PREPROCESSING              } from './preprocessing_shortread'
+include { LONGREAD_PREPROCESSING as LONGREADS               } from './preprocessing_longread'
+include { SHORTREAD_PREPROCESSING as SHORTREADS             } from './preprocessing_shortread'
 /* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc' */
 /* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
 /* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
@@ -10,16 +10,13 @@ include { SHORTREAD_PREPROCESSING              } from './preprocessing_shortread
 workflow TRIMMING_ADAPTORS_WF {
 
     take:
-        ch_short_reads // [ val(meta), [ reads ] ]
-        ch_long_reads // [ val(meta), [ reads ] ]
+        ch_shortreads // [ val(meta), [ reads ] ]
+        ch_longreads // [ val(meta), [ reads ] ]
 
     main:
 
         ch_versions = Channel.empty()
         ch_multiqc_files = Channel.empty()
-        ch_long_reads_preprocessed = Channel.empty()
-        ch_short_reads_preprocessed = Channel.empty()
-
     //-------------
     // LONG-READS
 
@@ -29,36 +26,34 @@ workflow TRIMMING_ADAPTORS_WF {
 
     //-------------
 
-        ch_long_reads.dump(tag:"ch_long_reads")
+        ch_longreads.dump(tag:"ch_longreads")
 
 
-        LONGREAD_PREPROCESSING (
-            ch_long_reads,
+        LONGREADS (
+            ch_longreads,
             params.skip_longread_qc,
         )
-        ch_versions = ch_versions.mix(LONGREAD_PREPROCESSING.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(LONGREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
-        ch_long_reads_preprocessed = LONGREAD_PREPROCESSING.out.long_reads
+        ch_versions = ch_versions.mix(LONGREADS.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(LONGREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
 
 
     //-------------
     // SHORT-READS
     //-------------
 
-        ch_short_reads.dump(tag:"short_reads")
+        ch_shortreads.dump(tag:"ch_shortreads")
 
-        SHORTREAD_PREPROCESSING (
-            ch_short_reads
+        SHORTREADS (
+            ch_shortreads
         )
-        ch_versions = ch_versions.mix(SHORTREAD_PREPROCESSING.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(SHORTREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
-
+        ch_versions = ch_versions.mix(SHORTREADS.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(SHORTREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
 
 
     emit:
-        longreads_preprocessed = ch_long_reads_preprocessed
-        shortreads_preprocessed_se_pe = SHORTREAD_PREPROCESSING.out.short_reads
-        shortreads_trimmed_pe = SHORTREAD_PREPROCESSING.out.shortreads_trimmed_pe
+        longreads_preprocessed = LONGREADS.out.longreads
+        shortreads_preprocessed_se_pe = SHORTREADS.out.shortreads_preprocessed_se_pe
+        shortreads_trimmed_pe = SHORTREADS.out.shortreads_trimmed_pe
         // shortreads_trimmed_single = ch_trimmed.se
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
 
