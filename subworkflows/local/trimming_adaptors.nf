@@ -48,24 +48,17 @@ workflow TRIMMING_ADAPTORS_WF {
         ch_short_reads.dump(tag:"short_reads")
 
         SHORTREAD_PREPROCESSING (
-            ch_short_reads,
-            params.skip_shortread_qc,
+            ch_short_reads
         )
         ch_versions = ch_versions.mix(SHORTREAD_PREPROCESSING.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SHORTREAD_PREPROCESSING.out.multiqc_files.collect { it[1] }.ifEmpty([]))
-        ch_short_reads_preprocessed = SHORTREAD_PREPROCESSING.out.short_reads
-
-
-       ch_short_reads_preprocessed = ch_trimmed.se
-                                        .mix(CAT_PAIR_UNPAIR.out.concatenated)
-                                        /* .dump(tag:"all_fastq_ch") */
 
 
 
     emit:
         longreads_preprocessed = ch_long_reads_preprocessed
-        shortreads_preprocessed_se_pe = ch_short_reads_preprocessed
-        shortreads_trimmed_pe = TRIMM.out.paired
+        shortreads_preprocessed_se_pe = SHORTREAD_PREPROCESSING.out.short_reads
+        shortreads_trimmed_pe = SHORTREAD_PREPROCESSING.out.shortreads_trimmed_pe
         // shortreads_trimmed_single = ch_trimmed.se
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
 

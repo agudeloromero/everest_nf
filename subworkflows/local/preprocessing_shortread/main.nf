@@ -23,7 +23,7 @@ workflow SHORTREAD_PREPROCESSING {
         ch_multiqc_files = Channel.empty()
 
         //TODO: Replace with the nf-core module
-        BBMAP_PHIX( ch_short_reads )
+        BBMAP_PHIX( ch_raw_short_reads )
 
         TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
 
@@ -40,6 +40,10 @@ workflow SHORTREAD_PREPROCESSING {
 
         CAT_PAIR_UNPAIR( ch_trimm_all_pe )
 
+       ch_short_reads_preprocessed = ch_trimmed.se
+                                        .mix(CAT_PAIR_UNPAIR.out.concatenated)
+                                        /* .dump(tag:"all_fastq_ch") */
+
 
         //TODO
         /* FASTQC_TRIMM( CAT_PAIR_UNPAIR.out.concatenated ) */
@@ -47,7 +51,8 @@ workflow SHORTREAD_PREPROCESSING {
 
 
     emit:
-        long_reads    = ch_long_reads
+        shortreads_trimmed_pe = TRIMM.out.paired
+        shortreads_preprocessed_se_pe = ch_short_reads_preprocessed
         versions      = ch_versions
         multiqc_files = ch_multiqc_files
 }

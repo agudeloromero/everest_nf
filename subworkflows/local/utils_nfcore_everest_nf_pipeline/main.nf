@@ -84,6 +84,7 @@ workflow PIPELINE_INITIALISATION {
 
                 } else if (contig) {
 
+                //NOTE: For contig seq_type is optional, as the contig is used only for Taxonomy analysis
                     return [ meta.id, meta + [seq_type: type, single_end: true, is_contig: true ], [ contig ] ]
 
                 } else if (short_read_1 && !short_read_2) {
