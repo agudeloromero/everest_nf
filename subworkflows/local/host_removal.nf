@@ -51,7 +51,7 @@ workflow HOST_REMOVAL_WF {
             ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
 
 
- //--------------------
+//--------------------
 // RNA branch
 //--------------------
 
