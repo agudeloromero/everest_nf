@@ -4,14 +4,21 @@ nextflow.enable.dsl=2
 include { BBMAP_DEDUPE } from "../../modules/local/bbmap_dedupe"
 include { BBMAP_DEDUPED_REFORMAT } from "../../modules/local/bbmap_deduped_reformat"
 include { BBMAP_DUDUPED_NORMALIZATION } from "../../modules/local/bbmap_deduped_normalization"
-include { BBMAP_REFORMAT as BBMAP_SINGLETONS } from "../../modules/local/bbmap_reformat"
-include { CAT } from "../../modules/local/cat"
-include { KALLISTO_ALIGN } from "../../modules/local/kallisto_align"
-include { KALLISTO_INDEX } from "../../modules/nf-core/kallisto/index/main"
-include { MINIMAP2_INDEX } from "../../modules/nf-core/minimap2/index"
-include { MINIMAP2_HOST_REMOVAL } from "../../modules/local/minimap2_host_removal"
+include { BBMAP_REFORMAT as BBMAP_SINGLETONS__DNA } from "../../modules/local/bbmap_reformat"
+include { BBMAP_REFORMAT as BBMAP_SINGLETONS__RNA } from "../../modules/local/bbmap_reformat"
+include { CAT as CAT__DNA } from "../../modules/local/cat"
+include { CAT as CAT__RNA } from "../../modules/local/cat"
+include { KALLISTO_ALIGN as KALLISTO_ALIGN__DNA } from "../../modules/local/kallisto_align"
+include { KALLISTO_ALIGN as KALLISTO_ALIGN__RNA } from "../../modules/local/kallisto_align"
+include { KALLISTO_INDEX as KALLISTO_INDEX__DNA } from "../../modules/nf-core/kallisto/index/main"
+include { KALLISTO_INDEX as KALLISTO_INDEX__RNA } from "../../modules/nf-core/kallisto/index/main"
+include { MINIMAP2_INDEX as MINIMAP2_INDEX__DNA } from "../../modules/nf-core/minimap2/index"
+include { MINIMAP2_INDEX as MINIMAP2_INDEX__RNA } from "../../modules/nf-core/minimap2/index"
+include { MINIMAP2_HOST_REMOVAL as MINIMAP2_HOST_REMOVAL__DNA } from "../../modules/local/minimap2_host_removal"
+include { MINIMAP2_HOST_REMOVAL as MINIMAP2_HOST_REMOVAL__RNA } from "../../modules/local/minimap2_host_removal"
+include { SAMTOOLS_FASTQ as SAMTOOLS_FASTQ__DNA } from "../../modules/local/samtools_fastq"
+include { SAMTOOLS_FASTQ as SAMTOOLS_FASTQ__RNA } from "../../modules/local/samtools_fastq"
 include { PIGZ } from "../../modules/local/pigz"
-include { SAMTOOLS_FASTQ } from "../../modules/local/samtools_fastq"
 
 
 workflow HOST_REMOVAL_WF {
@@ -44,16 +51,16 @@ workflow HOST_REMOVAL_WF {
 // DNA branch
 //--------------------
         //TODO: Implement an option to provide the pre-indexed file
-            MINIMAP2_INDEX(ref_fasta_ch)
-            MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index, ch_all_fastq_branched.dna)
-            BBMAP_SINGLETONS(MINIMAP2_HOST_REMOVAL.out.singleton)
+            MINIMAP2_INDEX__DNA(ref_fasta_ch)
+            MINIMAP2_HOST_REMOVAL__DNA(MINIMAP2_INDEX__DNA.out.index, ch_all_fastq_branched.dna)
+            BBMAP_SINGLETONS__DNA(MINIMAP2_HOST_REMOVAL__DNA.out.singleton)
 
-            ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
-                        .join(BBMAP_SINGLETONS.out.singleton_pair)
+            ch_cat_input = MINIMAP2_HOST_REMOVAL__DNA.out.unmapped
+                        .join(BBMAP_SINGLETONS__DNA.out.singleton_pair)
 
-            CAT(ch_cat_input)
-            ch_unmapped_se = MINIMAP2_HOST_REMOVAL.out.unmapped.filter { it[0].single_end == true }
-            ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
+            CAT__DNA(ch_cat_input)
+            ch_unmapped_se = MINIMAP2_HOST_REMOVAL__DNA.out.unmapped.filter { it[0].single_end == true }
+            ch_pigz_input = CAT__DNA.out.fastq.concat(ch_unmapped_se)
 
 
 //--------------------
@@ -62,24 +69,24 @@ workflow HOST_REMOVAL_WF {
 
             if (params.long_read_aligner == "kallisto") {
         //TODO: Implement an option to provide the pre-indexed file
-                KALLISTO_INDEX(params.transcriptome)
-                KALLISTO_ALIGN(ch_trim_fastq_branched.rna, KALLISTO_INDEX.out.idx)
-                SAMTOOLS_FASTQ(KALLISTO_ALIGN.out.bam)
-                BBMAP_SINGLETONS(SAMTOOLS_FASTQ.out.singleton)
-                ch_cat_input = SAMTOOLS_FASTQ.out.unmapped
-                    .join(BBMAP_SINGLETONS.out.singleton_pair)
-                CAT(ch_cat_input)
-                ch_unmapped_se = SAMTOOLS_FASTQ.out.unmapped.filter { it[0].single_end == true }
-                ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
+                KALLISTO_INDEX__RNA(params.transcriptome)
+                KALLISTO_ALIGN__RNA(ch_trim_fastq_branched.rna, KALLISTO_INDEX__RNA.out.idx)
+                SAMTOOLS_FASTQ__RNA(KALLISTO_ALIGN__RNA.out.bam)
+                BBMAP_SINGLETONS__RNA(SAMTOOLS_FASTQ__RNA.out.singleton)
+                ch_cat_input = SAMTOOLS_FASTQ__RNA.out.unmapped
+                    .join(BBMAP_SINGLETONS__RNA.out.singleton_pair)
+                CAT__RNA(ch_cat_input)
+                ch_unmapped_se = SAMTOOLS_FASTQ__RNA.out.unmapped.filter { it[0].single_end == true }
+                ch_pigz_input = CAT__RNA.out.fastq.concat(ch_unmapped_se)
             } else {
-                MINIMAP2_INDEX(ref_fasta_ch)
-                MINIMAP2_HOST_REMOVAL(MINIMAP2_INDEX.out.index, ch_all_fastq_branched.rna)
-                BBMAP_SINGLETONS(MINIMAP2_HOST_REMOVAL.out.singleton)
-                ch_cat_input = MINIMAP2_HOST_REMOVAL.out.unmapped
-                    .join(BBMAP_SINGLETONS.out.singleton_pair)
-                CAT(ch_cat_input)
-                ch_unmapped_se = MINIMAP2_HOST_REMOVAL.out.unmapped.filter { it[0].single_end == true }
-                ch_pigz_input = CAT.out.fastq.concat(ch_unmapped_se)
+                MINIMAP2_INDEX__RNA(ref_fasta_ch)
+                MINIMAP2_HOST_REMOVAL__RNA(MINIMAP2_INDEX__RNA.out.index, ch_all_fastq_branched.rna)
+                BBMAP_SINGLETONS__RNA(MINIMAP2_HOST_REMOVAL__RNA.out.singleton)
+                ch_cat_input = MINIMAP2_HOST_REMOVAL__RNA.out.unmapped
+                    .join(BBMAP_SINGLETONS__RNA.out.singleton_pair)
+                CAT__RNA(ch_cat_input)
+                ch_unmapped_se = MINIMAP2_HOST_REMOVAL__RNA.out.unmapped.filter { it[0].single_end == true }
+                ch_pigz_input = CAT__RNA.out.fastq.concat(ch_unmapped_se)
             }
 
         // Deduplication and normalization (applies to both branches)
