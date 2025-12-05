@@ -43,7 +43,9 @@ workflow HOST_REMOVAL_WF {
         }
         .set { ch_trim_fastq_branched }
 
-
+//--------------------
+// Initialize channels
+//--------------------
 
         ch_pigz_input = Channel.empty()
 

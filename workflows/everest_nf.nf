@@ -71,9 +71,6 @@ workflow EVEREST_NF {
     // BINNING_WF -> Optional
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
-       // CLEANING_CONTIGS_WF ( ch_samplesheet, ch_reads_branched.contigs )
-       // TAXONOMY_WF ( CLEANING_CONTIGS_WF.out.fasta )
-
 
         TRIMMING_ADAPTORS_WF ( ch_reads_branched.short_reads,
                                ch_reads_branched.long_reads )
@@ -88,9 +85,10 @@ workflow EVEREST_NF {
                                    TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe )
 
 
-        // DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
+        DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
 
 
+       // CLEANING_CONTIGS_WF ( ch_samplesheet, ch_reads_branched.contigs )
         // CLEANING_CONTIGS_WF( ch_samplesheet,
         //                      DENOVO_WF.out.repseq_fasta )
 
