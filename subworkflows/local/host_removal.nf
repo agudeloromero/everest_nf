@@ -35,6 +35,11 @@ workflow HOST_REMOVAL_WF {
         }
         .set { ch_trim_fastq_branched }
 
+//FOR LONG-READS
+// refer nf-core/taxprofiler use minimap2 for host removal and then proceed to spades-hybrid
+// - refer the use of -ax parameters https://github.com/lh3/minimap2?tab=readme-ov-file#map-long-noisy-genomic-reads
+
+
 //--------------------
 // DNA branch
 //--------------------

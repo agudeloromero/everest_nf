@@ -89,7 +89,7 @@ workflow PIPELINE_INITIALISATION {
 
                 } else if (short_read_1 && !short_read_2) {
 
-                    return [ meta.id, meta + [seq_type: type, single_end: true ], [ short_read_1 ] ]
+                    return [ meta.id, meta + [seq_type: (type ?: "NA"), single_end: true ], [ short_read_1 ] ]
 
                 } else {
 
