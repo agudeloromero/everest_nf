@@ -24,6 +24,7 @@ include { PIGZ } from "../../modules/local/pigz"
 workflow HOST_REMOVAL_WF {
     take:
         ref_fasta_ch
+        ref_transcriptome_ch
         all_fastq_ch
         trim_fastq_ch
 
@@ -42,6 +43,38 @@ workflow HOST_REMOVAL_WF {
         }
         .set { ch_trim_fastq_branched }
 
+
+
+        ch_pigz_input = Channel.empty()
+
+
+//--------------------
+// INDEXES
+//--------------------
+
+
+    if(params.genome_index_minimap2) {
+        ref_genome_index_ch = Channel.fromPath(params.genome_index_minimap2)
+    } else {
+        MINIMAP2_INDEX__DNA(ref_fasta_ch)
+        ref_genome_index_ch = MINIMAP2_INDEX__DNA.out.index
+    }
+
+    if(params.transcriptome_index_minimap2 && params.shortread_transcriptome_aligner == "minimap2") {
+        ref_transcriptome_index_minimap2_ch = Channel.fromPath(params.transcriptome_index_minimap2)
+    } else {
+        MINIMAP2_INDEX__RNA(ref_transcriptome_ch)
+        ref_transcriptome_index_minimap2_ch = MINIMAP2_INDEX__RNA.out.index
+    }
+
+    if(params.transcriptome_index_kallisto && params.shortread_transcriptome_aligner == "kallisto") {
+        ref_transcriptome_index_kallisto_ch = Channel.fromPath(params.transcriptome_index_kallisto)
+    } else {
+        KALLISTO_INDEX__RNA(ref_transcriptome_ch)
+        ref_transcriptome_index_kallisto_ch = KALLISTO_INDEX__RNA.out.idx
+    }
+
+
 //FOR LONG-READS
 // refer nf-core/taxprofiler use minimap2 for host removal and then proceed to spades-hybrid
 // - refer the use of -ax parameters https://github.com/lh3/minimap2?tab=readme-ov-file#map-long-noisy-genomic-reads
@@ -51,8 +84,7 @@ workflow HOST_REMOVAL_WF {
 // DNA branch
 //--------------------
         //TODO: Implement an option to provide the pre-indexed file
-            MINIMAP2_INDEX__DNA(ref_fasta_ch)
-            MINIMAP2_HOST_REMOVAL__DNA(MINIMAP2_INDEX__DNA.out.index, ch_all_fastq_branched.dna)
+            MINIMAP2_HOST_REMOVAL__DNA(ref_genome_index_ch, ch_all_fastq_branched.dna)
             BBMAP_SINGLETONS__DNA(MINIMAP2_HOST_REMOVAL__DNA.out.singleton)
 
             ch_cat_input = MINIMAP2_HOST_REMOVAL__DNA.out.unmapped
@@ -67,29 +99,34 @@ workflow HOST_REMOVAL_WF {
 // RNA branch
 //--------------------
 
-            if (params.long_read_aligner == "kallisto") {
+            if (params.shortread_transcriptome_aligner == "kallisto") {
+
         //TODO: Implement an option to provide the pre-indexed file
-                KALLISTO_INDEX__RNA(params.transcriptome)
-                KALLISTO_ALIGN__RNA(ch_trim_fastq_branched.rna, KALLISTO_INDEX__RNA.out.idx)
+                KALLISTO_ALIGN__RNA(ch_trim_fastq_branched.rna, ref_transcriptome_index_kallisto_ch)
                 SAMTOOLS_FASTQ__RNA(KALLISTO_ALIGN__RNA.out.bam)
                 BBMAP_SINGLETONS__RNA(SAMTOOLS_FASTQ__RNA.out.singleton)
                 ch_cat_input = SAMTOOLS_FASTQ__RNA.out.unmapped
                     .join(BBMAP_SINGLETONS__RNA.out.singleton_pair)
                 CAT__RNA(ch_cat_input)
                 ch_unmapped_se = SAMTOOLS_FASTQ__RNA.out.unmapped.filter { it[0].single_end == true }
-                ch_pigz_input = CAT__RNA.out.fastq.concat(ch_unmapped_se)
-            } else {
-                MINIMAP2_INDEX__RNA(ref_fasta_ch)
-                MINIMAP2_HOST_REMOVAL__RNA(MINIMAP2_INDEX__RNA.out.index, ch_all_fastq_branched.rna)
+                ch_pigz_input = ch_pigz_input.mix(CAT__RNA.out.fastq.concat(ch_unmapped_se))
+
+            } else if (params.shortread_transcriptome_aligner == "minimap2") {
+
+                MINIMAP2_HOST_REMOVAL__RNA(ref_transcriptome_index_minimap2_ch, ch_all_fastq_branched.rna)
                 BBMAP_SINGLETONS__RNA(MINIMAP2_HOST_REMOVAL__RNA.out.singleton)
                 ch_cat_input = MINIMAP2_HOST_REMOVAL__RNA.out.unmapped
                     .join(BBMAP_SINGLETONS__RNA.out.singleton_pair)
                 CAT__RNA(ch_cat_input)
                 ch_unmapped_se = MINIMAP2_HOST_REMOVAL__RNA.out.unmapped.filter { it[0].single_end == true }
-                ch_pigz_input = CAT__RNA.out.fastq.concat(ch_unmapped_se)
+                ch_pigz_input = ch_pigz_input.mix(CAT__RNA.out.fastq.concat(ch_unmapped_se))
+
             }
 
-        // Deduplication and normalization (applies to both branches)
+
+        ch_pigz_input.dump(tag: "ch_pigz_input")
+
+        // Deduplication and normalization (applies to both DNA and RNA branches)
         PIGZ(ch_pigz_input)
         BBMAP_DEDUPE(PIGZ.out.fastqgz)
         BBMAP_DEDUPED_REFORMAT(BBMAP_DEDUPE.out.cat_deduped_fastqgz)

@@ -83,6 +83,7 @@ workflow EVEREST_NF {
 
 
         HOSTREMOVAL_SHORTREAD_WF ( params.fasta,
+                                   params.transcriptome,
                                    TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
                                    TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe )
 
