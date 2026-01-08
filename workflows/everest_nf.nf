@@ -37,8 +37,8 @@ workflow EVEREST_NF {
     // ch_samplesheet.dump(tag: 'ch_samplesheet')
 
     ch_samplesheet.branch {
-        short_reads: !it[0].is_long_read
-        long_reads: it[0].is_long_read
+        short_reads: !it[0].is_long_read && !it[0].is_contig
+        long_reads: it[0].is_long_read && !it[0].is_contig
         contigs: it[0].is_contig
     }
    .set { ch_reads_branched }
