@@ -47,8 +47,6 @@ workflow EVEREST_NF {
     ch_reads_branched.short_reads.dump(tag: 'ch_reads_branched.short_reads')
     ch_reads_branched.contigs.dump(tag: 'ch_reads_branched.contigs')
 
-    ch_reads_branched.dump(tag: "ch_reads_branched")
-
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
