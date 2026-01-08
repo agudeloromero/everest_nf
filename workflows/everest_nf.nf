@@ -87,6 +87,7 @@ workflow EVEREST_NF {
 
         DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
 
+        DENOVO_WF.out.repseq_fasta.dump(tag:'DENOVO_WF.out.repseq_fasta')
 
         // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
         CLEANING_CONTIGS_WF(Channel.empty(),  DENOVO_WF.out.repseq_fasta )
