@@ -88,9 +88,8 @@ workflow EVEREST_NF {
         DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
 
 
-       // CLEANING_CONTIGS_WF ( ch_samplesheet, ch_reads_branched.contigs )
-        // CLEANING_CONTIGS_WF( ch_samplesheet,
-        //                      DENOVO_WF.out.repseq_fasta )
+        // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
+        CLEANING_CONTIGS_WF( DENOVO_WF.out.repseq_fasta )
 
         // TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 

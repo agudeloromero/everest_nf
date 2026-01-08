@@ -10,7 +10,6 @@ include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_conti
 workflow CLEANING_CONTIGS_WF {
 
     take:
-        raw_fastqs
         repseq_fasta
 
     main:
@@ -23,13 +22,11 @@ workflow CLEANING_CONTIGS_WF {
         //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
 
-
         //NOTE: The output of nanopore analysis should be the the input for CHECKV
         CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
 
 
-        //CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
-        //raw_fastqs.dump(tag: "raw_fastqs")
+        CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
 
         in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
                                         .join(raw_fastqs)
