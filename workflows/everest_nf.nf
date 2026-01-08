@@ -89,7 +89,7 @@ workflow EVEREST_NF {
 
 
         // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
-        CLEANING_CONTIGS_WF( DENOVO_WF.out.repseq_fasta )
+        CLEANING_CONTIGS_WF([],  DENOVO_WF.out.repseq_fasta )
 
         // TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 

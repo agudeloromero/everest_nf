@@ -10,6 +10,7 @@ include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_conti
 workflow CLEANING_CONTIGS_WF {
 
     take:
+        raw_fastqs
         repseq_fasta
 
     main:
@@ -27,6 +28,7 @@ workflow CLEANING_CONTIGS_WF {
 
 
         CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
+        //raw_fastqs.dump(tag: "raw_fastqs")
 
         in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
                                         .join(raw_fastqs)
