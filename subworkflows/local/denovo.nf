@@ -72,6 +72,9 @@ workflow DENOVO_WF {
         //TODO: Confirm if the issue still persists
         // RENEO( ch_reneo_input )
 
+
+        ch_spades_input.dump(tag: 'ch_spades_input')
+
         ch_vrhyme_input = SPADES_DENOVO.out.scaffolds
                             .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_vrhyme_input")
