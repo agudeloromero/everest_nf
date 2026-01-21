@@ -10,7 +10,6 @@ include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_conti
 workflow CLEANING_CONTIGS_WF {
 
     take:
-        raw_fastqs
         repseq_fasta
 
     main:
@@ -30,12 +29,18 @@ workflow CLEANING_CONTIGS_WF {
         CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
         //raw_fastqs.dump(tag: "raw_fastqs")
 
-        in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
-                                        .join(raw_fastqs)
-                                        .dump(tag: "in_bbmap_mapping_contigs_ch")
 
 
-        BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
+        //NOTE: This is only used for gathering the stats regarding the contigs.
+            //We need to rethink whether this still makese sense, after the inclusion of
+            // LR and DNA/RNA reads.
+
+        // in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
+        //                                 .join(raw_fastqs)
+        //                                 .dump(tag: "in_bbmap_mapping_contigs_ch")
+
+
+        // BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
 
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )

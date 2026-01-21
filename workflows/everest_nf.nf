@@ -89,9 +89,9 @@ workflow EVEREST_NF {
 
         // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
         ch_contigs = ch_reads_branched.contigs.mix(DENOVO_WF.out.repseq_fasta)
-        CLEANING_CONTIGS_WF(Channel.empty(),  ch_contigs )
+        CLEANING_CONTIGS_WF( ch_contigs )
 
-        // TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
         /* PILON didn't work */
 
