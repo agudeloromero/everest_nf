@@ -65,9 +65,11 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
+
     TKI (
         PIPELINE_INITIALISATION.out.samplesheet
     )
+
     //
     // SUBWORKFLOW: Run completion tasks
     //

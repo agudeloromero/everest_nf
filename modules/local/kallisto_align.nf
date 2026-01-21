@@ -43,8 +43,6 @@ process KALLISTO_ALIGN {
 
         stub:
         def prefix = task.ext.prefix ?: "${meta.id}"
-
-        stub:
         """
         mkdir alignment
         touch alignment/pseudoalignments.bam
