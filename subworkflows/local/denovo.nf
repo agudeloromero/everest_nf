@@ -73,7 +73,7 @@ workflow DENOVO_WF {
         // RENEO( ch_reneo_input )
 
         ch_vrhyme_input = SPADES_DENOVO.out.scaffolds
-                            .join(TRIMM_MERGE.out.paired)
+                            .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_vrhyme_input")
 
         VRHYME_VRHYME( SPADES_DENOVO.out.scaffolds )
