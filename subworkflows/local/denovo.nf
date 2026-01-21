@@ -5,6 +5,7 @@ include { SPADES_DENOVO     } from "../../modules/local/spades_denovo"
 include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust"
 include { PHAROKKA          } from "../../modules/local/pharokka.nf"
 include { RENEO             } from "../../modules/local/reneo.nf"
+include { VRHYME_VRHYME     } from "../../modules/nf-core/vrhyme/vrhyme/main"
 
 workflow DENOVO_WF {
     take:
@@ -60,7 +61,7 @@ workflow DENOVO_WF {
 
         TRIMM_UNMERGE.out.paired.dump(tag: "trimm_unmerge_out")
 
-*/
+    */
 
         ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
                             .join(TRIMM_UNMERGE.out.paired)
@@ -68,10 +69,10 @@ workflow DENOVO_WF {
 
 
 
-    //TODO: Confirm if the issue still persists
+        //TODO: Confirm if the issue still persists
         // RENEO( ch_reneo_input )
 
-        // VRHYME
+        VRHYME_VRHYME( SPADES_DENOVO.out.scaffolds )
 
         MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
