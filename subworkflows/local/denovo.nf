@@ -63,17 +63,17 @@ workflow DENOVO_WF {
 
     */
 
-        ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
-                            .join(TRIMM_UNMERGE.out.paired)
-                            .dump(tag: "ch_reneo_input")
 
+        // ch_reneo_input = SPADES_DENOVO.out.scaffolds_graph
+        //                     .join(TRIMM_UNMERGE.out.paired)
+        //                     .dump(tag: "ch_reneo_input")
 
 
         //TODO: Confirm if the issue still persists
         // RENEO( ch_reneo_input )
 
         ch_vrhyme_input = SPADES_DENOVO.out.scaffolds
-                            .join(ch_trimm_combined)
+                            .join(TRIMM_MERGE.out.paired)
                             .dump(tag: "ch_vrhyme_input")
 
         VRHYME_VRHYME( SPADES_DENOVO.out.scaffolds )
