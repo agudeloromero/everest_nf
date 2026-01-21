@@ -67,7 +67,11 @@ workflow DENOVO_WF {
                             .dump(tag: "ch_reneo_input")
 
 
-        //RENEO( ch_reneo_input )
+
+    //TODO: Confirm if the issue still persists
+        // RENEO( ch_reneo_input )
+
+        // VRHYME
 
         MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
