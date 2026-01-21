@@ -79,7 +79,7 @@ workflow DENOVO_WF {
                             .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_vrhyme_input")
 
-        VRHYME_VRHYME( SPADES_DENOVO.out.scaffolds )
+        VRHYME_VRHYME( ch_vrhyme_input )
 
         MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
