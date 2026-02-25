@@ -46,9 +46,14 @@ workflow TAXONOMY_WF {
 
          SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect(), 'nt')
 
+    //==========
+    // SUMMARY SCRIPTS
+    //==========
+
+
+        // REPORTS_WF ()
 
 
     //emit:
 
 }
-

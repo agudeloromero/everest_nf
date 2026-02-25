@@ -93,6 +93,7 @@ workflow EVEREST_NF {
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
+
         /* PILON didn't work */
 
 
