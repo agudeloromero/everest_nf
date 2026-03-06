@@ -16,8 +16,8 @@ process SPADES_DENOVO {
 
     output:
     // tuple val(meta), path("$prefix")                                 , optional:true, emit: spades_output
-    tuple val(meta), path('scaffolds.fasta')                         , optional:true, emit: scaffolds
-    tuple val(meta), path('assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds_graph
+    tuple val(meta), path('*.scaffolds.fasta')                         , optional:true, emit: scaffolds
+    tuple val(meta), path('*.assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds_graph
     tuple val(meta), path('*.log')                                   , emit: log
     path  "versions.yml"                                             , emit: versions
 
@@ -46,6 +46,8 @@ process SPADES_DENOVO {
 
     mv $prefix/spades.log ${prefix}.spades.log
     mv $prefix/scaffolds.fasta ${prefix}.scaffolds.fasta
+
+    mv $prefix/assembly_graph_with_scaffolds.gfa ${prefix}.assembly_graph_with_scaffolds.gfa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
