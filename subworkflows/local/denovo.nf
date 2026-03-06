@@ -75,13 +75,15 @@ workflow DENOVO_WF {
 
         ch_spades_input.dump(tag: 'ch_spades_input')
 
-        ch_vrhyme_input = SPADES_DENOVO.out.scaffolds
+
+        MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
+
+        ch_vrhyme_input = MMSEQ2_ELINCLUST.out.rep_seq
                             .join(TRIMM_UNMERGE.out.paired)
                             .dump(tag: "ch_vrhyme_input")
 
         VRHYME_VRHYME( ch_vrhyme_input )
 
-        MMSEQ2_ELINCLUST( SPADES_DENOVO.out.scaffolds )
 
 
     emit:
