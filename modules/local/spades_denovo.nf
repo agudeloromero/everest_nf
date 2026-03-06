@@ -15,6 +15,7 @@ process SPADES_DENOVO {
     tuple val(meta), path(forward_read), path(paired), path(unpaired)
 
     output:
+    // tuple val(meta), path("$prefix")                                 , optional:true, emit: spades_output
     tuple val(meta), path('scaffolds.fasta')                         , optional:true, emit: scaffolds
     tuple val(meta), path('assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds_graph
     tuple val(meta), path('*.log')                                   , emit: log
@@ -41,9 +42,10 @@ process SPADES_DENOVO {
         --threads ${task.cpus} \\
         --memory $maxmem \\
         $input \\
-        -o ./
+        -o ./$prefix
 
-    mv spades.log ${prefix}.spades.log
+    mv $prefix/spades.log ${prefix}.spades.log
+    mv $prefix/scaffolds.fasta ${prefix}.scaffolds.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
