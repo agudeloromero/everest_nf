@@ -30,7 +30,8 @@ workflow CLEANING_CONTIGS_WF {
         //raw_fastqs.dump(tag: "raw_fastqs")
 
 
-
+//--------------------------------
+//--------------------------------
         //NOTE: This is only used for gathering the stats regarding the contigs.
             //We need to rethink whether this still makese sense, after the inclusion of
             // LR and DNA/RNA reads.
@@ -40,7 +41,14 @@ workflow CLEANING_CONTIGS_WF {
         //                                 .dump(tag: "in_bbmap_mapping_contigs_ch")
 
 
+
+        //NOTE: The LR and DNA/RNA FASTQ Files should not cause this process to fail - related to the new bbmap_process.py script
         // BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
+
+        // merge_summary_bbmap
+
+//--------------------------------
+//--------------------------------
 
 
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )
