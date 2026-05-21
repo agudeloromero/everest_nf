@@ -11,6 +11,7 @@ workflow CLEANING_CONTIGS_WF {
 
     take:
         repseq_fasta
+        reads_ch
 
     main:
 
@@ -27,7 +28,9 @@ workflow CLEANING_CONTIGS_WF {
 
 
         CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
-        //raw_fastqs.dump(tag: "raw_fastqs")
+
+        bbmap_mapping_input_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta.join(reads_ch)
+        BBMAP_MAPPING_CONTIGS( bbmap_mapping_input_ch )
 
 
 //--------------------------------
@@ -35,17 +38,7 @@ workflow CLEANING_CONTIGS_WF {
         //NOTE: This is only used for gathering the stats regarding the contigs.
             //We need to rethink whether this still makese sense, after the inclusion of
             // LR and DNA/RNA reads.
-
-        // in_bbmap_mapping_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
-        //                                 .join(raw_fastqs)
-        //                                 .dump(tag: "in_bbmap_mapping_contigs_ch")
-
-
-
-        //NOTE: The LR and DNA/RNA FASTQ Files should not cause this process to fail - related to the new bbmap_process.py script
-        // BBMAP_MAPPING_CONTIGS( in_bbmap_mapping_contigs_ch )
-
-        // merge_summary_bbmap
+    // The BBMap stats files are consumed by the new summary post-processing steps.
 
 //--------------------------------
 //--------------------------------
@@ -54,7 +47,7 @@ workflow CLEANING_CONTIGS_WF {
         ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )
 
         ABRICATE_SUMMARY (
-            ABRICATE_RUN.out.report.collect { meta, report -> report }.map{ report -> [[ id: 'summary'], report]}
+            ABRICATE_RUN.out.report.collect { entry -> entry[1] }.map{ reports -> [[ id: 'summary'], reports]}
         )
 
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
@@ -62,5 +55,7 @@ workflow CLEANING_CONTIGS_WF {
 
     emit:
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
+        bbmap_rpkm = BBMAP_MAPPING_CONTIGS.out.rpkm
+        bbmap_covstats = BBMAP_MAPPING_CONTIGS.out.covstats
 
 }

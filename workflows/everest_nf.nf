@@ -14,6 +14,10 @@ include { LONGREAD_HOSTREMOVAL as HOSTREMOVAL_LONGREAD_WF  } from '../subworkflo
 include { DENOVO_WF              } from '../subworkflows/local/denovo'
 include { CLEANING_CONTIGS_WF    } from '../subworkflows/local/cleaning_contigs'
 include { TAXONOMY_WF            } from '../subworkflows/local/taxonomy'
+include { BBMAP_PROCESS          } from '../modules/local/bbmap_process.nf'
+include { MERGE_SUMMARY_BBMAP    } from '../modules/local/merge_summary_bbmap.nf'
+include { UPDATE_TAXONOMIC_RANK_MANUAL } from '../modules/local/update_taxonomic_rank_manual.nf'
+include { EVEREST_COMBINE_SUMMARIES } from '../modules/local/everest_combine_summaries.nf'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -37,9 +41,9 @@ workflow EVEREST_NF {
     // ch_samplesheet.dump(tag: 'ch_samplesheet')
 
     ch_samplesheet.branch {
-        short_reads: !it[0].is_long_read && !it[0].is_contig
-        long_reads: it[0].is_long_read && !it[0].is_contig
-        contigs: it[0].is_contig
+        short_reads: { sample -> !sample[0].is_long_read && !sample[0].is_contig }
+        long_reads: { sample -> sample[0].is_long_read && !sample[0].is_contig }
+        contigs: { sample -> sample[0].is_contig }
     }
    .set { ch_reads_branched }
 
@@ -56,7 +60,7 @@ workflow EVEREST_NF {
     FASTQC (
         ch_reads_branched.short_reads
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect { entry -> entry[1] })
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
 
@@ -89,9 +93,39 @@ workflow EVEREST_NF {
 
         // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
         ch_contigs = ch_reads_branched.contigs.mix(DENOVO_WF.out.repseq_fasta)
-        CLEANING_CONTIGS_WF( ch_contigs )
+        CLEANING_CONTIGS_WF(
+            ch_contigs,
+            HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz
+        )
+
+        bbmap_process_input_ch = CLEANING_CONTIGS_WF.out.bbmap_rpkm
+            .map { entry -> entry[1] }
+            .mix(CLEANING_CONTIGS_WF.out.bbmap_covstats.map { entry -> entry[1] })
+            .collect()
+
+        BBMAP_PROCESS( bbmap_process_input_ch )
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+
+        merge_summary_input_ch = TAXONOMY_WF.out.summary_nt
+            .map { entry -> entry[1] }
+            .mix(TAXONOMY_WF.out.summary_aa.map { entry -> entry[1] })
+            .collect()
+
+        MERGE_SUMMARY_BBMAP(
+            BBMAP_PROCESS.out.bbmap_stats.collect(),
+            merge_summary_input_ch
+        )
+
+        taxrank_input_ch = MERGE_SUMMARY_BBMAP.out.nt_stats
+            .mix(MERGE_SUMMARY_BBMAP.out.aa_stats)
+            .collect()
+
+        UPDATE_TAXONOMIC_RANK_MANUAL( taxrank_input_ch )
+
+        EVEREST_COMBINE_SUMMARIES(
+            UPDATE_TAXONOMIC_RANK_MANUAL.out.taxrank_files.collect()
+        )
 
 
         /* PILON didn't work */
@@ -157,6 +191,8 @@ workflow EVEREST_NF {
 
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    nt_summary     = EVEREST_COMBINE_SUMMARIES.out.nt_summary
+    aa_summary     = EVEREST_COMBINE_SUMMARIES.out.aa_summary
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 }

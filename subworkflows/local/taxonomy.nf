@@ -54,6 +54,8 @@ workflow TAXONOMY_WF {
         // REPORTS_WF ()
 
 
-    //emit:
+    emit:
+        summary_nt = SUMMARY_PER_SAMPLE_NT.out.summary
+        summary_aa = SUMMARY_PER_SAMPLE_AA.out.summary
 
 }

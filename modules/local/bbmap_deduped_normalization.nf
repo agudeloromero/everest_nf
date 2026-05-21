@@ -3,7 +3,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         label 'process_high_memory'
         label 'error_retry'
 
-        conda { params.conda_bbmap_env ?: "${projectDir}/envs/BBMAP.yml" }
+        conda { params.conda_bbmap_env ?: 'bioconda::bbmap=38.96' }
 
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/mulled-v2-008daec56b7aaf3f162d7866758142b9f889d690:e8a286b2e789c091bac0a57302cdc78aa0112353-0':
@@ -22,8 +22,8 @@ process BBMAP_DUDUPED_NORMALIZATION {
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         def input = meta.single_end ?
-                    "in=${reads}}"
-                    : "in=${reads[0]} in2=${reads[1]}"
+              "in=${reads}"
+              : "in=${reads[0]} in2=${reads[1]}"
 
         def output = meta.single_end ?
                      "out=${prefix}_unmapped_dedup_norm_R1.fastq.gz"
