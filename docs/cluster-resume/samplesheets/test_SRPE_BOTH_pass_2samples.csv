@@ -1,0 +1,3 @@
+sample,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR5224150,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224150_R1.fastq.gz,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224150_R2.fastq.gz,,,
+SRR5224158,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224158_R1.fastq.gz,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224158_R2.fastq.gz,,,

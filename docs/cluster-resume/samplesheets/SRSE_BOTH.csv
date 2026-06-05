@@ -1,0 +1,5 @@
+sample,fastq_1
+ERR748832,/data/everest-nf/data/test/SR_SE/BOTH/PRJEB8320/ERR748832_R1.fastq.gz
+ERR752456,/data/everest-nf/data/test/SR_SE/BOTH/PRJEB8320/ERR752456_R1.fastq.gz
+SRR464176,/data/everest-nf/data/test/SR_SE/BOTH/PRJNA80601/SRR464176_R1.fastq.gz
+SRR466222,/data/everest-nf/data/test/SR_SE/BOTH/PRJNA80601/SRR466222_R1.fastq.gz

@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2
+SRX2533327,/data/everest-nf/data/stubs/fastqs/SRX2533327_SRR5224148_1.fastq.gz,/data/everest-nf/data/stubs/fastqs/SRX2533327_SRR5224148_2.fastq.gz
+SRX2533328,/data/everest-nf/data/stubs/fastqs/SRX2533328_SRR5224149_1.fastq.gz,/data/everest-nf/data/stubs/fastqs/SRX2533328_SRR5224149_2.fastq.gz
+SRX2533337,/data/everest-nf/data/stubs/fastqs/SRX2533337_SRR5224158_1.fastq.gz,/data/everest-nf/data/stubs/fastqs/SRX2533337_SRR5224158_2.fastq.gz
+SRX2533330,/data/everest-nf/data/stubs/fastqs/SRX2533330_1.fastq.gz,
