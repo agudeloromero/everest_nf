@@ -72,10 +72,11 @@ process MMSEQ2_ETAXONOMY {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    ${prefix}.lca
-    ${prefix}.report
-    ${prefix}.tophit_aln
-    ${prefix}.tophit_report
+    touch ${prefix}_${mode}_lca.tsv
+    touch ${prefix}_${mode}_report
+    touch ${prefix}_${mode}_tophit_aln
+    touch ${prefix}_${mode}_tophit_aln.txt
+    touch ${prefix}_${mode}_tophit_report
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

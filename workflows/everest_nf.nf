@@ -40,10 +40,10 @@ workflow EVEREST_NF {
 
     // ch_samplesheet.dump(tag: 'ch_samplesheet')
 
-    ch_samplesheet.branch {
-        short_reads: { sample -> !sample[0].is_long_read && !sample[0].is_contig }
-        long_reads: { sample -> sample[0].is_long_read && !sample[0].is_contig }
-        contigs: { sample -> sample[0].is_contig }
+    ch_samplesheet.branch { sample ->
+        short_reads: !sample[0].is_long_read && !sample[0].is_contig
+        long_reads:   sample[0].is_long_read && !sample[0].is_contig
+        contigs:      sample[0].is_contig
     }
    .set { ch_reads_branched }
 
@@ -108,8 +108,7 @@ workflow EVEREST_NF {
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
         merge_summary_input_ch = TAXONOMY_WF.out.summary_nt
-            .map { entry -> entry[1] }
-            .mix(TAXONOMY_WF.out.summary_aa.map { entry -> entry[1] })
+            .mix(TAXONOMY_WF.out.summary_aa)
             .collect()
 
         MERGE_SUMMARY_BBMAP(

@@ -51,7 +51,8 @@ process TAXONKIT_REFORMAT {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    touch ${prefix}_rep_seq_FilterLen.fasta
+    touch ${prefix}_lca_reformatted.tsv
+    touch ${prefix}_lca_reformatted_header.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

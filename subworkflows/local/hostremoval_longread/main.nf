@@ -19,7 +19,15 @@ workflow LONGREAD_HOSTREMOVAL {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    MINIMAP2_HOST_INDEX( ref_fasta_ch )
+    // Only build the host index when at least one long-read sample is present.
+    // ref_fasta_ch (params.genome) is a value channel that is ready immediately,
+    // so indexing it directly would run even for short-read-only runs. Deriving
+    // the index input from ch_reads gates it on actual long-read data.
+    ref_index_in = ch_reads
+        .map { meta, reads -> file(ref_fasta_ch) }
+        .first()
+
+    MINIMAP2_HOST_INDEX( ref_index_in )
     ch_versions = ch_versions.mix(MINIMAP2_HOST_INDEX.out.versions)
 
     MINIMAP2_HOST_ALIGN(ch_reads, MINIMAP2_HOST_INDEX.out.index, 'bai', false, false)

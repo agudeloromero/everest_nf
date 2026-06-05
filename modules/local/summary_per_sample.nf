@@ -15,7 +15,7 @@ process SUMMARY_PER_SAMPLE {
         path(baltimore_db)
 
         output:
-        path("${prefix}_summary_${mode}.txt")                 , emit: summary
+        path("*_summary_${mode}.txt")                         , emit: summary
         path "versions.yml"                                   , emit: versions
 
         script:

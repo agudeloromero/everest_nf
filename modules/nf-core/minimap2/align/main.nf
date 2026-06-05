@@ -45,4 +45,16 @@ process MINIMAP2_ALIGN {
         minimap2: \$(minimap2 --version 2>&1)
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def output = bam_format ? "${prefix}.bam" : "${prefix}.paf"
+    """
+    touch ${output}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        minimap2: \$(minimap2 --version 2>&1)
+    END_VERSIONS
+    """
 }

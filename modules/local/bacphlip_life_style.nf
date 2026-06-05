@@ -41,7 +41,7 @@ process BACPHLIP_LIFE_STYLE {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    touch viruses_rename.fasta.bacphlip
+    touch viruses_renamed.fasta.bacphlip
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
