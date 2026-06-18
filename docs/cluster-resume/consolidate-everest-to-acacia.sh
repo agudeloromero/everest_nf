@@ -56,6 +56,11 @@ RCLONE_COMMON=(--transfers "$TRANSFERS" --checkers "$CHECKERS"
                --stats 30s --stats-one-line
                --log-file "$MAIN_LOG" --log-level INFO)
 
+# In-acacia (same-remote) moves: force client-side transfer. Pawsey Ceph RGW
+# fails server-side multipart CopyObject on objects >5 GiB. Override with
+# INACACIA_COPY_FLAGS="" only if your endpoint supports large server-side copy.
+read -r -a INACACIA_COPY_FLAGS <<< "${INACACIA_COPY_FLAGS:---disable copy}"
+
 FAILURES=()
 
 log(){ printf '%s %s\n' "$(date '+%F %T')" "$*" | tee -a "$MAIN_LOG"; }
@@ -98,7 +103,15 @@ copy_only(){
 move_item(){
   local src="$1" dst="$2" kind="$3"
   log "MOVE ($kind): $src  ->  $dst"
-  if ! rclone copy "$src" "$dst" "${RCLONE_COMMON[@]}" "${DRYFLAG[@]}"; then
+  # Re-run safety: if the source is already gone (a previous run moved+deleted it),
+  # treat as done rather than erroring on a missing source.
+  if [ -z "$(rclone lsf "$src" --files-only -R 2>/dev/null | head -1)" ]; then
+    log "SKIP ($kind): source empty/absent (already moved or nothing to do): $src"; return 0
+  fi
+  # --disable copy forces client-side download+reupload. Server-side S3 CopyObject
+  # caps at 5 GiB; Pawsey Ceph RGW fails multipart server-side copy on larger objects
+  # (SerializationError: expected <Error> but have <html>), so we avoid it for in-acacia moves.
+  if ! rclone copy "$src" "$dst" "${RCLONE_COMMON[@]}" "${INACACIA_COPY_FLAGS[@]}" "${DRYFLAG[@]}"; then
     log "ERROR: copy failed (source intact): $src -> $dst"; FAILURES+=("copy:$src"); return 1
   fi
   if [ "$DRY_RUN" = "true" ]; then log "DRY-RUN: would verify then (if ok) delete $src"; return 0; fi
