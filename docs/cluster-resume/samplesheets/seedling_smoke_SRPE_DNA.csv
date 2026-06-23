@@ -1,0 +1,5 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+ERR3274620,DNA,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274620_R1.sub.fq.gz,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274620_R2.sub.fq.gz,,,
+ERR3274626,DNA,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R1.sub.fq.gz,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R2.sub.fq.gz,,,
+SRR5110508,DNA,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R1.sub.fq.gz,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R2.sub.fq.gz,,,
+SRR5110531,DNA,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R1.sub.fq.gz,s3://su-everest-nf/shared/everest/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R2.sub.fq.gz,,,
