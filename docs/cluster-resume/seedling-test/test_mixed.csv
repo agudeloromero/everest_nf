@@ -1,0 +1,4 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+ERR3274620,DNA,s3://su-everest-nf/shared/everest/test_data/reads/shortreads/PRJEB32062/ERR3274620_R1.sub.fq.gz,s3://su-everest-nf/shared/everest/test_data/reads/shortreads/PRJEB32062/ERR3274620_R2.sub.fq.gz,,,
+SRR15057753,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads/longreads_np/PRJNA744354_S/SRR15057753_R1.sub.fastq.gz,OXFORD_NANOPORE
+SRR5110531_contig,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/SRR5110531_rep_seq.fasta,,
