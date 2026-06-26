@@ -1,0 +1,7 @@
+name: "setup_databases"
+description: Local subworkflow for the everest_nf pipeline
+keywords:
+  - everest
+  - metagenomics
+authors:
+  - "@agudeloromero"

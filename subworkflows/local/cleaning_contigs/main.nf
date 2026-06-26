@@ -1,11 +1,11 @@
-include { ABRICATE_RUN           } from "../../modules/nf-core/abricate/run/main.nf"
-include { ABRICATE_SUMMARY       } from '../../modules/nf-core/abricate/summary/main'
-include { SEQKIT_FILTER          } from "../../modules/local/seqkit_filter/main"
-include { PHAROKKA               } from "../../modules/local/pharokka/main"
-include { VIRSORTER_DETECT       } from "../../modules/local/virsorter_detect/main"
-include { CHECKV_VIRAL_SEQ       } from "../../modules/local/checkv_viral_seq/main"
-include { BACPHLIP_LIFE_STYLE    } from "../../modules/local/bacphlip_life_style/main"
-include { BBMAP_MAPPING_CONTIGS  } from "../../modules/local/bbmap_mapping_contigs/main"
+include { ABRICATE_RUN           } from "../../../modules/nf-core/abricate/run/main.nf"
+include { ABRICATE_SUMMARY       } from '../../../modules/nf-core/abricate/summary/main'
+include { SEQKIT_FILTER          } from "../../../modules/local/seqkit_filter/main"
+include { PHAROKKA               } from "../../../modules/local/pharokka/main"
+include { VIRSORTER_DETECT       } from "../../../modules/local/virsorter_detect/main"
+include { CHECKV_VIRAL_SEQ       } from "../../../modules/local/checkv_viral_seq/main"
+include { BACPHLIP_LIFE_STYLE    } from "../../../modules/local/bacphlip_life_style/main"
+include { BBMAP_MAPPING_CONTIGS  } from "../../../modules/local/bbmap_mapping_contigs/main"
 
 workflow CLEANING_CONTIGS_WF {
 
