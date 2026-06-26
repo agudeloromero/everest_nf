@@ -1,10 +1,10 @@
 /* https://github.com/agudeloromero/EVEREST/blob/main/SMK/02_trimming_adaptors.smk */
 
-include { LONGREAD_PREPROCESSING as LONGREADS               } from './preprocessing_longread'
-include { SHORTREAD_PREPROCESSING as SHORTREADS             } from './preprocessing_shortread'
-/* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../modules/nf-core/fastqc' */
-/* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../modules/nf-core/fastqc' */
-/* include { MULTIQC as MULTIQC_TRIMM            } from '../../modules/nf-core/multiqc' */
+include { LONGREAD_PREPROCESSING as LONGREADS               } from '../preprocessing_longread'
+include { SHORTREAD_PREPROCESSING as SHORTREADS             } from '../preprocessing_shortread'
+/* include { FASTQC  as FASTQC_TRIMM_SE          } from '../../../modules/nf-core/fastqc' */
+/* include { FASTQC  as FASTQC_TRIMM_PE          } from '../../../modules/nf-core/fastqc' */
+/* include { MULTIQC as MULTIQC_TRIMM            } from '../../../modules/nf-core/multiqc' */
 
 
 workflow TRIMMING_ADAPTORS_WF {

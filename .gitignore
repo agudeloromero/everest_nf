@@ -12,3 +12,5 @@ _resources/
 
 _site
 .quarto
+.lineage/
+.pt/
