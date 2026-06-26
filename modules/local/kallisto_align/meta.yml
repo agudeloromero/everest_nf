@@ -1,0 +1,8 @@
+name: "kallisto_align"
+description: Local module for the everest_nf pipeline
+keywords:
+  - everest
+  - metagenomics
+  - virome
+authors:
+  - "@agudeloromero"

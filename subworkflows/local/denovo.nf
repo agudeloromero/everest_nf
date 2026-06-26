@@ -3,8 +3,8 @@ include { TRIMM_UNMERGE     } from "../../modules/local/trimm_unmerge"
 include { TRIMM_MERGE       } from "../../modules/local/trimm_merge"
 include { SPADES_DENOVO     } from "../../modules/local/spades_denovo"
 include { MMSEQ2_ELINCLUST  } from "../../modules/local/mmseq2_elinclust"
-include { PHAROKKA          } from "../../modules/local/pharokka.nf"
-include { RENEO             } from "../../modules/local/reneo.nf"
+include { PHAROKKA          } from "../../modules/local/pharokka/main"
+include { RENEO             } from "../../modules/local/reneo/main"
 include { VRHYME_VRHYME     } from "../../modules/nf-core/vrhyme/vrhyme/main"
 
 workflow DENOVO_WF {
