@@ -64,7 +64,7 @@ process MMSEQ2_ETAXONOMY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version: //; s/\$//')
+        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
     END_VERSIONS
     """
 
@@ -80,7 +80,7 @@ process MMSEQ2_ETAXONOMY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mmseqs: \$(mmseqs --help | grep 'MMseqs2 Version' | sed 's/^MMseqs2 Version: //; s/\$//')
+        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
     END_VERSIONS
     """
 }
