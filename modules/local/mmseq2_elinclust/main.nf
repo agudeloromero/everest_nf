@@ -33,6 +33,12 @@ process MMSEQ2_ELINCLUST {
         ${args} \\
         2> ${prefix}.mmseqs_linclust.log
 
+    # Remove the mmseqs scratch dir: it is not a declared output, and a leftover
+    # sub-directory in the task workdir makes the nf-nomad-s5cmd recursive
+    # push-back stop at the first directory and drop every entry that sorts after
+    # it (notably versions.yml) — which Nextflow then reports as a missing output.
+    rm -rf ${prefix}_tmp
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)

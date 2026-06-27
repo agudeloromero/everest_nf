@@ -62,6 +62,11 @@ process MMSEQ2_ETAXONOMY {
 
     sed '1i aln_query\taln_target\taln_evalue\taln_pident\taln_fident\taln_nident\taln_mismatch\taln_qcov\taln_tcov\taln_qstart\taln_qend\taln_qlen\taln_tstart\taln_tend\taln_tlen\taln_alnlen\taln_bits\taln_qheader\taln_theader\taln_taxid\taln_taxname\taln_taxlineage' ${prefix}_${mode}_tophit_aln > ${prefix}_${mode}_tophit_aln.txt
 
+    # Remove the mmseqs scratch dir (not a declared output): a leftover sub-dir in
+    # the task workdir makes the nf-nomad-s5cmd recursive push-back stop at the
+    # first directory and drop entries sorting after it (e.g. versions.yml).
+    rm -rf ${prefix}_${mode}_tmp
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
