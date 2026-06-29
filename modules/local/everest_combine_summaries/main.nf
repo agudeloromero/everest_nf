@@ -6,8 +6,8 @@ process EVEREST_COMBINE_SUMMARIES {
     conda { params.conda_python3_env }
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://python:3.11-slim' :
-        'python:3.11-slim' }"
+        'docker://quay.io/biocontainers/pandas:1.5.2' :
+        'quay.io/biocontainers/pandas:1.5.2' }"
 
     input:
     path(taxrank_files)
