@@ -43,7 +43,7 @@ for file in covstats_files:
         df = df[[col for col in df.columns if col in covstats_columns_to_keep]]
         df = df.rename(columns={'Ref_GC': 'GC'})
 
-        base_name = os.path.basename(file).replace("_covstats.txt", "")
+        base_name = os.path.basename(file).replace("_contig", "").replace("_covstats.txt", "")
         covstats_data[base_name] = df
         print(f"Loaded Covstats: {file}")
     except Exception as e:
