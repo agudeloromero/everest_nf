@@ -21,14 +21,23 @@ process BBMAP_MAPPING_CONTIGS {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def args = task.ext.args ?: "  nodisk slow=t ambiguous=random threads=${task.cpus} "
+    // bbmap.sh is short-read only and fails on long reads (0% mapped -> error state);
+    // use BBMap's long-read mapper mapPacBio.sh for long reads (same rpkm/covstats outputs).
+    def aligner = meta.is_long_read ? 'mapPacBio.sh' : 'bbmap.sh'
+    def args = task.ext.args ?: ( meta.is_long_read
+                ? "nodisk ambiguous=random threads=${task.cpus} maxlen=6000"
+                : "nodisk slow=t ambiguous=random threads=${task.cpus}" )
 
     def input = meta.single_end ?
                 "in=${reads[0]}"
                 : "in1=${reads[0]} in2=${reads[1]}"
 
     """
-    bbmap.sh ${args} \\
+    # Remove any outputs left by a previous in-place attempt so the `2>` redirect does
+    # not hit the wrapper's noclobber (set -C) on a Nomad in-place restart.
+    rm -f ${prefix}_contig.sam ${prefix}_contig_rpkm.txt ${prefix}_contig_covstats.txt ${prefix}.bbmap_mapping_contigs.out
+
+    ${aligner} ${args} \\
         -Xmx${task.memory.toMega()}m \\
         ref=${renamed_fasta} \\
         ${input} \\
