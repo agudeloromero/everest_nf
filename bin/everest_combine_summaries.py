@@ -31,6 +31,9 @@ if nt_files:
         print(f"Error combining NT files: {e}")
 else:
     print("No *_nt_summary_mmseqs2_stats_taxrank.txt files found.")
+    # Still write the declared output (empty) so the process does not fail on a
+    # missing output when a run has no NT taxonomy results.
+    open(os.path.join(folder, "EVEREST_nt_summary.txt"), "a").close()
 
 # --- Combine AA files ---
 aa_files = glob.glob(os.path.join(folder, "*_aa_summary_mmseqs2_stats_taxrank.txt"))
@@ -51,3 +54,6 @@ if aa_files:
         print(f"Error combining AA files: {e}")
 else:
     print("No *_aa_summary_mmseqs2_stats_taxrank.txt files found.")
+    # Still write the declared output (empty) so the process does not fail on a
+    # missing output when a run has no AA taxonomy results.
+    open(os.path.join(folder, "EVEREST_aa_summary.txt"), "a").close()
