@@ -10,7 +10,10 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": [
+                "input",
+                "outdir"
+            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -110,7 +113,14 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -180,7 +190,10 @@
                     "hidden": true
                 },
                 "help": {
-                    "type": ["boolean", "string"],
+                    "type": [
+                        "boolean",
+                        "string"
+                    ],
                     "description": "Display the help message."
                 },
                 "help_full": {
@@ -294,6 +307,65 @@
                 "mmseq_viral_db_aa_ref_name": {
                     "type": "string",
                     "default": "virus_uniprot"
+                },
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Host transcriptome/genome FASTA used for short-read host removal (kallisto/minimap2)."
+                },
+                "pharokka_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the Pharokka database directory."
+                },
+                "genome_index_minimap": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional pre-built minimap2 index (.mmi) for the host genome."
+                },
+                "transcriptome_index_minimap": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional pre-built minimap2 index (.mmi) for the host transcriptome."
+                },
+                "transcriptome_index_kallisto": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Optional pre-built kallisto index for the host transcriptome."
+                },
+                "shortread_transcriptome_aligner": {
+                    "type": "string",
+                    "default": "kallisto",
+                    "description": "Aligner used to remove host transcriptome from short reads.",
+                    "enum": [
+                        "kallisto",
+                        "minimap2"
+                    ]
+                },
+                "longread_adaptertrimming_tool": {
+                    "type": "string",
+                    "default": "porechop",
+                    "description": "Long-read adapter trimming tool.",
+                    "enum": [
+                        "porechop",
+                        "porechop_abi"
+                    ]
+                },
+                "keep_lambda": {
+                    "type": "boolean",
+                    "description": "Keep phage lambda spike-in reads/contigs (do not filter them out)."
+                },
+                "skip_adapter_trimming": {
+                    "type": "boolean",
+                    "description": "Skip adapter trimming."
+                },
+                "skip_longread_qc": {
+                    "type": "boolean",
+                    "description": "Skip long-read QC (NanoPlot)."
+                },
+                "skip_longread_filtering": {
+                    "type": "boolean",
+                    "description": "Skip long-read filtering."
                 }
             }
         }
