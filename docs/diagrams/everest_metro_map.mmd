@@ -1,0 +1,64 @@
+flowchart LR
+    %% ===================== EVEREST_NF — Viral Metagenomics Metro Map =====================
+    %% Hand-drawn conceptual "metro map" of the pipeline (phases as coloured lines,
+    %% white circles = interchanges where flows merge). See everest_metro_map.md for
+    %% legend + fidelity notes. To be reconciled with the Nextflow-generated DAG
+    %% (`-with-dag`) so node/edge names match the real process + channel names.
+    classDef sr    fill:#1f77b4,color:#fff,stroke:#0d3c61,stroke-width:2px;
+    classDef lr    fill:#2ca02c,color:#fff,stroke:#145214,stroke-width:2px;
+    classDef ct    fill:#ff7f0e,color:#fff,stroke:#7a3c00,stroke-width:2px;
+    classDef clean fill:#9467bd,color:#fff,stroke:#4b2d63,stroke-width:2px;
+    classDef tax   fill:#d62728,color:#fff,stroke:#6e1414,stroke-width:2px;
+    classDef rep   fill:#555,color:#fff,stroke:#222,stroke-width:2px;
+    classDef hub   fill:#fff,color:#000,stroke:#000,stroke-width:4px;
+    classDef term  fill:#111,color:#fff,stroke:#000,stroke-width:2px;
+    classDef opt   fill:#e6e6e6,color:#333,stroke:#999,stroke-width:1px,stroke-dasharray:5 4;
+
+    START([Samplesheet]):::term
+
+    %% ---------- Short-read line ----------
+    START -->|short reads| TR[Trim adaptors<br/>Trimmomatic]:::sr
+    TR --> PX[Remove PhiX<br/>BBMap]:::sr
+    PX --> HRS[Host removal<br/>Kallisto + Minimap2]:::sr
+    HRS --> DD[Dedupe + Normalize<br/>BBMap]:::sr
+    DD --> MG[Merge pairs<br/>BBMap]:::sr
+    MG --> SP[De novo assembly<br/>metaSPAdes]:::sr
+    SP --> DR[Dereplicate contigs<br/>MMseqs2 linclust]:::sr
+    DR -.-> VR[vRhyme binning<br/>optional siding]:::opt
+    DR --> POOL
+    START -.->|QC| FQ[FastQC]:::rep
+
+    %% ---------- Long-read line ----------
+    START -->|long reads| TRL[Trim + filter<br/>long reads]:::lr
+    TRL --> HRL[Host removal<br/>Minimap2 + SAMtools]:::lr
+    HRL --> POOL
+
+    %% ---------- Contig line ----------
+    START -->|pre-assembled| CIN[Input contigs]:::ct
+    CIN --> POOL
+
+    POOL((Contig Pool)):::hub
+
+    %% ---------- Cleaning & annotation line ----------
+    POOL --> SK[Length filter<br/>SeqKit]:::clean
+    SK --> CV[Viral verification<br/>CheckV]:::clean
+    CV -.-> ANN[Annotation siding<br/>Pharokka / VirSorter2 / ABRicate / BACPHLIP]:::opt
+    CV --> VC((Viral Contigs)):::hub
+    POOL --> MAP[Map reads to contigs<br/>BBMap]:::clean
+    MAP --> BP[Coverage / RPKM<br/>BBMap process]:::clean
+
+    %% ---------- Taxonomy & summary line ----------
+    VC --> TX[Taxonomy NT + AA<br/>MMseqs2 easy-taxonomy]:::tax
+    TX --> TK[Reformat lineage<br/>TaxonKit]:::tax
+    TK --> SPS[Per-sample summary<br/>R]:::tax
+    SPS --> SC[Cohort summary<br/>R]:::tax
+    SC --> MS((Merge summary<br/>+ coverage)):::hub
+    BP --> MS
+    MS --> UR[Update taxonomic rank]:::tax
+    UR --> CO[Combine<br/>EVEREST summaries]:::tax
+    CO --> OUT([EVEREST nt + aa summaries]):::term
+
+    %% ---------- Reporting line ----------
+    FQ --> MQ[MultiQC report]:::rep
+    CO -.versions.-> MQ
+    MQ --> ROUT([MultiQC]):::term
