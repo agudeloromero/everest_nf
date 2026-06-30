@@ -1,0 +1,2 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+LAMBDALR,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads/longreads_np/LAMBDA/LAMBDALR_R1.fastq.gz,OXFORD_NANOPORE
