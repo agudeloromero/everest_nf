@@ -26,7 +26,7 @@ process MERGE_SUMMARY_BBMAP {
     for file in *_bbmap_stats.txt; do
         mv "\$file" bbmap/
     done
-    for file in *_nt_summary_mmseqs2.txt *_aa_summary_mmseqs2.txt; do
+    for file in *_summary_nt.txt *_summary_aa.txt; do
         if [[ -e "\$file" ]]; then
             mv "\$file" summary/
         fi

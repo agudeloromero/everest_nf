@@ -16,13 +16,13 @@ path2 = args.path2
 
 # Get all relevant files
 bbmap_files = glob.glob(os.path.join(path1, "*_bbmap_stats.txt"))
-nt_files = glob.glob(os.path.join(path2, "*_nt_summary_mmseqs2.txt"))
-aa_files = glob.glob(os.path.join(path2, "*_aa_summary_mmseqs2.txt"))
+nt_files = glob.glob(os.path.join(path2, "*_summary_nt.txt"))
+aa_files = glob.glob(os.path.join(path2, "*_summary_aa.txt"))
 
 # Map base names to file paths
 bbmap_dict = {os.path.basename(f).replace("_bbmap_stats.txt", ""): f for f in bbmap_files}
-nt_dict = {os.path.basename(f).replace("_nt_summary_mmseqs2.txt", ""): f for f in nt_files}
-aa_dict = {os.path.basename(f).replace("_aa_summary_mmseqs2.txt", ""): f for f in aa_files}
+nt_dict = {os.path.basename(f).replace("_summary_nt.txt", ""): f for f in nt_files}
+aa_dict = {os.path.basename(f).replace("_summary_aa.txt", ""): f for f in aa_files}
 
 # Merge nt files
 for base in set(bbmap_dict.keys()) & set(nt_dict.keys()):
