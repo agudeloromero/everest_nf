@@ -24,6 +24,7 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_everest_nf_pipeline'
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { NANOQ                  } from '../modules/nf-core/nanoq/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,11 +92,29 @@ workflow EVEREST_NF {
 
         DENOVO_WF.out.repseq_fasta.dump(tag:'DENOVO_WF.out.repseq_fasta')
 
-        // TODO: Merge  ch_reads_branched.contigs and DENOVO_WF.out.repseq_fasta
-        ch_contigs = ch_reads_branched.contigs.mix(DENOVO_WF.out.repseq_fasta)
+        // Long-read branch: treat host-removed long reads as candidate viral "contigs"
+        // (reads-as-contigs — long nanopore/pacbio reads can be near-complete viral genomes).
+        // NANOQ converts the host-removed fastq.gz to fasta so they join the contig stream
+        // and flow through CLEANING_CONTIGS (SeqKit -> CheckV) and TAXONOMY identically to
+        // short-read assemblies. No long-read assembler is used.
+        NANOQ( HOSTREMOVAL_LONGREAD_WF.out.reads, 'fasta' )
+        NANOQ.out.reads.dump(tag:'NANOQ.out.reads')
+
+        // Converge all three modalities at the contig pool: raw contigs + short-read
+        // de novo assembly (dereplicated) + long-read reads-as-contigs.
+        ch_contigs = ch_reads_branched.contigs
+            .mix(DENOVO_WF.out.repseq_fasta)
+            .mix(NANOQ.out.reads)
+
+        // Reads used for per-contig coverage mapping (BBMAP_MAPPING_CONTIGS joins by meta.id).
+        // Include the long reads so long-read contigs get coverage; BBMAP_MAPPING_CONTIGS
+        // already branches on meta.single_end, so single-end long reads map in single-end mode.
+        ch_reads_for_coverage = HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz
+            .mix(HOSTREMOVAL_LONGREAD_WF.out.reads)
+
         CLEANING_CONTIGS_WF(
             ch_contigs,
-            HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz
+            ch_reads_for_coverage
         )
 
         bbmap_process_input_ch = CLEANING_CONTIGS_WF.out.bbmap_rpkm
@@ -193,10 +212,12 @@ workflow EVEREST_NF {
     )
 
     emit:
-    multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
-    nt_summary     = EVEREST_COMBINE_SUMMARIES.out.nt_summary
-    aa_summary     = EVEREST_COMBINE_SUMMARIES.out.aa_summary
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    multiqc_report    = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
+    nt_summary        = EVEREST_COMBINE_SUMMARIES.out.nt_summary
+    aa_summary        = EVEREST_COMBINE_SUMMARIES.out.aa_summary
+    cohort_nt_summary = TAXONOMY_WF.out.summary_cohort_nt   // taxonomy-only cross-sample matrix (nt)
+    cohort_aa_summary = TAXONOMY_WF.out.summary_cohort_aa   // taxonomy-only cross-sample matrix (aa)
+    versions          = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
 

@@ -55,7 +55,11 @@ workflow TAXONOMY_WF {
 
 
     emit:
-        summary_nt = SUMMARY_PER_SAMPLE_NT.out.summary
-        summary_aa = SUMMARY_PER_SAMPLE_AA.out.summary
+        summary_nt        = SUMMARY_PER_SAMPLE_NT.out.summary
+        summary_aa        = SUMMARY_PER_SAMPLE_AA.out.summary
+        // taxonomy-only cross-sample matrices (per mode), distinct from the
+        // coverage-merged EVEREST_{nt,aa}_summary produced downstream.
+        summary_cohort_nt = SUMMARY_COHORT_NT.out.summary
+        summary_cohort_aa = SUMMARY_COHORT_AA.out.summary
 
 }

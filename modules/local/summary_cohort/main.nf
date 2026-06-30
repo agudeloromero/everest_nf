@@ -15,6 +15,7 @@ process SUMMARY_COHORT {
         val(mode)
 
         output:
+        tuple val(mode), path("EVEREST_cohort_${mode}.txt")   , emit: summary
         path "versions.yml"                                   , emit: versions
 
         script:
@@ -22,7 +23,7 @@ process SUMMARY_COHORT {
 
 
         """
-            Summary_CombineSamples_script.R  ./ "_${mode}_"  Summary_mmseqs2_${mode}.log
+            Summary_CombineSamples_script.R  ./ "_${mode}_"  EVEREST_cohort_${mode}.txt
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":
@@ -33,7 +34,7 @@ process SUMMARY_COHORT {
         stub:
 
         """
-            touch Summary_mmseqs2_${mode}.log
+            touch EVEREST_cohort_${mode}.txt
 
             cat <<-END_VERSIONS > versions.yml
                 "${task.process}":

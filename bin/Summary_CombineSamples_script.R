@@ -31,17 +31,25 @@ combine = function(dir,pattern){
   return(df)
 }
 
-mmseq.db = grepl("*_nt_*", pattern.o)
+mmseq.db = grepl("_nt_", pattern.o, fixed=TRUE)
 if (mmseq.db == TRUE) {
   print("-- nt --")
-  pattern.n  = "*_nt_summary_mmseqs2.txt"
+  # per-sample summaries are named <id>_summary_nt.txt (from SUMMARY_PER_SAMPLE)
+  pattern.n  = "_summary_nt\\.txt$"
   combined_df = combine(dir,pattern.n)
 } else {
   #-- Create list of text files
   print("-- aa --")
-  pattern.a  = "*_aa_summary_mmseqs2.txt"
+  pattern.a  = "_summary_aa\\.txt$"
   combined_df = combine(dir,pattern.a)
 }
 
 print("Save file")
-write.table(combined_df,file=save_file,col.names=T,row.names=F,sep="\t",quote=F)
+if (is.null(combined_df) || nrow(combined_df) == 0) {
+  # No per-sample summaries for this mode (e.g. a cohort with no taxonomy hits): write an
+  # empty file so the declared output still exists instead of crashing on write.table(NULL).
+  print("No summary rows to combine; writing empty cohort file.")
+  file.create(save_file)
+} else {
+  write.table(combined_df,file=save_file,col.names=T,row.names=F,sep="\t",quote=F)
+}
