@@ -30,9 +30,10 @@ flowchart LR
     DR -.-> VR[vRhyme binning<br/>optional siding]:::opt
     DR --> POOL
     START -.->|QC| FQ[FastQC]:::rep
-    START -->|long reads| TRL[Trim + filter<br/>long reads]:::lr
+    START -->|long reads| TRL[Trim + filter<br/>Porechop / Nanoq]:::lr
     TRL --> HRL[Host removal<br/>Minimap2 + SAMtools]:::lr
-    HRL --> POOL
+    HRL --> LRC[Reads as contigs<br/>NANOQ fq&rarr;fa]:::lr
+    LRC --> POOL
     START -->|pre-assembled| CIN[Input contigs]:::ct
     CIN --> POOL
     POOL((Contig Pool)):::hub
@@ -45,8 +46,9 @@ flowchart LR
     VC --> TX[Taxonomy NT + AA<br/>MMseqs2 easy-taxonomy]:::tax
     TX --> TK[Reformat lineage<br/>TaxonKit]:::tax
     TK --> SPS[Per-sample summary<br/>R]:::tax
-    SPS --> SC[Cohort summary<br/>R]:::tax
-    SC --> MS((Merge summary<br/>+ coverage)):::hub
+    SPS --> SC[Cohort matrix<br/>R per mode]:::tax
+    SC --> COH([EVEREST_cohort nt + aa]):::term
+    SPS --> MS((Merge summary<br/>+ coverage)):::hub
     BP --> MS
     MS --> UR[Update taxonomic rank]:::tax
     UR --> CO[Combine<br/>EVEREST summaries]:::tax
@@ -72,16 +74,19 @@ flowchart LR
   contigs converge), **Viral Contigs** (CheckV output → taxonomy), **Merge summary**
   (taxonomy meets coverage stats).
 
-## Fidelity notes (known gaps vs. the code, to resolve)
+## Fidelity notes
 
-1. **Long-read branch is partial.** Long reads are trimmed + host-removed in code
-   (`LONGREAD_HOSTREMOVAL`), but the hand-off into the assembly / Contig Pool is the
-   *intended* convergence and is not fully wired yet. → **finalize the long-read branch.**
+1. **Long-read branch — complete.** Long reads are trimmed + host-removed, then converted
+   to FASTA with `NANOQ` (reads-as-contigs) and mixed into the Contig Pool, so they flow
+   through CheckV → taxonomy like short-read assemblies. They are also added to the
+   coverage-mapping reads channel (BBMap single-end). No long-read assembler is used;
+   per-contig coverage for reads-as-contigs is approximate.
 2. **Annotation tools are side-products.** Pharokka / VirSorter2 / ABRicate / BACPHLIP run
    off CheckV but do not feed the taxonomy trunk; shown as a dashed siding.
-3. **Taxonomy trunk** should be confirmed complete end-to-end:
-   CheckV → MMseqs2 (NT+AA) → TaxonKit → per-sample summary → cohort summary →
-   merge-with-coverage → update rank → combine → EVEREST summaries.
+3. **Taxonomy trunk — complete.** CheckV → MMseqs2 (NT+AA) → TaxonKit → per-sample summary
+   → { cohort matrix (`EVEREST_cohort_{nt,aa}.txt`, taxonomy-only) ; merge-with-coverage →
+   update rank → combine → `EVEREST_{nt,aa}_summary.txt` }. The per-sample summary feeds
+   both the cohort matrix and the coverage-merged final summary.
 
 ## Next step — reconcile with the generated DAG
 

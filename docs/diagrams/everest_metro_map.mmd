@@ -29,9 +29,10 @@ flowchart LR
     START -.->|QC| FQ[FastQC]:::rep
 
     %% ---------- Long-read line ----------
-    START -->|long reads| TRL[Trim + filter<br/>long reads]:::lr
+    START -->|long reads| TRL[Trim + filter<br/>Porechop / Nanoq]:::lr
     TRL --> HRL[Host removal<br/>Minimap2 + SAMtools]:::lr
-    HRL --> POOL
+    HRL --> LRC[Reads as contigs<br/>NANOQ fq&rarr;fa]:::lr
+    LRC --> POOL
 
     %% ---------- Contig line ----------
     START -->|pre-assembled| CIN[Input contigs]:::ct
@@ -51,8 +52,9 @@ flowchart LR
     VC --> TX[Taxonomy NT + AA<br/>MMseqs2 easy-taxonomy]:::tax
     TX --> TK[Reformat lineage<br/>TaxonKit]:::tax
     TK --> SPS[Per-sample summary<br/>R]:::tax
-    SPS --> SC[Cohort summary<br/>R]:::tax
-    SC --> MS((Merge summary<br/>+ coverage)):::hub
+    SPS --> SC[Cohort matrix<br/>R per mode]:::tax
+    SC --> COH([EVEREST_cohort nt + aa]):::term
+    SPS --> MS((Merge summary<br/>+ coverage)):::hub
     BP --> MS
     MS --> UR[Update taxonomic rank]:::tax
     UR --> CO[Combine<br/>EVEREST summaries]:::tax
