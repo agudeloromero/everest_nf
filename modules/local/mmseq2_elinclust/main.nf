@@ -25,6 +25,12 @@ process MMSEQ2_ELINCLUST {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    # Retry-safety: on a Nomad in-place restart the workdir still holds attempt 1's
+    # leftovers; mmseqs then refuses the existing scratch dir. Clear prior outputs/scratch
+    # so the re-run starts clean. (Real fix is nf-nomad restart Attempts=0 -> fresh workdir;
+    # see docs/cluster-resume/ISSUE-nf-nomad-inplace-restart-noclobber.md)
+    rm -rf ${prefix}_tmp ${prefix}_all_seqs.fasta ${prefix}_cluster.tsv ${prefix}_rep_seq.fasta ${prefix}.mmseqs_linclust.log
+
     mmseqs easy-linclust \\
         --threads ${task.cpus} \\
         ${scaffolds} \\

@@ -48,6 +48,12 @@ process MMSEQ2_ETAXONOMY {
 
 
     """
+    # Retry-safety: on a Nomad in-place restart the workdir still holds attempt 1's
+    # leftovers; mmseqs then refuses the existing scratch dir. Clear prior outputs/scratch
+    # so the re-run starts clean. (Real fix is nf-nomad restart Attempts=0 -> fresh workdir;
+    # see docs/cluster-resume/ISSUE-nf-nomad-inplace-restart-noclobber.md)
+    rm -rf ${prefix}_${mode}_tmp ${prefix}_${mode}_lca.tsv ${prefix}_${mode}_report ${prefix}_${mode}_tophit_aln ${prefix}_${mode}_tophit_report ${prefix}_${mode}_tophit_aln.txt ${prefix}.mmseqs_etaxonomy_${mode}.log
+
     mmseqs easy-taxonomy \\
         --threads ${task.cpus} \\
         ${fasta} \\
