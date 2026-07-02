@@ -18,7 +18,7 @@ process MMSEQ2_ELINCLUST {
     tuple val(meta), path("*_rep_seq.fasta")                                                        , emit: rep_seq
     tuple val(meta), path("*_all_seqs.fasta"), path("*_cluster.tsv"), path("*_rep_seq.fasta")       , emit: all
     tuple val(meta), path('*.log')                                                                  , emit: log
-    path  "versions.yml"                                                                            , emit: versions
+    tuple val("${task.process}"), val('mmseqs'), eval('mmseqs version'), emit: versions_mmseqs, topic: versions
 
     script:
     def args = task.ext.args ?: " --min-seq-id 0.98 --kmer-per-seq-scale 0.3 --sort-results 1 --alignment-mode 3 --cov-mode 1"
@@ -44,11 +44,6 @@ process MMSEQ2_ELINCLUST {
     # push-back stop at the first directory and drop every entry that sorts after
     # it (notably versions.yml) — which Nextflow then reports as a missing output.
     rm -rf ${prefix}_tmp
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
-    END_VERSIONS
     """
 
     stub:
@@ -59,10 +54,5 @@ process MMSEQ2_ELINCLUST {
     touch ${prefix}_cluster.tsv
     touch ${prefix}_rep_seq.fasta
     touch ${prefix}.mmseqs_linclust.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
-    END_VERSIONS
     """
 }

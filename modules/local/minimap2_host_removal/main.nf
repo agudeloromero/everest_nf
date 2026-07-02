@@ -16,7 +16,8 @@ process MINIMAP2_HOST_REMOVAL {
         tuple val(meta), path('*_unmapped_R*.fastq')                    , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
         tuple val(meta), path('*minimap2_host_removal.log')             , emit: log
-        path "versions.yml"                                             , emit: versions
+        tuple val("${task.process}"), val('minimap2'), eval('minimap2 --version 2>&1'), emit: versions_minimap2, topic: versions
+        tuple val("${task.process}"), val('samtools'), eval('samtools --version 2>&1 | head -1 | sed "s/^samtools //"'), emit: versions_samtools, topic: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -36,12 +37,6 @@ process MINIMAP2_HOST_REMOVAL {
           | samtools fastq -@ ${task.cpus} $args_samtools_fastq - \\
           ${output} \\
           > ${prefix}.minimap2_host_removal.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            minimap2: \$(minimap2 --version 2>&1)
-            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-        END_VERSIONS
         """
 
         stub:
@@ -54,12 +49,6 @@ process MINIMAP2_HOST_REMOVAL {
         """
         touch ${output}
         touch ${prefix}.minimap2_host_removal.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            minimap2: \$(minimap2 --version 2>&1)
-            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-        END_VERSIONS
         """
 
 }

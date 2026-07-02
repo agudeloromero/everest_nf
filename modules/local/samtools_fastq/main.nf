@@ -18,7 +18,7 @@ process SAMTOOLS_FASTQ {
         tuple val(meta), path('*_unmapped_R*.fastq')                    , emit: unmapped
         tuple val(meta), path('*_unmapped_singletons.fastq')            , emit: singleton, optional: true
         tuple val(meta), path('*samtools_fastq.log')                    , emit: log
-        path "versions.yml"                                             , emit: versions
+        tuple val("${task.process}"), val('samtools'), eval('samtools --version 2>&1 | head -1 | sed "s/^samtools //"'), emit: versions_samtools, topic: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -36,11 +36,6 @@ process SAMTOOLS_FASTQ {
           | samtools -@ ${task.cpus} $args_samtools_fastq - \\
           ${output} \\
           > ${prefix}.samtools_fastq.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-        END_VERSIONS
         """
 
         stub:
@@ -53,11 +48,6 @@ process SAMTOOLS_FASTQ {
         """
         touch ${output}
         touch ${prefix}.samtools_fastq.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-        END_VERSIONS
         """
 
 }

@@ -17,7 +17,7 @@ process BBMAP_PHIX {
         tuple val(meta), path('*_noclean_R*.fastq.gz')	                              , emit: unclean
         tuple val(meta), path('*stats_phix.txt')		                              , emit: stats_phix
         tuple val(meta), path('*bbmap_phix.log')					                  , emit: log
-        path "versions.yml"								                              , emit: versions
+        tuple val("${task.process}"), val('bbduk'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbduk, topic: versions
 
         script:
         def args = task.ext.args ?: ''
@@ -39,11 +39,6 @@ process BBMAP_PHIX {
           stats=${prefix}.stats_phix.txt \\
           $args2 \\
           2> ${prefix}.bbmap_phix.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 
 
@@ -62,10 +57,5 @@ process BBMAP_PHIX {
 
         touch ${prefix}.stats_phix.txt
         touch ${prefix}.bbmap_phix.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            bbduk: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 }

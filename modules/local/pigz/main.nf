@@ -16,7 +16,7 @@ process PIGZ {
 
         output:
         tuple val(meta), path('*.fastq.gz')	                  , emit: fastqgz
-        path "versions.yml"			                          , emit: versions
+        tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/pigz //g"'), emit: versions_pigz, topic: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -25,11 +25,6 @@ process PIGZ {
 
         """
             pigz -p ${task.cpus} $args $reads
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
-            END_VERSIONS
         """
 
         stub:
@@ -40,11 +35,6 @@ process PIGZ {
 
         """
             touch ${output}
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    pigz: \$( pigz --version 2>&1 | sed 's/pigz //g' )
-            END_VERSIONS
         """
 
 }

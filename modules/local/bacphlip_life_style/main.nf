@@ -14,7 +14,7 @@ process BACPHLIP_LIFE_STYLE {
 
     output:
     tuple val(meta), path("viruses_renamed.fasta.bacphlip")                   , emit: fasta_bacphlip
-    path "versions.yml"                                                       , emit: versions
+    tuple val("${task.process}"), val('bacphlip'), eval('echo 0.9.6'), emit: versions_bacphlip, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -30,10 +30,6 @@ process BACPHLIP_LIFE_STYLE {
     fi
 
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bacphlip: 0.9.6
-    END_VERSIONS
     """
 
 
@@ -43,10 +39,6 @@ process BACPHLIP_LIFE_STYLE {
     """
     touch viruses_renamed.fasta.bacphlip
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bacphlip: 0.9.6
-    END_VERSIONS
     """
 
 }

@@ -15,6 +15,9 @@ workflow CLEANING_CONTIGS_WF {
 
     main:
 
+        // versions now flow via channel.topic('versions')
+        ch_multiqc_files = Channel.empty()
+
 //LONG-READ we shouldn't need to change this workflow since the output of SPADES
 //should have the same structure regardless of SR/LR
 
@@ -49,6 +52,8 @@ workflow CLEANING_CONTIGS_WF {
         ABRICATE_SUMMARY (
             ABRICATE_RUN.out.report.collect { entry -> entry[1] }.map{ reports -> [[ id: 'summary'], reports]}
         )
+        // AMR/virulence summary — MultiQC has a first-party abricate module.
+        ch_multiqc_files = ch_multiqc_files.mix(ABRICATE_SUMMARY.out.report.map { it[1] })
 
         BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
 
@@ -57,5 +62,6 @@ workflow CLEANING_CONTIGS_WF {
         fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
         bbmap_rpkm = BBMAP_MAPPING_CONTIGS.out.rpkm
         bbmap_covstats = BBMAP_MAPPING_CONTIGS.out.covstats
+        multiqc_files = ch_multiqc_files
 
 }

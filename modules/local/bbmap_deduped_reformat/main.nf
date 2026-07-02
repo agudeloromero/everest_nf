@@ -16,7 +16,7 @@ process BBMAP_DEDUPED_REFORMAT {
         output:
         tuple val(meta), path('*_unmapped_cat_dedup_R*.fastq.gz')		, emit: reformatted_fastq
         tuple val(meta), path('*bbmap_deduped_reformat.log') 		    , emit: log
-        path "versions.yml"							                    , emit: versions
+        tuple val("${task.process}"), val('reformat.sh'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_reformat, topic: versions
 
         script:
         def args = task.ext.args ?: ""
@@ -30,11 +30,6 @@ process BBMAP_DEDUPED_REFORMAT {
           out=${prefix}_unmapped_cat_dedup_R1.fastq.gz \\
           out2=${prefix}_unmapped_cat_dedup_R2.fastq.gz \\
         2> ${prefix}.bbmap_deduped_reformat.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 
         stub:
@@ -45,10 +40,6 @@ process BBMAP_DEDUPED_REFORMAT {
         touch ${prefix}_unmapped_cat_dedup_R2.fastq.gz
         touch ${prefix}.bbmap_deduped_reformat.log
 
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 
 

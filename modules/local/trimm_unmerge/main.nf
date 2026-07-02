@@ -18,7 +18,7 @@ process TRIMM_UNMERGE {
         tuple val(meta), path('*_unmapped_cat_unmerge_pair_R*.fastq.gz')                                  , emit: paired
         tuple val(meta), path('*_unmapped_cat_unmerge_unpair_R*.fastq.gz')                              , emit: unpaired
         tuple val(meta), path('*.log')                                                                            , emit: log
-        path "versions.yml"                                                                                             , emit: versions
+        tuple val("${task.process}"), val('TRIMM_UNMERGE'), eval('trimmomatic -version'), emit: versions_trimm_unmerge, topic: versions
 
 
         script:
@@ -37,11 +37,6 @@ process TRIMM_UNMERGE {
             ILLUMINACLIP:${adaptor}:2:30:10 \\
             ${args} \\
             2> ${prefix}.trimm_unmerge.log
-
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic -version)
-            END_VERSIONS
             """
 
         stub:
@@ -54,11 +49,6 @@ process TRIMM_UNMERGE {
             touch ${prefix}_unmapped_cat_unmerge_unpair_R2.fastq.gz
 
             touch ${prefix}.trimm_unmerge.log
-
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-              TRIMM_UNMERGE: \$(trimmomatic -version)
-            END_VERSIONS
             """
 
 }

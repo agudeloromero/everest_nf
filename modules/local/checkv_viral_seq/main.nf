@@ -16,7 +16,7 @@ process CHECKV_VIRAL_SEQ {
     tuple val(meta), path("**/viruses.fna")                           , emit: fasta
     tuple val(meta), path("viruses_renamed.fasta")                    , emit: renamed_fasta
     path("**/viruses*.fna")                                           , emit: fnas
-    path "versions.yml"                                               , emit: versions
+    tuple val("${task.process}"), val('checkv'), eval('checkv -h 2>&1 | head -1 | sed "s/^CheckV v//; s/:.*//"'), emit: versions_checkv, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -37,11 +37,6 @@ process CHECKV_VIRAL_SEQ {
     sed 's/||.*//' ${prefix}/viruses.fna >  viruses_renamed.fasta
 
     cp viruses_renamed.fasta ${prefix}/viruses_renamed.fna
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        checkv: \$(echo \$(checkv --version 2>&1))
-    END_VERSIONS
     """
 
     stub:
@@ -55,12 +50,6 @@ process CHECKV_VIRAL_SEQ {
     touch ${prefix}/viruses.fna
     touch viruses_renamed.fasta
     touch ${prefix}_checkv_viral_seq.log
-
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        checkv: \$(echo \$(checkv --version 2>&1))
-    END_VERSIONS
     """
 
 

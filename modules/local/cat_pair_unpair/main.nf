@@ -15,7 +15,7 @@ process CAT_PAIR_UNPAIR {
 
         output:
         tuple val(meta), path('*_trimm_cat_R*.fastq.gz')	, emit: concatenated
-        path "versions.yml"									, emit: versions
+        tuple val("${task.process}"), val('cat'), eval('cat --help 2>&1 | grep -o "BusyBox v[0-9.]*" | sed "s/BusyBox v//"'), emit: versions_cat_pair_unpair, topic: versions
 
         script:
         def args = task.ext.args ?: '-7'
@@ -24,11 +24,6 @@ process CAT_PAIR_UNPAIR {
         """
         cat ${paired[0]} ${unpaired[0]} > ${prefix}_trimm_cat_R1.fastq.gz
         cat ${paired[0]} ${unpaired[1]} > ${prefix}_trimm_cat_R2.fastq.gz
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            CAT_PAIR_UNPAIR: \$(cat --version)
-        END_VERSIONS
         """
 
 
@@ -38,10 +33,5 @@ process CAT_PAIR_UNPAIR {
         """
         touch ${prefix}_trimm_cat_R1.fastq.gz
         touch ${prefix}_trimm_cat_R2.fastq.gz
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            CAT_pair_unpair: \$(cat --version)
-        END_VERSIONS
         """
 }

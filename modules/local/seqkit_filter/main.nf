@@ -13,7 +13,7 @@ process SEQKIT_FILTER {
 
     output:
     tuple val(meta), path("*_rep_seq_FilterLen.fasta"), emit: filtered_fasta
-    path "versions.yml"                               , emit: versions
+    tuple val("${task.process}"), val('seqkit'), eval('seqkit 2>&1 | sed -n "s/^Version: //p"'), emit: versions_seqkit, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,11 +28,6 @@ process SEQKIT_FILTER {
         $args \\
         $fasta \\
         -o ${prefix}_rep_seq_FilterLen.fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
-    END_VERSIONS
     """
 
     stub:
@@ -41,11 +36,6 @@ process SEQKIT_FILTER {
 
     """
     touch ${prefix}_rep_seq_FilterLen.fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
-    END_VERSIONS
     """
 
 }

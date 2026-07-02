@@ -77,15 +77,18 @@ workflow EVEREST_NF {
 
         TRIMMING_ADAPTORS_WF ( ch_reads_branched.short_reads,
                                ch_reads_branched.long_reads )
+        ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTORS_WF.out.multiqc_files)
 
         HOSTREMOVAL_LONGREAD_WF ( params.genome,
                                   TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
+        ch_multiqc_files = ch_multiqc_files.mix(HOSTREMOVAL_LONGREAD_WF.out.multiqc_files)
 
 
         HOSTREMOVAL_SHORTREAD_WF ( params.fasta,
                                    params.transcriptome,
                                    TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
                                    TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe )
+        ch_multiqc_files = ch_multiqc_files.mix(HOSTREMOVAL_SHORTREAD_WF.out.multiqc_files)
 
 
         DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
@@ -116,6 +119,7 @@ workflow EVEREST_NF {
             ch_contigs,
             ch_reads_for_coverage
         )
+        ch_multiqc_files = ch_multiqc_files.mix(CLEANING_CONTIGS_WF.out.multiqc_files)
 
         bbmap_process_input_ch = CLEANING_CONTIGS_WF.out.bbmap_rpkm
             .map { entry -> entry[1] }

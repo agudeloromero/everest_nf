@@ -16,7 +16,7 @@ process SUMMARY_PER_SAMPLE {
 
         output:
         path("*_summary_${mode}.txt")                         , emit: summary
-        path "versions.yml"                                   , emit: versions
+        tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -1 | sed "s/^.*R version //; s/ .*//"'), emit: versions_r_base, topic: versions
 
         script:
         prefix = task.ext.prefix ?: "${meta.id}"
@@ -26,11 +26,6 @@ process SUMMARY_PER_SAMPLE {
         """
             Summary_script.R ${lca_file} ${aln_file} ${baltimore_db} ${prefix}_summary_${mode}.txt \\
             2> ${prefix}_summary_${mode}.log
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-            END_VERSIONS
         """
 
         stub:
@@ -39,11 +34,6 @@ process SUMMARY_PER_SAMPLE {
         """
             touch ${prefix}_summary_${mode}.txt
             touch ${prefix}_summary_${mode}.log
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-            END_VERSIONS
         """
 
 }

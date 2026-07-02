@@ -16,7 +16,7 @@ process BBMAP_MERGE {
     tuple val(meta), path("*_unmapped_cat_unmerge_R*.fastq.gz")             , emit: unmerged
     tuple val(meta), path("*_unmapped_cat_R1_merge.fastq.gz")               , emit: merged
     tuple val(meta), path("*.bbmap_merge.log")                              , emit: log
-    path "versions.yml"							                            , emit: versions
+    tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap_merge, topic: versions
 
     script:
     def args = task.ext.args ?: ""
@@ -31,11 +31,6 @@ process BBMAP_MERGE {
         outu1=${prefix}_unmapped_cat_unmerge_R1.fastq.gz \\
         outu2=${prefix}_unmapped_cat_unmerge_R2.fastq.gz  \\
         2> ${prefix}.bbmap_merge.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        BBMAP_DEDUPE: \$(bbmap --version)
-    END_VERSIONS
     """
 
 
@@ -48,11 +43,6 @@ process BBMAP_MERGE {
     touch ${prefix}_unmapped_cat_unmerge_R1.fastq.gz
     touch ${prefix}_unmapped_cat_unmerge_R2.fastq.gz
     touch ${prefix}.bbmap_merge.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        BBMAP_MERGE: \$(bbmap --version)
-    END_VERSIONS
     """
 
 }

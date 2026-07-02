@@ -15,7 +15,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
         output:
         tuple val(meta), path('*_dedup_norm_R*.fastq.gz')                     , emit: norm_fastqgz
         tuple val(meta), path('*bbmap_duduped_normalization.log')             , emit: log
-        path "versions.yml"                                                   , emit: versions
+        tuple val("${task.process}"), val('bbnorm.sh'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbnorm, topic: versions
 
         script:
         def args = task.ext.args ?: ""
@@ -37,11 +37,6 @@ process BBMAP_DUDUPED_NORMALIZATION {
           $input\\
           $output \\
           2> ${prefix}.bbmap_duduped_normalization.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          bbnorm.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 
         stub:
@@ -55,10 +50,5 @@ process BBMAP_DUDUPED_NORMALIZATION {
         """
         touch ${output}
         touch ${prefix}.bbmap_duduped_normalization.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-          bbnorm.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 }

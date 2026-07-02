@@ -16,7 +16,7 @@ process MERGE_SUMMARY_BBMAP {
     output:
     path("summary/*_nt_summary_mmseqs2_stats.txt") , emit: nt_stats
     path("summary/*_aa_summary_mmseqs2_stats.txt") , emit: aa_stats
-    path("versions.yml")                           , emit: versions
+    tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //"'), emit: versions_python, topic: versions
 
     script:
     """
@@ -33,11 +33,6 @@ process MERGE_SUMMARY_BBMAP {
     done
 
     merge_summary_bbmap.py bbmap summary
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 
     stub:
@@ -45,10 +40,5 @@ process MERGE_SUMMARY_BBMAP {
     mkdir -p summary
     touch summary/test_nt_summary_mmseqs2_stats.txt
     touch summary/test_aa_summary_mmseqs2_stats.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 }

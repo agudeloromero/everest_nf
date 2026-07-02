@@ -17,7 +17,7 @@ process BBMAP_DEDUPE {
     tuple val(meta), path("*_dedup.fastq.gz")                   , emit: deduped_fastqgz
     tuple val(meta), path("*_cat_dedup.fastq.gz")               , emit: cat_deduped_fastqgz, optional: true
     tuple val(meta), path("*bbmap_dedupe.out")                  , emit: log
-    path "versions.yml"                                         , emit: versions
+    tuple val("${task.process}"), val('dedupe.sh'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_dedupe, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -39,10 +39,6 @@ process BBMAP_DEDUPE {
         out=${output}  \\
     2> ${prefix}.bbmap_dedupe.out
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-    END_VERSIONS
     """
 
 
@@ -57,10 +53,6 @@ process BBMAP_DEDUPE {
     touch ${output}
     touch ${prefix}.bbmap_dedupe.out
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-    END_VERSIONS
     """
 
 }

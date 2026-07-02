@@ -17,7 +17,7 @@ process BBMAP_MAPPING_CONTIGS {
     tuple val(meta), path(renamed_fasta), path("*_contig.sam")               , emit: sam
     tuple val(meta), path("*_contig_rpkm.txt")                               , emit: rpkm
     tuple val(meta), path("*_contig_covstats.txt")                           , emit: covstats
-    path "versions.yml"                                                      , emit: versions
+    tuple val("${task.process}"), val('bbmap.sh'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -45,11 +45,6 @@ process BBMAP_MAPPING_CONTIGS {
         rpkm=${prefix}_contig_rpkm.txt \\
         covstats=${prefix}_contig_covstats.txt \\
     2> ${prefix}.bbmap_mapping_contigs.out
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bbmap.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-    END_VERSIONS
     """
 
 
@@ -62,11 +57,6 @@ process BBMAP_MAPPING_CONTIGS {
     touch ${prefix}_contig_covstats.txt
 
     touch ${prefix}.bbmap_mapping_contigs.out
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        dedupe.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-    END_VERSIONS
     """
 
 }

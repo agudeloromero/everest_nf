@@ -48,6 +48,8 @@ workflow HOST_REMOVAL_WF {
 //--------------------
 
         ch_pigz_input = Channel.empty()
+        // versions now flow via channel.topic('versions')
+        ch_multiqc_files = Channel.empty()
 
 
 //--------------------
@@ -95,6 +97,9 @@ workflow HOST_REMOVAL_WF {
             CAT__DNA(ch_cat_input)
             ch_unmapped_se = MINIMAP2_HOST_REMOVAL__DNA.out.unmapped.filter { it[0].single_end == true }
             ch_pigz_input = CAT__DNA.out.fastq.concat(ch_unmapped_se)
+            // Minimap2 host-removal stderr: the single most useful QC signal here
+            // (% host reads removed per sample).
+            ch_multiqc_files = ch_multiqc_files.mix(MINIMAP2_HOST_REMOVAL__DNA.out.log.map { it[1] })
 
 
 //--------------------
@@ -116,6 +121,7 @@ workflow HOST_REMOVAL_WF {
             } else if (params.shortread_transcriptome_aligner == "minimap2") {
 
                 MINIMAP2_HOST_REMOVAL__RNA(ref_transcriptome_index_minimap2_ch, ch_all_fastq_branched.rna)
+                ch_multiqc_files = ch_multiqc_files.mix(MINIMAP2_HOST_REMOVAL__RNA.out.log.map { it[1] })
                 BBMAP_SINGLETONS__RNA(MINIMAP2_HOST_REMOVAL__RNA.out.singleton)
                 ch_cat_input = MINIMAP2_HOST_REMOVAL__RNA.out.unmapped
                     .join(BBMAP_SINGLETONS__RNA.out.singleton_pair)
@@ -138,4 +144,5 @@ workflow HOST_REMOVAL_WF {
 
     emit:
         deduped_normalized_fastqgz = BBMAP_DUDUPED_NORMALIZATION.out.norm_fastqgz
+        multiqc_files = ch_multiqc_files
 }

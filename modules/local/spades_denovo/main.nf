@@ -19,7 +19,7 @@ process SPADES_DENOVO {
     tuple val(meta), path('*.scaffolds.fasta')                         , optional:true, emit: scaffolds
     tuple val(meta), path('*.assembly_graph_with_scaffolds.gfa')       , optional:true, emit: scaffolds_graph
     tuple val(meta), path('*.log')                                   , emit: log
-    path  "versions.yml"                                             , emit: versions
+    tuple val("${task.process}"), val('spades'), eval('spades.py --version 2>&1 | sed "s/^SPAdes v//"'), emit: versions_spades, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -48,11 +48,6 @@ process SPADES_DENOVO {
     mv $prefix/scaffolds.fasta ${prefix}.scaffolds.fasta
 
     mv $prefix/assembly_graph_with_scaffolds.gfa ${prefix}.assembly_graph_with_scaffolds.gfa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        spades: \$(spades.py --version 2>&1 | sed 's/^.*SPAdes genome assembler v//; s/ .*\$//')
-    END_VERSIONS
     """
 
     stub:
@@ -60,10 +55,5 @@ process SPADES_DENOVO {
     """
     touch ${prefix}.scaffolds.fasta
     touch ${prefix}.spades.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        spades: \$(spades.py --version 2>&1 | sed 's/^.*SPAdes genome assembler v//; s/ .*\$//')
-    END_VERSIONS
     """
 }

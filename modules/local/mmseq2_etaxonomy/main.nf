@@ -22,7 +22,7 @@ process MMSEQ2_ETAXONOMY {
     tuple val(meta), path("*tophit_aln")         , emit: tophit_aln
     tuple val(meta), path("*tophit_aln.txt")     , emit: tophit_aln_txt
     tuple val(meta), path("*tophit_report")      , emit: tophit_report
-    path  "versions.yml"                         , emit: versions
+    tuple val("${task.process}"), val('mmseqs'), eval('mmseqs version'), emit: versions_mmseqs, topic: versions
 
     script:
 
@@ -72,11 +72,6 @@ process MMSEQ2_ETAXONOMY {
     # the task workdir makes the nf-nomad-s5cmd recursive push-back stop at the
     # first directory and drop entries sorting after it (e.g. versions.yml).
     rm -rf ${prefix}_${mode}_tmp
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
-    END_VERSIONS
     """
 
     stub:
@@ -88,10 +83,5 @@ process MMSEQ2_ETAXONOMY {
     touch ${prefix}_${mode}_tophit_aln
     touch ${prefix}_${mode}_tophit_aln.txt
     touch ${prefix}_${mode}_tophit_report
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mmseqs: \$(mmseqs version 2>/dev/null || echo 14.7e284)
-    END_VERSIONS
     """
 }

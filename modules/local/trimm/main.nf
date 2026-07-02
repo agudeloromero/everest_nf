@@ -17,7 +17,7 @@ process TRIMM {
         tuple val(meta), path('*.trimm_pair_R*.fastq.gz')                                       , emit: paired
         tuple val(meta), path('*.trimm_unpair_R*.fastq.gz')                                     , emit: unpaired, optional: true
         tuple val(meta), path('*.log')                                                                    , emit: log
-        path "versions.yml"                                                                                     , emit: versions
+        tuple val("${task.process}"), val('TRIMM'), eval('trimmomatic -version'), emit: versions_trimm, topic: versions
 
 
         script:
@@ -37,12 +37,6 @@ process TRIMM {
                 $cleaned_reads \\
                 $output \\
                 $args
-
-
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-              TRIMM: \$(trimmomatic -version)
-            END_VERSIONS
             """
 
         stub:
@@ -55,11 +49,6 @@ process TRIMM {
             """
             touch ${output}
             touch ${prefix}.trimm.log
-
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-              TRIMM: \$(trimmomatic -version)
-            END_VERSIONS
             """
 
 }

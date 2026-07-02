@@ -15,26 +15,16 @@ process EVEREST_COMBINE_SUMMARIES {
     output:
     path("EVEREST_nt_summary.txt") , emit: nt_summary
     path("EVEREST_aa_summary.txt") , emit: aa_summary
-    path("versions.yml")           , emit: versions
+    tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //"'), emit: versions_python, topic: versions
 
     script:
     """
     everest_combine_summaries.py .
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 
     stub:
     """
     touch EVEREST_nt_summary.txt
     touch EVEREST_aa_summary.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 }

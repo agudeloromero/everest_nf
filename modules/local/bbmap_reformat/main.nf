@@ -15,7 +15,7 @@ process BBMAP_REFORMAT {
         output:
         tuple val(meta), path('*_unmapped_singletons_R*.fastq')	                , emit: singleton_pair
         tuple val(meta), path('*bbmap_singletons.log')			                , emit: log
-        path "versions.yml"							                            , emit: versions
+        tuple val("${task.process}"), val('reformat.sh'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_reformat, topic: versions
 
         script:
         def args = task.ext.args ?: ''
@@ -28,11 +28,6 @@ process BBMAP_REFORMAT {
           in1=$unmapped_single \\
           out=${prefix}_unmapped_singletons_R1.fastq out2=${prefix}_unmapped_singletons_R2.fastq  \\
           > ${prefix}.bbmap_singletons.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 
         stub:
@@ -41,11 +36,6 @@ process BBMAP_REFORMAT {
         touch ${prefix}_unmapped_singletons_R1.fastq
         touch ${prefix}_unmapped_singletons_R2.fastq
         touch ${prefix}.bbmap_singletons.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            reformat.sh: \$(bbversion.sh | grep -v "Duplicate cpuset")
-        END_VERSIONS
         """
 }
 

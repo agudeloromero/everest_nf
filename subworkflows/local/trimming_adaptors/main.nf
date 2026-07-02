@@ -15,7 +15,7 @@ workflow TRIMMING_ADAPTORS_WF {
 
     main:
 
-        ch_versions = Channel.empty()
+        // Collect QC output files (versions now flow via channel.topic('versions'))
         ch_multiqc_files = Channel.empty()
     //-------------
     // LONG-READS
@@ -33,7 +33,6 @@ workflow TRIMMING_ADAPTORS_WF {
             ch_longreads,
             params.skip_longread_qc,
         )
-        ch_versions = ch_versions.mix(LONGREADS.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(LONGREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
 
 
@@ -46,7 +45,6 @@ workflow TRIMMING_ADAPTORS_WF {
         SHORTREADS (
             ch_shortreads
         )
-        ch_versions = ch_versions.mix(SHORTREADS.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SHORTREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
 
 
@@ -56,5 +54,6 @@ workflow TRIMMING_ADAPTORS_WF {
         shortreads_trimmed_pe = SHORTREADS.out.shortreads_trimmed_pe
         // shortreads_trimmed_single = ch_trimmed.se
         /* fastqc_trimm_zip = FASTQC_TRIMM.out.zip.collect{it[1]} */
+        multiqc_files = ch_multiqc_files
 
 }

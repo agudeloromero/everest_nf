@@ -18,7 +18,7 @@ process MINIMAP2_ALIGN {
     output:
     tuple val(meta), path("*.paf"), optional: true, emit: paf
     tuple val(meta), path("*.bam"), optional: true, emit: bam
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val('minimap2'), eval('minimap2 --version 2>&1'), emit: versions_minimap2, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -38,12 +38,6 @@ process MINIMAP2_ALIGN {
         $cigar_paf \\
         $set_cigar_bam \\
         $bam_output
-
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        minimap2: \$(minimap2 --version 2>&1)
-    END_VERSIONS
     """
 
     stub:
@@ -51,10 +45,5 @@ process MINIMAP2_ALIGN {
     def output = bam_format ? "${prefix}.bam" : "${prefix}.paf"
     """
     touch ${output}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        minimap2: \$(minimap2 --version 2>&1)
-    END_VERSIONS
     """
 }

@@ -16,7 +16,7 @@ process KALLISTO_ALIGN {
         output:
         tuple val(meta), path('alignment/pseudoalignments.bam')	    , emit: bam
         path("kallisto_align_*.log")	                            , emit: log
-        path "versions.yml"			                                , emit: versions
+        tuple val("${task.process}"), val('kallisto'), eval('kallisto 2>&1 | head -1 | sed "s/^kallisto //"'), emit: versions_kallisto, topic: versions
 
         script:
         def prefix = task.ext.prefix ?: "${meta.id}"
@@ -34,11 +34,6 @@ process KALLISTO_ALIGN {
                 -o alignment \\
                 --pseudobam \\
             2> kallisto_align_${prefix}.log
-
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-                kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
-            END_VERSIONS
         """
 
         stub:
@@ -47,11 +42,6 @@ process KALLISTO_ALIGN {
         mkdir alignment
         touch alignment/pseudoalignments.bam
         touch kallisto_align_${prefix}.log
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
-        END_VERSIONS
         """
 
 }

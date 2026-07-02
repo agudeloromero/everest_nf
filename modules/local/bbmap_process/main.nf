@@ -14,25 +14,15 @@ process BBMAP_PROCESS {
 
     output:
     path("*_bbmap_stats.txt")      , emit: bbmap_stats
-    path("versions.yml")           , emit: versions
+    tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //"'), emit: versions_python, topic: versions
 
     script:
     """
     bbmap_process.py .
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 
     stub:
     """
     touch test_bbmap_stats.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //')
-    END_VERSIONS
     """
 }

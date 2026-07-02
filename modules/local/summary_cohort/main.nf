@@ -16,7 +16,7 @@ process SUMMARY_COHORT {
 
         output:
         tuple val(mode), path("EVEREST_cohort_${mode}.txt")   , emit: summary
-        path "versions.yml"                                   , emit: versions
+        tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -1 | sed "s/^.*R version //; s/ .*//"'), emit: versions_r_base, topic: versions
 
         script:
         def args = task.ext.args ?: ""
@@ -24,22 +24,12 @@ process SUMMARY_COHORT {
 
         """
             Summary_CombineSamples_script.R  ./ "_${mode}_"  EVEREST_cohort_${mode}.txt
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-            END_VERSIONS
         """
 
         stub:
 
         """
             touch EVEREST_cohort_${mode}.txt
-
-            cat <<-END_VERSIONS > versions.yml
-                "${task.process}":
-                    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-            END_VERSIONS
         """
 
 }
