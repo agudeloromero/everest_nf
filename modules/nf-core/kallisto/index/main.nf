@@ -12,7 +12,7 @@ process KALLISTO_INDEX {
 
     output:
     path "kallisto" , emit: idx
-    path "versions.yml" , emit: versions
+    tuple val("${task.process}"), val('kallisto'), eval('kallisto 2>&1 | head -1 | sed "s/^kallisto //"'), emit: versions_kallisto, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,20 +25,10 @@ process KALLISTO_INDEX {
         $args \\
         -i kallisto \\
         $fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
-    END_VERSIONS
     """
 
     stub:
     """
     touch kallisto
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
-    END_VERSIONS
     """
 }

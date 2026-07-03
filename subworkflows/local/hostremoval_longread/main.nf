@@ -16,35 +16,37 @@ workflow LONGREAD_HOSTREMOVAL {
     ch_reads      // [ [ meta ], [ reads ] ]
 
     main:
-    ch_versions = Channel.empty()
+    // Collect QC output files (versions now flow via channel.topic('versions'))
     ch_multiqc_files = Channel.empty()
 
-    MINIMAP2_HOST_INDEX( ref_fasta_ch )
-    ch_versions = ch_versions.mix(MINIMAP2_HOST_INDEX.out.versions)
+    // Only build the host index when at least one long-read sample is present.
+    // ref_fasta_ch (params.genome) is a value channel that is ready immediately,
+    // so indexing it directly would run even for short-read-only runs. Deriving
+    // the index input from ch_reads gates it on actual long-read data.
+    ref_index_in = ch_reads
+        .map { meta, reads -> file(ref_fasta_ch) }
+        .first()
+
+    MINIMAP2_HOST_INDEX( ref_index_in )
 
     MINIMAP2_HOST_ALIGN(ch_reads, MINIMAP2_HOST_INDEX.out.index, 'bai', false, false)
     ch_minimap2_mapped = MINIMAP2_HOST_ALIGN.out.bam.map { meta, reads ->
         [meta, reads, []]
     }
-    ch_versions = ch_versions.mix(MINIMAP2_HOST_ALIGN.out.versions)
 
     // Generate unmapped reads FASTQ for downstream taxprofiling
     SAMTOOLS_HOSTREMOVED_UNMAPPED(ch_minimap2_mapped)
-    ch_versions = ch_versions.mix(SAMTOOLS_HOSTREMOVED_UNMAPPED.out.versions)
 
     // Indexing whole BAM for host removal statistics
     SAMTOOLS_HOSTREMOVED_INDEX(MINIMAP2_HOST_ALIGN.out.bam)
-    ch_versions = ch_versions.mix(SAMTOOLS_HOSTREMOVED_INDEX.out.versions)
 
     bam_bai = MINIMAP2_HOST_ALIGN.out.bam.join(SAMTOOLS_HOSTREMOVED_INDEX.out.bai)
 
     // SAMTOOLS_HOSTREMOVED_STATS(bam_bai, ch_host_fasta_for_build)
-    // ch_versions = ch_versions.mix(SAMTOOLS_HOSTREMOVED_STATS.out.versions)
     // ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_HOSTREMOVED_STATS.out.stats)
 
     emit:
     // stats         = SAMTOOLS_HOSTREMOVED_STATS.out.stats //channel: [val(meta), [reads  ] ]
     reads         = SAMTOOLS_HOSTREMOVED_UNMAPPED.out.fastqgz // channel: [ val(meta), [ reads ] ]
-    versions      = ch_versions // channel: [ versions.yml ]
     multiqc_files = ch_multiqc_files
 }

@@ -1,0 +1,9 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR15057753,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057753_R1.fastq.gz,OXFORD_NANOPORE
+SRR15057759,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057759_R1.fastq.gz,OXFORD_NANOPORE
+ERR3274620,DNA,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274620_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274620_R2.fastq.gz,,,
+ERR3274626,DNA,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R2.fastq.gz,,,
+SRR5110508,DNA,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R2.fastq.gz,,,
+SRR5110531,DNA,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R2.fastq.gz,,,
+SRR8322173,RNA,/home/opc/EVEREST/data_test/SR_PE/RNA/pass/PRJNA493096/SRR8322173_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/RNA/pass/PRJNA493096/SRR8322173_R2.fastq.gz,,,
+SRR10903402,RNA,/home/opc/EVEREST/data_test/SR_PE/RNA/pass/PRJNA601736/SRR10903402_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/RNA/pass/PRJNA601736/SRR10903402_R2.fastq.gz,,,

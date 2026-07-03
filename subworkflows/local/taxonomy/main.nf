@@ -1,0 +1,65 @@
+include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_AA    } from "../../../modules/local/mmseq2_etaxonomy/main"
+include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_AA   } from "../../../modules/local/taxonkit_reformat/main"
+include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_AA } from "../../../modules/local/summary_per_sample/main"
+include { SUMMARY_COHORT as SUMMARY_COHORT_AA         } from "../../../modules/local/summary_cohort/main"
+
+include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_NT    } from "../../../modules/local/mmseq2_etaxonomy/main"
+include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_NT   } from "../../../modules/local/taxonkit_reformat/main"
+include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_NT } from "../../../modules/local/summary_per_sample/main"
+include { SUMMARY_COHORT as SUMMARY_COHORT_NT         } from "../../../modules/local/summary_cohort/main"
+
+workflow TAXONOMY_WF {
+    take:
+        fasta_ch
+
+    main:
+
+    //===================
+    //AA (PROTEINS) analysis
+    //===================
+
+         MMSEQ2_ETAXONOMY_AA( fasta_ch, params.mmseq_viral_db_aa, 'aa' )
+         TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca, params.tax_aa )
+
+         in_summary_per_sample_aa_ch = MMSEQ2_ETAXONOMY_AA.out.mode_tuple
+                                        .join(MMSEQ2_ETAXONOMY_AA.out.tophit_aln_txt)
+                                        .join(TAXONKIT_REFORMAT_AA.out.lca_header)
+
+         SUMMARY_PER_SAMPLE_AA( in_summary_per_sample_aa_ch,  params.baltimore_db)
+         SUMMARY_COHORT_AA( SUMMARY_PER_SAMPLE_AA.out.summary.collect(), 'aa')
+
+
+    //===================
+    //NT (NUCLEOTIDES) analysis
+    //===================
+
+
+         MMSEQ2_ETAXONOMY_NT( fasta_ch, params.mmseq_viral_db_nt, 'nt' )
+         TAXONKIT_REFORMAT_NT(  MMSEQ2_ETAXONOMY_NT.out.lca, params.tax_nt )
+
+
+         in_summary_per_sample_nt_ch = MMSEQ2_ETAXONOMY_NT.out.mode_tuple
+                                        .join(MMSEQ2_ETAXONOMY_NT.out.tophit_aln_txt)
+                                        .join(TAXONKIT_REFORMAT_NT.out.lca_header)
+
+         SUMMARY_PER_SAMPLE_NT( in_summary_per_sample_nt_ch,  params.baltimore_db)
+
+         SUMMARY_COHORT_NT( SUMMARY_PER_SAMPLE_NT.out.summary.collect(), 'nt')
+
+    //==========
+    // SUMMARY SCRIPTS
+    //==========
+
+
+        // REPORTS_WF ()
+
+
+    emit:
+        summary_nt        = SUMMARY_PER_SAMPLE_NT.out.summary
+        summary_aa        = SUMMARY_PER_SAMPLE_AA.out.summary
+        // taxonomy-only cross-sample matrices (per mode), distinct from the
+        // coverage-merged EVEREST_{nt,aa}_summary produced downstream.
+        summary_cohort_nt = SUMMARY_COHORT_NT.out.summary
+        summary_cohort_aa = SUMMARY_COHORT_AA.out.summary
+
+}

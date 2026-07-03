@@ -12,7 +12,7 @@ process SAMTOOLS_UNMAPPED {
 
     output:
     tuple val(meta), path("*hostremoved.fastq.gz"), emit: fastqgz
-    path "versions.yml"                           , emit: versions
+    tuple val("${task.process}"), val('samtools'), eval('samtools --version 2>&1 | head -1 | sed "s/^samtools //"'), emit: versions_samtools, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -37,10 +37,6 @@ process SAMTOOLS_UNMAPPED {
         -0 ${prefix}.fastq.gz \\
         ${mapped}
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-    END_VERSIONS
     """
 
     stub:
@@ -48,9 +44,5 @@ process SAMTOOLS_UNMAPPED {
     """
     touch ${prefix}.fastq.gz
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-    END_VERSIONS
     """
 }

@@ -1,0 +1,4 @@
+sample,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR3284701,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA316056/SRR3284701_R1.fastq.gz,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA316056/SRR3284701_R2.fastq.gz,,,
+SRR3286490,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA316056/SRR3286490_R1.fastq.gz,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA316056/SRR3286490_R2.fastq.gz,,,
+SRR12175236,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA644600/SRR12175236_R1.fastq.gz,/data/everest-nf/data/test/SR_PE/DNA/fail/PRJNA644600/SRR12175236_R2.fastq.gz,,,

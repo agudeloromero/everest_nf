@@ -36,4 +36,16 @@ process FILTLONG {
         filtlong: \$( filtlong --version | sed -e "s/Filtlong v//g" )
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo "" | gzip -n > ${prefix}.fastq.gz
+    touch ${prefix}.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        filtlong: \$( filtlong --version | sed -e "s/Filtlong v//g" )
+    END_VERSIONS
+    """
 }

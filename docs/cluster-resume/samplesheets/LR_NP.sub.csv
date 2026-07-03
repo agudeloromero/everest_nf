@@ -1,0 +1,4 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR15057753,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057753_R1.sub.fastq.gz,OXFORD_NANOPORE
+SRR15057759,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057759_R1.sub.fastq.gz,OXFORD_NANOPORE
+

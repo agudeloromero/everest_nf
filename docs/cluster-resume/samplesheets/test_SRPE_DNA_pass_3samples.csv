@@ -1,0 +1,4 @@
+sample,short_read_1,short_read_2,contig,long_read,long_read_platform
+ERR3274626,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R1.fastq.gz,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJEB32062/ERR3274626_R2.fastq.gz,,,
+SRR5110508,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R1.fastq.gz,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110508_R2.fastq.gz,,,
+SRR5110531,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R1.fastq.gz,/home/p_agudeloromero/mysoftware/DB_everest/_data_test/SR_PE/DNA/pass/PRJNA316588/SRR5110531_R2.fastq.gz,,,

@@ -17,12 +17,12 @@ workflow SHORTREAD_PREPROCESSING {
         ch_raw_short_reads
 
     main:
-        // Collect version and QC output files
-        ch_versions = Channel.empty()
+        // Collect QC output files (versions now flow via channel.topic('versions'))
         ch_multiqc_files = Channel.empty()
 
         //TODO: Replace with the nf-core module
         BBMAP_PHIX( ch_raw_short_reads )
+        ch_multiqc_files = ch_multiqc_files.mix(BBMAP_PHIX.out.log.map { it[1] })
 
         TRIMM( BBMAP_PHIX.out.clean, params.adaptor )
 
@@ -52,6 +52,5 @@ workflow SHORTREAD_PREPROCESSING {
     emit:
         shortreads_trimmed_pe = TRIMM.out.paired
         shortreads_preprocessed_se_pe = ch_short_reads_preprocessed
-        versions      = ch_versions
         multiqc_files = ch_multiqc_files
 }

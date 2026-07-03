@@ -45,4 +45,20 @@ process TRIMMOMATIC {
         trimmomatic: \$(trimmomatic -version)
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def output = meta.single_end ?
+        "touch ${prefix}.SE.paired.trim.fastq.gz" :
+        "touch ${prefix}.paired.trim_1.fastq.gz ${prefix}.unpaired.trim_1.fastq.gz ${prefix}.paired.trim_2.fastq.gz ${prefix}.unpaired.trim_2.fastq.gz"
+    """
+    ${output}
+    touch ${prefix}.log
+    touch ${prefix}.summary
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        trimmomatic: \$(trimmomatic -version)
+    END_VERSIONS
+    """
 }

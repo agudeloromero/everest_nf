@@ -14,7 +14,7 @@ process VRHYME_VRHYME {
     tuple val(meta), path("**/vRhyme_best_bins_fasta/*.{fasta,ffn,faa}")        , emit: bins
     tuple val(meta), path("**/vRhyme_best_bins.*.membership.tsv")   , emit: membership
     tuple val(meta), path("**/vRhyme_best_bins.*.summary.tsv")      , emit: summary
-    path "versions.yml"                                             , emit: versions
+    tuple val("${task.process}"), val('vrhyme'), eval('vRhyme --version 2>&1 | sed "s/^.*vRhyme v//; s/Using.*//"'), emit: versions_vrhyme, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -38,11 +38,6 @@ process VRHYME_VRHYME {
     #mv $prefix/vRhyme_best_bins_fasta/ vRhyme_best_bins_fasta
 
     ${cleanup}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        vrhyme: \$(echo \$(vRhyme --version 2>&1) | sed 's/^.*vRhyme v//; s/Using.*\$//' ))
-    END_VERSIONS
     """
 
     stub:
@@ -51,25 +46,20 @@ process VRHYME_VRHYME {
     mkdir -p $prefix
     touch $prefix/vRhyme_best_bins.19.membership.tsv
     touch $prefix/vRhyme_best_bins.19.summary.tsv
-    mkdir -p vRhyme_best_bins_fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_1.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_10.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_11.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_12.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_13.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_14.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_2.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_3.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_4.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_5.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_6.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_7.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_8.fasta
-    touch vRhyme_best_bins_fasta/vRhyme_bin_9.fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        vrhyme: \$(echo \$(vRhyme --version 2>&1) | sed 's/^.*vRhyme v//; s/Using.*\$//' ))
-    END_VERSIONS
+    mkdir -p $prefix/vRhyme_best_bins_fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_1.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_10.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_11.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_12.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_13.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_14.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_2.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_3.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_4.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_5.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_6.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_7.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_8.fasta
+    touch $prefix/vRhyme_best_bins_fasta/vRhyme_bin_9.fasta
     """
 }

@@ -14,7 +14,7 @@ process PORECHOP_PORECHOP {
     output:
     tuple val(meta), path("*.fastq.gz"), emit: reads
     tuple val(meta), path("*.log")     , emit: log
-    path "versions.yml"                , emit: versions
+    tuple val("${task.process}"), val('porechop'), eval('porechop --version'), emit: versions_porechop, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,10 +29,6 @@ process PORECHOP_PORECHOP {
         $args \\
         -o ${prefix}.fastq.gz \\
         > ${prefix}.log
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        porechop: \$( porechop --version )
-    END_VERSIONS
     """
 
     stub:
@@ -41,9 +37,5 @@ process PORECHOP_PORECHOP {
     touch ${prefix}.fastq
     gzip ${prefix}.fastq
     touch ${prefix}.log
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        porechop: \$( porechop --version )
-    END_VERSIONS
     """
 }

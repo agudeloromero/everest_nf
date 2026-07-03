@@ -8,6 +8,22 @@ report_section_order:
     order: -1001
   "agudeloromero-everest_nf-summary":
     order: -1002
+  fastqc:
+    order: -900
+  nanoplot:
+    order: -890
+  porechop:
+    order: -880
+  bbmap:
+    order: -870
+  trimmomatic:
+    order: -860
+  minimap2:
+    order: -850
+  kallisto:
+    order: -840
+  abricate:
+    order: -830
 
 export_plots: true
 
