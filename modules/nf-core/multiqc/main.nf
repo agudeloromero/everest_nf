@@ -14,8 +14,11 @@ process MULTIQC {
     tuple val(meta), path("*.html"), emit: report
     tuple val(meta), path("*_data"), emit: data
     tuple val(meta), path("*_plots"), emit: plots, optional: true
-    // MultiQC should not push its versions to the `versions` topic. Its input depends on the versions topic to be resolved thus outputting to the topic will let the pipeline hang forever
-    tuple val("${task.process}"), val('multiqc'), eval('multiqc --version | sed "s/.* //g"'), emit: versions
+    // No versions output: MultiQC's input depends on the versions topic being fully
+    // resolved, so emitting to it would deadlock the pipeline (topic never resolves).
+    // A bare (non-topic) eval() output here also hits a Nextflow 26.04.4 task-hash bug
+    // ("Something went wrong while creating task hash" on a HashMap$EntrySet) — the
+    // output is unused (nothing reads MULTIQC.out.versions) so it's simplest to drop it.
 
     when:
     task.ext.when == null || task.ext.when
