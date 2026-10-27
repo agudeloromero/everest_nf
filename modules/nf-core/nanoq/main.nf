@@ -22,12 +22,35 @@ process NANOQ {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}_filtered"
-    """
-    nanoq -i ${ontreads} \\
-        ${args} \\
-        -r ${prefix}.stats \\
-        -o ${prefix}.${output_format}
-    """
+    if (output_format.startsWith('fasta')) {
+        // nanoq (0.10.0) writes records in the INPUT format whatever the -o extension is
+        // (verified: `-o x.fasta`, with or without -f, still emits FASTQ), so a "fasta" output
+        // was FASTQ under a .fasta name and CheckV rejected it. Filter to FASTQ, then convert.
+        def compress = output_format == 'fasta'    ? ''
+                     : output_format == 'fasta.gz' ? '| gzip -c'
+                     : null
+        if (compress == null) {
+            error "NANOQ: output_format '${output_format}' is not supported for FASTA (use fasta or fasta.gz)"
+        }
+        """
+        nanoq -i ${ontreads} \\
+            ${args} \\
+            -r ${prefix}.stats \\
+            -O u \\
+            -o ${prefix}.tmp.fastq
+
+        awk 'NR%4==1 { print ">" substr(\$0, 2) } NR%4==2 { print }' ${prefix}.tmp.fastq ${compress} > ${prefix}.${output_format}
+
+        rm -f ${prefix}.tmp.fastq
+        """
+    } else {
+        """
+        nanoq -i ${ontreads} \\
+            ${args} \\
+            -r ${prefix}.stats \\
+            -o ${prefix}.${output_format}
+        """
+    }
 
     stub:
     def args = task.ext.args ?: ''
