@@ -33,7 +33,9 @@ workflow TRIMMING_ADAPTORS_WF {
             ch_longreads,
             params.skip_longread_qc,
         )
-        ch_multiqc_files = ch_multiqc_files.mix(LONGREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        // multiqc_files from the preprocessing subworkflows are plain files already
+        // (indexing [1] into a Path returns a path-name element, e.g. the string 'patricia').
+        ch_multiqc_files = ch_multiqc_files.mix(LONGREADS.out.multiqc_files)
 
 
     //-------------
@@ -45,7 +47,7 @@ workflow TRIMMING_ADAPTORS_WF {
         SHORTREADS (
             ch_shortreads
         )
-        ch_multiqc_files = ch_multiqc_files.mix(SHORTREADS.out.multiqc_files.collect { it[1] }.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(SHORTREADS.out.multiqc_files)
 
 
     emit:

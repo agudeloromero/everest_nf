@@ -30,11 +30,11 @@ workflow LONGREAD_PREPROCESSING {
             if (params.longread_adaptertrimming_tool == 'porechop_abi') {
                 PORECHOP_ABI(ch_raw_long_reads, [])
                 ch_long_reads = PORECHOP_ABI.out.reads
-                ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log)
+                ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log.map { it[1] })
             } else {
                 PORECHOP_PORECHOP(ch_raw_long_reads)
                 ch_long_reads = PORECHOP_PORECHOP.out.reads
-                ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_PORECHOP.out.log)
+                ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_PORECHOP.out.log.map { it[1] })
             }
         }
 
