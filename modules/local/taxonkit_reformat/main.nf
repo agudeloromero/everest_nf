@@ -12,6 +12,7 @@ process TAXONKIT_REFORMAT {
     input:
     tuple val(meta), path(lca)
     path(tax_db)
+    val(tax_db_mounted)   // set (and tax_db empty) when --db_mounted_dir is used
 
     output:
     tuple val(meta), path("*_lca_reformatted.tsv")           , emit: lca_reformatted
@@ -25,15 +26,16 @@ process TAXONKIT_REFORMAT {
     def args   = task.ext.args   ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output = lca.baseName + "_reformatted" + ".tsv"
+    def db = tax_db_mounted ?: tax_db
     def log = lca.baseName + "_reformatted" + ".log"
     def header = lca.baseName + "_reformatted_header" + ".tsv"
 
     """
     taxonkit lineage \\
         $lca \\
-        --data-dir ${tax_db} \\
+        --data-dir ${db} \\
         -i 2 \\
-    | taxonkit reformat --data-dir ${tax_db} -i 7 -f "{k}\\t{p}\\t{c}\\t{o}\\t{f}\\t{g}\\t{s}" -F --fill-miss-rank \\
+    | taxonkit reformat --data-dir ${db} -i 7 -f "{k}\\t{p}\\t{c}\\t{o}\\t{f}\\t{g}\\t{s}" -F --fill-miss-rank \\
     | cut --complement -f5,6 \\
     > ${output} \\
     2> ${log}

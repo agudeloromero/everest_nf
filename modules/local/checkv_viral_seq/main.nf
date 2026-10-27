@@ -11,6 +11,7 @@ process CHECKV_VIRAL_SEQ {
     input:
     tuple val(meta), path(fasta)
     path(checkv_db)
+    val(checkv_db_mounted)   // set (and checkv_db empty) when --db_mounted_dir is used
 
     output:
     tuple val(meta), path("**/viruses.fna")                           , emit: fasta
@@ -24,12 +25,13 @@ process CHECKV_VIRAL_SEQ {
     script:
     def args   = task.ext.args   ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def db     = checkv_db_mounted ?: checkv_db
 
     """
     checkv end_to_end \\
         -t ${task.cpus} \\
         $args \\
-        -d ${checkv_db} \\
+        -d ${db} \\
         ${fasta} \\
         ${prefix} \\
         2> ${prefix}_checkv_viral_seq.log

@@ -1,3 +1,4 @@
+include { dbStaged; dbMounted } from "../db_inputs"
 include { MMSEQ2_ETAXONOMY as  MMSEQ2_ETAXONOMY_AA    } from "../../../modules/local/mmseq2_etaxonomy/main"
 include { TAXONKIT_REFORMAT as TAXONKIT_REFORMAT_AA   } from "../../../modules/local/taxonkit_reformat/main"
 include { SUMMARY_PER_SAMPLE as SUMMARY_PER_SAMPLE_AA } from "../../../modules/local/summary_per_sample/main"
@@ -18,8 +19,8 @@ workflow TAXONOMY_WF {
     //AA (PROTEINS) analysis
     //===================
 
-         MMSEQ2_ETAXONOMY_AA( fasta_ch, params.mmseq_viral_db_aa, 'aa' )
-         TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca, params.tax_aa )
+         MMSEQ2_ETAXONOMY_AA( fasta_ch, dbStaged(params.mmseq_viral_db_aa), dbMounted(params.mmseq_viral_db_aa), 'aa' )
+         TAXONKIT_REFORMAT_AA(  MMSEQ2_ETAXONOMY_AA.out.lca, dbStaged(params.tax_aa), dbMounted(params.tax_aa) )
 
          in_summary_per_sample_aa_ch = MMSEQ2_ETAXONOMY_AA.out.mode_tuple
                                         .join(MMSEQ2_ETAXONOMY_AA.out.tophit_aln_txt)
@@ -34,8 +35,8 @@ workflow TAXONOMY_WF {
     //===================
 
 
-         MMSEQ2_ETAXONOMY_NT( fasta_ch, params.mmseq_viral_db_nt, 'nt' )
-         TAXONKIT_REFORMAT_NT(  MMSEQ2_ETAXONOMY_NT.out.lca, params.tax_nt )
+         MMSEQ2_ETAXONOMY_NT( fasta_ch, dbStaged(params.mmseq_viral_db_nt), dbMounted(params.mmseq_viral_db_nt), 'nt' )
+         TAXONKIT_REFORMAT_NT(  MMSEQ2_ETAXONOMY_NT.out.lca, dbStaged(params.tax_nt), dbMounted(params.tax_nt) )
 
 
          in_summary_per_sample_nt_ch = MMSEQ2_ETAXONOMY_NT.out.mode_tuple

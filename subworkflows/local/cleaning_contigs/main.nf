@@ -1,5 +1,6 @@
 include { ABRICATE_RUN           } from "../../../modules/nf-core/abricate/run/main.nf"
 include { ABRICATE_SUMMARY       } from '../../../modules/nf-core/abricate/summary/main'
+include { dbStaged; dbMounted   } from "../db_inputs"
 include { SEQKIT_FILTER          } from "../../../modules/local/seqkit_filter/main"
 include { PHAROKKA               } from "../../../modules/local/pharokka/main"
 include { VIRSORTER_DETECT       } from "../../../modules/local/virsorter_detect/main"
@@ -27,7 +28,7 @@ workflow CLEANING_CONTIGS_WF {
 
 
         //NOTE: The output of nanopore analysis should be the the input for CHECKV
-        CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, params.checkv_db )
+        CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, dbStaged(params.checkv_db), dbMounted(params.checkv_db) )
 
 
         CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")

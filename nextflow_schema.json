@@ -224,6 +224,10 @@
                     "type": "string",
                     "default": "None"
                 },
+                "db_mounted_dir": {
+                    "type": "string",
+                    "description": "Directory visible on every worker holding the databases (same layout as the DB params); when set, checkv/mmseqs/taxonomy DBs are read in place instead of staged as inputs."
+                },
                 "checkv_db": {
                     "type": "string",
                     "default": "None"

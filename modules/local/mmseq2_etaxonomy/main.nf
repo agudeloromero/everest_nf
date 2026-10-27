@@ -13,6 +13,7 @@ process MMSEQ2_ETAXONOMY {
     input:
     tuple val(meta), path(fasta)
     path(mmseq2_db)
+    val(mmseq2_db_mounted)   // set (and mmseq2_db empty) when --db_mounted_dir is used
     val(mode)
 
     output:
@@ -43,6 +44,7 @@ process MMSEQ2_ETAXONOMY {
 
     // Common parameters
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def db_dir = mmseq2_db_mounted ?: mmseq2_db
     def lca = task.ext.lca ?: "--lca-ranks superkingdom,phylum,class,order,family,genus,species"
     def output_format   = "--format-output query,target,evalue,pident,fident,nident,mismatch,qcov,tcov,qstart,qend,qlen,tstart,tend,tlen,alnlen,bits,qheader,theader,taxid,taxname,taxlineage"
 
@@ -57,7 +59,7 @@ process MMSEQ2_ETAXONOMY {
     mmseqs easy-taxonomy \\
         --threads ${task.cpus} \\
         ${fasta} \\
-        ${mmseq2_db}/${ref_name} \\
+        ${db_dir}/${ref_name} \\
         ${prefix}_${mode} \\
         ${prefix}_${mode}_tmp \\
         ${args} \\
