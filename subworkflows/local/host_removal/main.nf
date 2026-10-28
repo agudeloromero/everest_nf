@@ -60,21 +60,24 @@ workflow HOST_REMOVAL_WF {
     if(params.genome_index_minimap2) {
         ref_genome_index_ch = Channel.fromPath(params.genome_index_minimap2)
     } else {
-        MINIMAP2_INDEX__DNA(ref_fasta_ch)
+        // Gate index builds on samples that need them (as LONGREAD_HOSTREMOVAL does): the
+        // reference is a plain value, so indexing it directly would run (and stage the
+        // multi-GB reference) even for runs with no short reads of that type.
+        MINIMAP2_INDEX__DNA(ch_all_fastq_branched.dna.first().map { _meta, _reads -> file(ref_fasta_ch) })
         ref_genome_index_ch = MINIMAP2_INDEX__DNA.out.index
     }
 
     if(params.transcriptome_index_minimap2 && params.shortread_transcriptome_aligner == "minimap2") {
         ref_transcriptome_index_minimap2_ch = Channel.fromPath(params.transcriptome_index_minimap2)
     } else {
-        MINIMAP2_INDEX__RNA(ref_transcriptome_ch)
+        MINIMAP2_INDEX__RNA(ch_all_fastq_branched.rna.first().map { _meta, _reads -> file(ref_transcriptome_ch) })
         ref_transcriptome_index_minimap2_ch = MINIMAP2_INDEX__RNA.out.index
     }
 
     if(params.transcriptome_index_kallisto && params.shortread_transcriptome_aligner == "kallisto") {
         ref_transcriptome_index_kallisto_ch = Channel.fromPath(params.transcriptome_index_kallisto)
     } else {
-        KALLISTO_INDEX__RNA(ref_transcriptome_ch)
+        KALLISTO_INDEX__RNA(ch_all_fastq_branched.rna.first().map { _meta, _reads -> file(ref_transcriptome_ch) })
         ref_transcriptome_index_kallisto_ch = KALLISTO_INDEX__RNA.out.idx
     }
 
