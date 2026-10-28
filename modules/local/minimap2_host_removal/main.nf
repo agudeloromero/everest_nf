@@ -27,7 +27,7 @@ process MINIMAP2_HOST_REMOVAL {
         def args_samtools_fastq = task.ext.args_samtools_fastq ?: " -NO "
 
         def output = meta.single_end ?
-                    "${prefix}_unmapped_R1.fastq"
+                    "-0 ${prefix}_unmapped_R1.fastq"
                     : "-1 ${prefix}_unmapped_R1.fastq -2 ${prefix}_unmapped_R2.fastq -s ${prefix}_unmapped_singletons.fastq"
 
         """
