@@ -142,7 +142,7 @@ workflow HOST_REMOVAL_WF {
         BBMAP_DEDUPE(PIGZ.out.fastqgz)
         BBMAP_DEDUPED_REFORMAT(BBMAP_DEDUPE.out.cat_deduped_fastqgz)
         ch_deduped_se = BBMAP_DEDUPE.out.deduped_fastqgz.filter { it[0].single_end == true }
-        ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq.concat(ch_unmapped_se)
+        ch_bbmap_norm_input = BBMAP_DEDUPED_REFORMAT.out.reformatted_fastq.mix(ch_deduped_se)
         BBMAP_DUDUPED_NORMALIZATION(ch_bbmap_norm_input)
 
     emit:
