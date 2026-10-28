@@ -33,6 +33,17 @@ nt_dict = {os.path.basename(f).replace("_summary_nt.txt", ""): f for f in nt_fil
 aa_dict = {os.path.basename(f).replace("_summary_aa.txt", ""): f for f in aa_files}
 
 
+BBMAP_COLS = ['Name', 'Length', 'Bases', 'Coverage', 'Reads', 'RPKM', 'GC']
+
+
+def read_bbmap(base, bbmap_dict):
+    """Coverage stats for a sample. Samples supplied as contigs have no reads to map, so
+    they have no stats file: return an empty frame so they are kept (coverage left blank)."""
+    if base in bbmap_dict:
+        return pd.read_csv(bbmap_dict[base], sep='\t')
+    return pd.DataFrame(columns=BBMAP_COLS)
+
+
 def header_cols(path):
     """Return a TSV's column names, or None if the file is empty/unreadable."""
     try:
@@ -60,11 +71,11 @@ nt_cols = {b: header_cols(p) for b, p in nt_dict.items()}
 aa_cols = {b: header_cols(p) for b, p in aa_dict.items()}
 
 # Merge nt files
-for base in set(bbmap_dict.keys()) & set(nt_dict.keys()):
+for base in set(nt_dict.keys()):
     try:
-        df_bbmap = pd.read_csv(bbmap_dict[base], sep='\t')
+        df_bbmap = read_bbmap(base, bbmap_dict)
         df_nt = read_summary(nt_dict[base], aa_cols.get(base))
-        merged_nt = pd.merge(df_nt, df_bbmap, left_on='lca_query', right_on='Name', how='inner')
+        merged_nt = pd.merge(df_nt, df_bbmap, left_on='lca_query', right_on='Name', how='left')
         output_nt = os.path.join(path2, f"{base}_nt_summary_mmseqs2_stats.txt")
         merged_nt.to_csv(output_nt, sep='\t', index=False)
         print(f"Merged and saved NT: {output_nt} ({len(merged_nt)} rows)")
@@ -72,11 +83,11 @@ for base in set(bbmap_dict.keys()) & set(nt_dict.keys()):
         print(f"Error merging NT for {base}: {e}")
 
 # Merge aa files (symmetric; borrows the NT schema when the AA summary is empty)
-for base in set(bbmap_dict.keys()) & set(aa_dict.keys()):
+for base in set(aa_dict.keys()):
     try:
-        df_bbmap = pd.read_csv(bbmap_dict[base], sep='\t')
+        df_bbmap = read_bbmap(base, bbmap_dict)
         df_aa = read_summary(aa_dict[base], nt_cols.get(base))
-        merged_aa = pd.merge(df_aa, df_bbmap, left_on='lca_query', right_on='Name', how='inner')
+        merged_aa = pd.merge(df_aa, df_bbmap, left_on='lca_query', right_on='Name', how='left')
         output_aa = os.path.join(path2, f"{base}_aa_summary_mmseqs2_stats.txt")
         merged_aa.to_csv(output_aa, sep='\t', index=False)
         print(f"Merged and saved AA: {output_aa} ({len(merged_aa)} rows)")

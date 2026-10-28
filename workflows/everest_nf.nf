@@ -135,7 +135,8 @@ workflow EVEREST_NF {
             .collect()
 
         MERGE_SUMMARY_BBMAP(
-            BBMAP_PROCESS.out.bbmap_stats.collect(),
+            // contig-only runs have no coverage stats; still run so those samples reach the summary
+            BBMAP_PROCESS.out.bbmap_stats.collect().ifEmpty([]),
             merge_summary_input_ch
         )
 
