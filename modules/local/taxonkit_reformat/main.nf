@@ -31,8 +31,20 @@ process TAXONKIT_REFORMAT {
     def header = lca.baseName + "_reformatted_header" + ".tsv"
 
     """
+    # MMseqs2 majority/vote-mode LCA (the amino-acid search) inserts four stats columns
+    # (nfrag, nlabeled, nsupport, fraction) after the taxon name; drop them so both modes
+    # share the 6-column layout the -i 7 / cut below assume. Otherwise the lineage columns
+    # shift and every AA summary comes out empty.
+    awk -F'\\t' -v OFS='\\t' '{
+        if (NF >= 9 && \$5 ~ /^[0-9]+\$/ && \$8 ~ /^[0-9.]+\$/) {
+            line = \$1 OFS \$2 OFS \$3 OFS \$4
+            for (i = 9; i <= NF; i++) line = line OFS \$i
+            print line
+        } else print
+    }' $lca > ${lca.baseName}_norm.tsv
+
     taxonkit lineage \\
-        $lca \\
+        ${lca.baseName}_norm.tsv \\
         --data-dir ${db} \\
         -i 2 \\
     | taxonkit reformat --data-dir ${db} -i 7 -f "{k}\\t{p}\\t{c}\\t{o}\\t{f}\\t{g}\\t{s}" -F --fill-miss-rank \\
