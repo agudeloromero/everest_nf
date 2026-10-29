@@ -28,21 +28,26 @@ process VRHYME_VRHYME {
     """
     ${gunzip}
 
-    # vRhyme refuses to run with fewer than 2 scaffolds of at least the minimum length
-    # (default 2000 bp, -l) and exits 1. Binning needs >=2 scaffolds, so that is "nothing to
-    # bin" rather than a failure: skip cleanly and emit no bins. Clear any output folder left
-    # by an earlier attempt, since vRhyme also refuses to write into an existing -o folder.
+    # vRhyme exits 1 ("Requires at least 2" scaffolds >= its minimum length) when there is
+    # nothing to bin. Treat that one case as a clean skip with no bins, not a failure; any other
+    # error still fails the task. Clear an output folder left by an earlier attempt first, since
+    # vRhyme also refuses to write into an existing -o folder.
     rm -rf $prefix
-    n_scaffolds=\$(awk '/^>/ { if (len >= 2000) n++; len = 0; next } { len += length(\$0) } END { if (len >= 2000) n++; print n + 0 }' $fasta_input)
-    if [ "\$n_scaffolds" -lt 2 ]; then
-        echo "vRhyme skipped: \$n_scaffolds scaffold(s) >= 2000 bp (needs at least 2)" >&2
-    else
-        vRhyme \\
-            -i $fasta_input \\
-            -r $reads \\
-            -o $prefix \\
-            -t $task.cpus \\
-            $args
+    set +e
+    vRhyme \\
+        -i $fasta_input \\
+        -r $reads \\
+        -o $prefix \\
+        -t $task.cpus \\
+        $args 2>&1 | tee vrhyme.log
+    status=\${PIPESTATUS[0]}
+    set -e
+    if [ "\$status" -ne 0 ]; then
+        if grep -q "Requires at least 2" vrhyme.log; then
+            echo "vRhyme skipped: too few scaffolds to bin" >&2
+        else
+            exit "\$status"
+        fi
     fi
 
     #mv $prefix/vRhyme_best_bins_fasta/ vRhyme_best_bins_fasta
