@@ -61,7 +61,7 @@ tax_v3 = tax_v2[!grepl("^0", tax_v2$lca_taxid),]
 #-- Identification
 print("Sample identification")
 basename = basename(lca_file)
-base = gsub("_tax_viral_(.*)_lca_reformated_header.tsv","",as.character(basename))
+base = sub("_(nt|aa)_lca_reformatted_header\\.tsv$","",as.character(basename))
 sample = rep(base, nrow(tax_v3))
 mmseq.db = grepl("*_nt_*", basename)
 

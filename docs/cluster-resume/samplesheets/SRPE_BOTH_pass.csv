@@ -1,0 +1,5 @@
+sample,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR5224150,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224150_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224150_R2.fastq.gz,,,
+SRR5224158,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224158_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA369654/SRR5224158_R2.fastq.gz,,,
+SRR5805727,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA392272/SRR5805727_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA392272/SRR5805727_R2.fastq.gz,,,
+SRR5805729,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA392272/SRR5805729_R1.fastq.gz,/home/opc/EVEREST/data_test/SR_PE/BOTH/pass/PRJNA392272/SRR5805729_R2.fastq.gz,,,

@@ -1,0 +1,4 @@
+sample,fastq_1
+SRR1553676,/data/everest-nf/data/test/SR_SE/DNA/PRJNA258008/SRR1553676_R1.fastq.gz
+SRR1553679,/data/everest-nf/data/test/SR_SE/DNA/PRJNA258008/SRR1553679_R1.fastq.gz
+SRR11524780,/data/everest-nf/data/test/SR_SE/DNA/PRJNA517266/SRR11524780_R1.fastq.gz

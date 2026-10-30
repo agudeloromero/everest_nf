@@ -40,4 +40,17 @@ process BBMAP_BBDUK {
         bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def trimmed = meta.single_end ? "touch ${prefix}.fastq.gz" : "touch ${prefix}_1.fastq.gz ${prefix}_2.fastq.gz"
+    """
+    ${trimmed}
+    touch ${prefix}.bbduk.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
+    END_VERSIONS
+    """
 }

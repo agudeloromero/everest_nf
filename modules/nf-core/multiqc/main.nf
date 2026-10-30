@@ -1,24 +1,24 @@
 process MULTIQC {
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.27--pyhdfd78af_0' :
-        'biocontainers/multiqc:1.27--pyhdfd78af_0' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1b/1bef8af6be88c5733461959c46ac8ef73d18f65277f62a1695d0e1633054f9c2/data'
+        : 'community.wave.seqera.io/library/multiqc:1.34--db7c73dae76bc9e6'}"
 
     input:
-    path  multiqc_files, stageAs: "?/*"
-    path(multiqc_config)
-    path(extra_multiqc_config)
-    path(multiqc_logo)
-    path(replace_names)
-    path(sample_names)
+    tuple val(meta), path(multiqc_files, stageAs: "?/*"), path(multiqc_config, stageAs: "?/*"), path(multiqc_logo), path(replace_names), path(sample_names)
 
     output:
-    path "*multiqc_report.html", emit: report
-    path "*_data"              , emit: data
-    path "*_plots"             , optional:true, emit: plots
-    path "versions.yml"        , emit: versions
+    tuple val(meta), path("*.html"), emit: report
+    tuple val(meta), path("*_data"), emit: data
+    tuple val(meta), path("*_plots"), emit: plots, optional: true
+    // No versions output: MultiQC's input depends on the versions topic being fully
+    // resolved, so emitting to it would deadlock the pipeline (topic never resolves).
+    // A bare (non-topic) eval() output here also hits a Nextflow 26.04.4 task-hash bug
+    // ("Something went wrong while creating task hash" on a HashMap$EntrySet) — the
+    // output is unused (nothing reads MULTIQC.out.versions) so it's simplest to drop it.
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,38 +26,28 @@ process MULTIQC {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ? "--filename ${task.ext.prefix}.html" : ''
-    def config = multiqc_config ? "--config $multiqc_config" : ''
-    def extra_config = extra_multiqc_config ? "--config $extra_multiqc_config" : ''
+    def config = multiqc_config ? multiqc_config instanceof List ? "--config ${multiqc_config.join(' --config ')}" : "--config ${multiqc_config}" : ""
     def logo = multiqc_logo ? "--cl-config 'custom_logo: \"${multiqc_logo}\"'" : ''
     def replace = replace_names ? "--replace-names ${replace_names}" : ''
     def samples = sample_names ? "--sample-names ${sample_names}" : ''
     """
     multiqc \\
         --force \\
-        $args \\
-        $config \\
-        $prefix \\
-        $extra_config \\
-        $logo \\
-        $replace \\
-        $samples \\
+        ${args} \\
+        ${config} \\
+        ${prefix} \\
+        ${logo} \\
+        ${replace} \\
+        ${samples} \\
         .
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
-    END_VERSIONS
     """
 
     stub:
     """
     mkdir multiqc_data
+    touch multiqc_data/.stub
     mkdir multiqc_plots
+    touch multiqc_plots/.stub
     touch multiqc_report.html
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
-    END_VERSIONS
     """
 }

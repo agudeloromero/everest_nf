@@ -8,17 +8,23 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { TRIMMING_ADAPTORS_WF    } from '../subworkflows/local/trimming_adaptors'
-include { HOST_REMOVAL_WF         } from '../subworkflows/local/host_removal'
-include { DENOVO_WF               } from '../subworkflows/local/denovo'
-include { CLEANING_CONTIGS_WF     } from '../subworkflows/local/cleaning_contigs'
-include { TAXONOMY_WF             } from '../subworkflows/local/taxonomy'
+include { TRIMMING_ADAPTORS_WF   } from '../subworkflows/local/trimming_adaptors'
+include { HOST_REMOVAL_WF as HOSTREMOVAL_SHORTREAD_WF      } from '../subworkflows/local/host_removal'
+include { LONGREAD_HOSTREMOVAL as HOSTREMOVAL_LONGREAD_WF  } from '../subworkflows/local/hostremoval_longread'
+include { DENOVO_WF              } from '../subworkflows/local/denovo'
+include { CLEANING_CONTIGS_WF    } from '../subworkflows/local/cleaning_contigs'
+include { TAXONOMY_WF            } from '../subworkflows/local/taxonomy'
+include { BBMAP_PROCESS          } from '../modules/local/bbmap_process/main'
+include { MERGE_SUMMARY_BBMAP    } from '../modules/local/merge_summary_bbmap/main'
+include { UPDATE_TAXONOMIC_RANK_MANUAL } from '../modules/local/update_taxonomic_rank_manual/main'
+include { EVEREST_COMBINE_SUMMARIES } from '../modules/local/everest_combine_summaries/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_everest_nf_pipeline'
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { NANOQ                  } from '../modules/nf-core/nanoq/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,21 +36,34 @@ workflow EVEREST_NF {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    multiqc_config
+    multiqc_logo
+    multiqc_methods_description
+    outdir
 
     main:
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
+    def ch_versions = channel.empty()
+    def ch_multiqc_files = channel.empty()
+
+    ch_samplesheet.branch { sample ->
+        short_reads: !sample[0].is_long_read && !sample[0].is_contig
+        long_reads:   sample[0].is_long_read && !sample[0].is_contig
+        contigs:      sample[0].is_contig
+    }
+   .set { ch_reads_branched }
+
+    ch_reads_branched.long_reads.dump(tag: 'ch_reads_branched.long_reads')
+    ch_reads_branched.short_reads.dump(tag: 'ch_reads_branched.short_reads')
+    ch_reads_branched.contigs.dump(tag: 'ch_reads_branched.contigs')
 
     //
     // MODULE: Run FastQC
     //
     FASTQC (
-        ch_samplesheet
+        ch_reads_branched.short_reads
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.map { _meta, file -> file })
 
 
     //============================
@@ -55,25 +74,85 @@ workflow EVEREST_NF {
     // BINNING_WF -> Optional
     // PRE_TRIMMING_QC_WF -> Optional, reuse the module
 
-    if(params.input_contigs) {
-        CLEANING_CONTIGS_WF( ch_samplesheet, input_contigs )
+
+        TRIMMING_ADAPTORS_WF ( ch_reads_branched.short_reads,
+                               ch_reads_branched.long_reads )
+        ch_multiqc_files = ch_multiqc_files.mix(TRIMMING_ADAPTORS_WF.out.multiqc_files)
+
+        HOSTREMOVAL_LONGREAD_WF ( params.genome,
+                                  TRIMMING_ADAPTORS_WF.out.longreads_preprocessed )
+        ch_multiqc_files = ch_multiqc_files.mix(HOSTREMOVAL_LONGREAD_WF.out.multiqc_files)
+
+
+        HOSTREMOVAL_SHORTREAD_WF ( params.fasta,
+                                   params.transcriptome,
+                                   TRIMMING_ADAPTORS_WF.out.shortreads_trimmed_pe,
+                                   TRIMMING_ADAPTORS_WF.out.shortreads_preprocessed_se_pe )
+        ch_multiqc_files = ch_multiqc_files.mix(HOSTREMOVAL_SHORTREAD_WF.out.multiqc_files)
+
+
+        DENOVO_WF( HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz )
+
+        DENOVO_WF.out.repseq_fasta.dump(tag:'DENOVO_WF.out.repseq_fasta')
+
+        // Long-read branch: treat host-removed long reads as candidate viral "contigs"
+        // (reads-as-contigs — long nanopore/pacbio reads can be near-complete viral genomes).
+        // NANOQ converts the host-removed fastq.gz to fasta so they join the contig stream
+        // and flow through CLEANING_CONTIGS (SeqKit -> CheckV) and TAXONOMY identically to
+        // short-read assemblies. No long-read assembler is used.
+        NANOQ( HOSTREMOVAL_LONGREAD_WF.out.reads, 'fasta' )
+        NANOQ.out.reads.dump(tag:'NANOQ.out.reads')
+
+        // Converge all three modalities at the contig pool: raw contigs + short-read
+        // de novo assembly (dereplicated) + long-read reads-as-contigs.
+        ch_contigs = ch_reads_branched.contigs
+            .mix(DENOVO_WF.out.repseq_fasta)
+            .mix(NANOQ.out.reads)
+
+        // Reads used for per-contig coverage mapping (BBMAP_MAPPING_CONTIGS joins by meta.id).
+        // Include the long reads so long-read contigs get coverage; BBMAP_MAPPING_CONTIGS
+        // already branches on meta.single_end, so single-end long reads map in single-end mode.
+        ch_reads_for_coverage = HOSTREMOVAL_SHORTREAD_WF.out.deduped_normalized_fastqgz
+            .mix(HOSTREMOVAL_LONGREAD_WF.out.reads)
+
+        CLEANING_CONTIGS_WF(
+            ch_contigs,
+            ch_reads_for_coverage
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(CLEANING_CONTIGS_WF.out.multiqc_files)
+
+        bbmap_process_input_ch = CLEANING_CONTIGS_WF.out.bbmap_rpkm
+            .map { entry -> entry[1] }
+            .mix(CLEANING_CONTIGS_WF.out.bbmap_covstats.map { entry -> entry[1] })
+            .collect()
+
+        BBMAP_PROCESS( bbmap_process_input_ch )
 
         TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
 
-    } else {
-        TRIMMING_ADAPTORS_WF( ch_samplesheet )
+        merge_summary_input_ch = TAXONOMY_WF.out.summary_nt
+            .mix(TAXONOMY_WF.out.summary_aa)
+            .collect()
 
-        HOST_REMOVAL_WF( params.fasta, TRIMMING_ADAPTORS_WF.out.ch_all_fastq, TRIMMING_ADAPTORS_WF.out.trim_fastq )
+        MERGE_SUMMARY_BBMAP(
+            // contig-only runs have no coverage stats; still run so those samples reach the summary
+            BBMAP_PROCESS.out.bbmap_stats.collect().ifEmpty([]),
+            merge_summary_input_ch
+        )
 
-        DENOVO_WF( HOST_REMOVAL_WF.out.deduped_normalized_fastqgz )
+        taxrank_input_ch = MERGE_SUMMARY_BBMAP.out.nt_stats
+            .mix(MERGE_SUMMARY_BBMAP.out.aa_stats)
+            .collect()
 
-        CLEANING_CONTIGS_WF( ch_samplesheet, DENOVO_WF.out.repseq_fasta )
+        UPDATE_TAXONOMIC_RANK_MANUAL( taxrank_input_ch )
 
-        TAXONOMY_WF( CLEANING_CONTIGS_WF.out.fasta )
+        EVEREST_COMBINE_SUMMARIES(
+            UPDATE_TAXONOMIC_RANK_MANUAL.out.taxrank_files.collect()
+        )
+
 
         /* PILON didn't work */
 
-    }
 
 
     //============================
@@ -84,57 +163,66 @@ workflow EVEREST_NF {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
+    def topic_versions = channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name:  'everest_nf_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
-        ).set { ch_collated_versions }
-
+        )
 
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config        = Channel.fromPath(
-        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config = params.multiqc_config ?
-        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
-        Channel.empty()
-    ch_multiqc_logo          = params.multiqc_logo ?
-        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-        Channel.empty()
-
-    summary_params      = paramsSummaryMap(
-        workflow, parameters_schema: "nextflow_schema.json")
-    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-        file(params.multiqc_methods_description, checkIfExists: true) :
-        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = Channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
-
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_methods_description.collectFile(
-            name: 'methods_description_mqc.yaml',
-            sort: true
-        )
+    def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    def ch_multiqc_custom_methods_description = multiqc_methods_description
+        ? file(multiqc_methods_description, checkIfExists: true)
+        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+    MULTIQC(
+        ch_multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'everest_nf'],
+                files,
+                multiqc_config
+                    ? file(multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                multiqc_logo ? file(multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }
     )
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
-    )
-
-    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    emit:
+    multiqc_report    = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
+    nt_summary        = EVEREST_COMBINE_SUMMARIES.out.nt_summary
+    aa_summary        = EVEREST_COMBINE_SUMMARIES.out.aa_summary
+    cohort_nt_summary = TAXONOMY_WF.out.summary_cohort_nt   // taxonomy-only cross-sample matrix (nt)
+    cohort_aa_summary = TAXONOMY_WF.out.summary_cohort_aa   // taxonomy-only cross-sample matrix (aa)
+    versions          = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
 

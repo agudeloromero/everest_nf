@@ -13,7 +13,7 @@ process ABRICATE_RUN {
 
     output:
     tuple val(meta), path("*.txt"), emit: report
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val('abricate'), eval('abricate --version 2>&1 | sed "s/^.*abricate //"'), emit: versions_abricate, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,11 +29,6 @@ process ABRICATE_RUN {
         $datadir \\
         --threads $task.cpus \\
         > ${prefix}.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        abricate: \$(echo \$(abricate --version 2>&1) | sed 's/^.*abricate //' )
-    END_VERSIONS
     """
 
     stub:
@@ -42,10 +37,5 @@ process ABRICATE_RUN {
     def datadir = databasedir ? '--datadir ${databasedir}' : ''
     """
     touch ${prefix}.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        abricate: \$(echo \$(abricate --version 2>&1) | sed 's/^.*abricate //' )
-    END_VERSIONS
     """
 }

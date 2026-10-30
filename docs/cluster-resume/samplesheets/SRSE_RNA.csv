@@ -1,0 +1,5 @@
+sample,fastq_1
+ERR2732537,/data/everest-nf/data/test/SR_SE/RNA/PRJEB28158/ERR2732537_R1.fastq.gz
+ERR2732541,/data/everest-nf/data/test/SR_SE/RNA/PRJEB28158/ERR2732541_R1.fastq.gz
+SRR12641738,/data/everest-nf/data/test/SR_SE/RNA/PRJNA634356/SRR12641738_R1.fastq.gz
+SRR12641739,/data/everest-nf/data/test/SR_SE/RNA/PRJNA634356/SRR12641739_R1.fastq.gz

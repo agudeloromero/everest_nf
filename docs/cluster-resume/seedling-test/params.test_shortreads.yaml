@@ -1,0 +1,49 @@
+# EVEREST-nf params for the seedling-prod cluster (namespace su-everest-nf).
+# All data/DB paths point at the staged copy on the cluster MinIO:
+#   s3://su-everest-nf/shared/everest/...
+# Used with:  abc pipeline run everest_nf -r vrhyme-summaries \
+#               --params-file params.seedling.yaml --env NXF_VER=25.10.5
+#
+# NOTE: DB/reference params are S3 *directory* inputs — Nextflow stages them into
+# each task's work dir. checkv (6 G) and virsorter (13 G) are heavy to stage per
+# task; fine for the smoke test, but for scale move the DBs onto a shared
+# filesystem / Nomad host volume and point these at the local mount instead.
+
+# --- input (smoke test: 4 subsampled SR-PE DNA samples) ---
+input: s3://su-everest-nf/shared/everest/test_data/samplesheets/test_shortreads.csv
+rnaseq: false
+
+# --- pipeline toggles ---
+keep_lambda: true
+skip_longread_qc: false
+skip_adapter_trimming: false
+skip_longread_filtering: false
+enable_conda: false
+publish_dir_mode: 'copy'
+
+# resource ceiling — keep <= seedling node specs (verify with the operator;
+# raise for full/real data, especially SPADES + process_high_memory steps)
+max_cpus: 16
+max_memory: 60.GB
+max_time: 24h
+
+# --- DATABASES (s3://su-everest-nf/shared/everest/db_dir/everest/...) ---
+adaptor:            s3://su-everest-nf/shared/everest/db_dir/everest/adaptors/adaptors.fa
+baltimore_db:       s3://su-everest-nf/shared/everest/db_dir/everest/DB_Baltimore/Baltimore_group_ICT_2024_20250225_v3.txt
+checkv_db:          s3://su-everest-nf/shared/everest/db_dir/everest/DB_checkv/checkv-db-v1.1
+mmseq_viral_db_aa:  s3://su-everest-nf/shared/everest/db_dir/everest/DB_MMSEQ2_aa
+mmseq_viral_db_aa_ref_name: "viral.aa.fnaDB"
+mmseq_viral_db_nt:  s3://su-everest-nf/shared/everest/db_dir/everest/DB_MMSEQ2_nt
+mmseq_viral_db_nt_ref_name: "viral.nt.fnaDB"
+tax_aa:             s3://su-everest-nf/shared/everest/db_dir/everest/TAX_aa
+tax_nt:             s3://su-everest-nf/shared/everest/db_dir/everest/TAX_nt
+virsorter_db:       s3://su-everest-nf/shared/everest/db_dir/everest/DB_virsorter
+
+# --- REFERENCES ---
+genome:        s3://su-everest-nf/shared/everest/db_dir/everest/genome/male.hg19.fasta
+host_genome:   s3://su-everest-nf/shared/everest/db_dir/everest/genome/male.hg19.fasta
+transcriptome: s3://su-everest-nf/shared/everest/db_dir/everest/genome/Homo_sapiens.GRCh38.cdna.all.fa
+fasta:         s3://su-everest-nf/shared/everest/db_dir/everest/genome/Homo_sapiens.GRCh38.cdna.all.fa
+
+# NOTE: pharokka_db and diamond_db_aa intentionally omitted — they do not exist
+# in the dataset and are not exercised by the current pipeline.

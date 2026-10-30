@@ -1,0 +1,2 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR5110531_contig,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/SRR5110531_rep_seq.fasta,,

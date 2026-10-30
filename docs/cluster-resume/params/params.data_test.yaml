@@ -1,0 +1,73 @@
+#input: /home/opc/EVEREST/_samplesheets/SRPE_BOTH_pass.csv
+#
+
+#input: /home/opc/EVEREST/_samplesheets/SRPE_DNA_pass.sub.csv
+#input: /home/opc/EVEREST/_samplesheets/LR_NP.sub.csv
+#input: /home/opc/EVEREST/_samplesheets/mixed.sub.csv
+#input: /home/opc/EVEREST/_samplesheets/mixed.full.csv
+
+
+input: /home/opc/EVEREST/_samplesheets/test_publication.csv
+rnaseq: false
+
+#---------------
+
+host_genome: /home/opc/db_dir/everest/genome/male.hg19.fasta
+keep_lambda: true
+skip_longread_qc: false
+skip_adapter_trimming: false
+skip_longread_filtering: false
+
+#-------------
+
+
+enable_conda: false
+max_time: 24h
+
+publish_dir_mode: 'symlink'
+
+max_cpus: 40
+max_memory: 200.GB
+
+# DATABASES 
+pharokka_db: /home/opc/db_dir/everest/DB_pharokka/
+diamond_db_aa: /home/opc/db_dir/everest/DB_aa_diamond/viral_aa_diamond.dmnd
+adaptor: /home/opc/db_dir/everest/adaptors/adaptors.fa
+
+#UPDATED TO ZENODO RELEASE
+baltimore_db: /home/opc/db_dir/everest/DB_Baltimore/Baltimore_group_ICT_2024_20250225_v3.txt
+checkv_db: /home/opc/db_dir/everest/DB_checkv/checkv-db-v1.1
+mmseq_viral_db_aa: /home/opc/db_dir/everest/DB_MMSEQ2_aa
+mmseq_viral_db_aa_ref_name: "viral.aa.fnaDB"
+mmseq_viral_db_nt: /home/opc/db_dir/everest/DB_MMSEQ2_nt
+tax_aa: /home/opc/db_dir/everest/TAX_aa
+tax_nt: /home/opc/db_dir/everest/TAX_nt
+virsorter_db: /home/opc/db_dir/everest/DB_virsorter
+
+
+# REFERENCES
+
+genome: /home/opc/db_dir/everest/genome/male.hg19.fasta
+transcriptome: /home/opc/db_dir/everest/genome/Homo_sapiens.GRCh38.cdna.all.fa
+fasta: /home/opc/db_dir/everest/genome/Homo_sapiens.GRCh38.cdna.all.fa
+
+
+# CONDA ENVIRONMENTS 
+#conda_bbmap_env : /data/micromamba/envs/BBMAP-env
+#conda_python3_env : /data/micromamba/envs/python3-env
+#conda_spades_env : /data/micromamba/envs/spades-env
+#conda_qc_env : /data/micromamba/envs/qc
+#conda_minimap2_env : /data/micromamba/envs/mimimap2-env
+#conda_kallisto_env : /data/micromamba/envs/kallisto-env
+#conda_mmseqs2_env : /data/micromamba/envs/mmseqs-env
+##conda_mmseqs2_env : /data/micromamba/envs/mmseqs-env-2
+#conda_seqkit_env : /data/micromamba/envs/seqkit-env
+#conda_virsorter2_env : /data/micromamba/envs/virsorter-env-2
+#conda_checkv_env : /data/micromamba/envs/checkv-env-2
+#conda_bacphlip_env : /data/micromamba/envs/bacphlip-env-2
+#conda_taxonkit_env : /data/micromamba/envs/taxonkit-env
+#conda_r_env : /data/micromamba/envs/r-env
+#conda_abricate_env : /data/micromamba/envs/abricate-env
+#conda_pharokka_env : /data/micromamba/envs/pharokka-env
+#conda_reneo_env : /data/micromamba/envs/reneo-env
+

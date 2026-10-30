@@ -1,0 +1,8 @@
+name: "seqkit_filter"
+description: Local module for the everest_nf pipeline
+keywords:
+  - everest
+  - metagenomics
+  - virome
+authors:
+  - "@agudeloromero"

@@ -27,9 +27,19 @@
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
                         "installed_by": ["modules"]
                     },
+                    "cat/fastq": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
                     "checkv/endtoend": {
                         "branch": "master",
                         "git_sha": "56cf5a89c2646ad50195635cf18df4028a6928ce",
+                        "installed_by": ["modules"]
+                    },
+                    "chopper": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
@@ -39,7 +49,12 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "285a50500f9e02578d90b3ce6382ea3c30216acd",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "filtlong": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "kallisto/index": {
@@ -55,19 +70,53 @@
                     },
                     "minimap2/index": {
                         "branch": "master",
-                        "git_sha": "f0719ae309075ae4a291533883847c3f7c441dad",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/minimap2/index/minimap2-index.diff"
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b80f5fd12ff7c43938f424dd76392a2704fa2396",
+                        "git_sha": "008f9d3e61209bf995edac3ba531f54e269e1215",
+                        "installed_by": ["modules"]
+                    },
+                    "nanolyse": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
+                    "nanoplot": {
+                        "branch": "master",
+                        "git_sha": "9322f997f94451510f974e417ec5277869030b44",
+                        "installed_by": ["modules"]
+                    },
+                    "nanoq": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "pilon": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "porechop/abi": {
+                        "branch": "master",
+                        "git_sha": "10d3ce839d4c87bbff4da434e155a3c8a112ea05",
+                        "installed_by": ["modules"]
+                    },
+                    "porechop/porechop": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "c8be52dba1166c678e74cda9c3a3c221635c8bb1",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/stats": {
+                        "branch": "master",
+                        "git_sha": "c8be52dba1166c678e74cda9c3a3c221635c8bb1",
                         "installed_by": ["modules"]
                     },
                     "seqkit/split2": {
@@ -78,6 +127,11 @@
                     "trimmomatic": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "installed_by": ["modules"]
+                    },
+                    "vrhyme/vrhyme": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     }
                 }
@@ -96,7 +150,7 @@
                     },
                     "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "2fd2cd6d0e7b273747f32e465fdc6bcc3ae0814e",
+                        "git_sha": "fdc08b8b1ae74f56686ce21f7ea11ad11990ce57",
                         "installed_by": ["subworkflows"]
                     }
                 }

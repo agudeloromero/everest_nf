@@ -31,4 +31,14 @@ process BBMAP_INDEX {
         bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p ref
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
+    END_VERSIONS
+    """
 }

@@ -1,0 +1,7 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+SRR15057753,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057753_R1.fastq.gz,OXFORD_NANOPORE
+SRR15057759,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/PRJNA744354_S/SRR15057759_R1.fastq.gz,OXFORD_NANOPORE
+PAW45280_pass_928cab0c_be3ac682_0,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/LSK114/PAW45280_pass_928cab0c_be3ac682_0.fastq.gz,OXFORD_NANOPORE
+PAW45280_pass_928cab0c_be3ac682_10,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/LSK114/PAW45280_pass_928cab0c_be3ac682_10.fastq.gz,OXFORD_NANOPORE
+PAW45280_pass_928cab0c_be3ac682_11,DNA,,,,/home/opc/EVEREST/data_test/LR_NP/LSK114/PAW45280_pass_928cab0c_be3ac682_11.fastq.gz,OXFORD_NANOPORE
+

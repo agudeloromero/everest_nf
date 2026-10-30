@@ -1,0 +1,8 @@
+name: "cat_pair_unpair"
+description: Local module for the everest_nf pipeline
+keywords:
+  - everest
+  - metagenomics
+  - virome
+authors:
+  - "@agudeloromero"
