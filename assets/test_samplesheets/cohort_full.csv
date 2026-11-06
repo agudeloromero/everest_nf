@@ -1,0 +1,10 @@
+sample,type,short_read_1,short_read_2,contig,long_read,long_read_platform
+ERR3274620,DNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads/PRJEB32062/ERR3274620_R1.fastq.gz,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads/PRJEB32062/ERR3274620_R2.fastq.gz,,,
+SRR5110531,DNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads/PRJNA316588/SRR5110531_R1.fastq.gz,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads/PRJNA316588/SRR5110531_R2.fastq.gz,,,
+SRR8322173,RNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads_rna/PRJNA493096/SRR8322173_R1.fastq.gz,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads_rna/PRJNA493096/SRR8322173_R2.fastq.gz,,,
+SRR1553676,DNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads_se/PRJNA258008/SRR1553676_R1.fastq.gz,,,,
+ERR2732537,RNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads_se_rna/PRJEB28158/ERR2732537_R1.fastq.gz,,,,
+SRR15057753,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads_full/longreads_np/PRJNA744354_S/SRR15057753_R1.fastq.gz,OXFORD_NANOPORE
+ERR4661016,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads_full/longreads_pb/PRJEB32062_S/ERR4661016_R1.fastq.gz,PACBIO
+SRR5110531_contig,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/SRR5110531_rep_seq.fasta,,
+AMR_CONTIG,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/LAMBDA_AMR_contig.fasta,,
