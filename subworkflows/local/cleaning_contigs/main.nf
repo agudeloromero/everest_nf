@@ -27,13 +27,31 @@ workflow CLEANING_CONTIGS_WF {
         //VIRSORTER_DETECT( SEQKIT_FILTER.out.filtered_fasta, params.virsorter_db )
 
 
+        // A sample whose contigs are all shorter than the SEQKIT_FILTER cut-off leaves an
+        // empty FASTA; CheckV aborts on empty input ("input FASTA file is empty") and that
+        // single task failure used to terminate the whole cohort. Drop such samples here.
+        filtered_contigs_ch = SEQKIT_FILTER.out.filtered_fasta
+            .filter { meta, fasta ->
+                if (fasta.size() > 0) return true
+                log.warn "[everest] ${meta.id}: no contigs left after length filtering (SEQKIT_FILTER); skipping CheckV and downstream contig steps"
+                return false
+            }
+
         //NOTE: The output of nanopore analysis should be the the input for CHECKV
-        CHECKV_VIRAL_SEQ( SEQKIT_FILTER.out.filtered_fasta, dbStaged(params.checkv_db), dbMounted(params.checkv_db) )
+        CHECKV_VIRAL_SEQ( filtered_contigs_ch, dbStaged(params.checkv_db), dbMounted(params.checkv_db) )
 
+        // CheckV can also run cleanly yet keep no sequences; BBMap (empty reference),
+        // Bacphlip and the taxonomy steps would then fail on an empty FASTA.
+        checkv_contigs_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta
+            .filter { meta, fasta ->
+                if (fasta.size() > 0) return true
+                log.warn "[everest] ${meta.id}: CheckV kept no sequences; skipping downstream contig steps"
+                return false
+            }
 
-        CHECKV_VIRAL_SEQ.out.renamed_fasta.dump(tag: "CHECKV_VIRAL_SEQ.out")
+        checkv_contigs_ch.dump(tag: "CHECKV_VIRAL_SEQ.out")
 
-        bbmap_mapping_input_ch = CHECKV_VIRAL_SEQ.out.renamed_fasta.join(reads_ch)
+        bbmap_mapping_input_ch = checkv_contigs_ch.join(reads_ch)
         BBMAP_MAPPING_CONTIGS( bbmap_mapping_input_ch )
 
 
@@ -48,7 +66,7 @@ workflow CLEANING_CONTIGS_WF {
 //--------------------------------
 
 
-        ABRICATE_RUN( CHECKV_VIRAL_SEQ.out.renamed_fasta, [] )
+        ABRICATE_RUN( checkv_contigs_ch, [] )
 
         ABRICATE_SUMMARY (
             ABRICATE_RUN.out.report.collect { entry -> entry[1] }.map{ reports -> [[ id: 'summary'], reports]}
@@ -56,11 +74,11 @@ workflow CLEANING_CONTIGS_WF {
         // AMR/virulence summary — MultiQC has a first-party abricate module.
         ch_multiqc_files = ch_multiqc_files.mix(ABRICATE_SUMMARY.out.report.map { it[1] })
 
-        BACPHLIP_LIFE_STYLE( CHECKV_VIRAL_SEQ.out.renamed_fasta )
+        BACPHLIP_LIFE_STYLE( checkv_contigs_ch )
 
 
     emit:
-        fasta = CHECKV_VIRAL_SEQ.out.renamed_fasta
+        fasta = checkv_contigs_ch
         bbmap_rpkm = BBMAP_MAPPING_CONTIGS.out.rpkm
         bbmap_covstats = BBMAP_MAPPING_CONTIGS.out.covstats
         multiqc_files = ch_multiqc_files
