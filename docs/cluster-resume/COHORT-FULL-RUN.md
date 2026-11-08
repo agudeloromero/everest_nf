@@ -14,7 +14,6 @@ Runs real, un-subsampled data through every input pathway in one run. Prepared 2
 | ERR2732537 | SR single-end **RNA** | `SR_SE/RNA/PRJEB28158` |
 | SRR15057753 | LR Nanopore | `LR_NP/PRJNA744354_S` |
 | ERR4661016 | LR **PacBio** | `LR_PB/PRJEB32062_S` |
-| SRR5110531_contig | contig-only | already staged (`contigs/SRR5110531_rep_seq.fasta`) |
 | AMR_CONTIG | contig-only, AMR positive control | already staged (`contigs/LAMBDA_AMR_contig.fasta`) |
 
 Chosen to cover SR PE/SE x DNA/RNA, LR ONT/PacBio and contig-only. Swap samples in the CSV freely.
@@ -52,8 +51,10 @@ volume and the MinIO quota: the work dir holds every intermediate for all sample
   staged per task rather than read from the mounted volume.
 - **PacBio** is only samplesheet metadata (no platform-specific code path), so expect it to
   behave as ONT; `PACBIO` vs `PACBIO_HIFI`/`PACBIO_CLR` is not distinguished.
-- Production contig cut-off applies (`SEQKIT_FILTER -m 3000`): small contigs/sparse samples
-  can legitimately yield no viral contigs. vRhyme skips cleanly in that case.
+- Production contig cut-off applies (`SEQKIT_FILTER -m 5000`, the module default): small
+  contigs/sparse samples can legitimately yield no contigs or no viral contigs. Such samples are
+  now dropped from the contig steps with a `[everest] <sample>: ...; skipping` warning instead of
+  failing the run (CLEANING_CONTIGS_WF); vRhyme skips cleanly too.
 - Wall-clock: the 4-sample lambda test took about 9 h at `queueSize = 2`; full data will take
   much longer.
 

@@ -6,5 +6,4 @@ SRR1553676,DNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads
 ERR2732537,RNA,s3://su-everest-nf/shared/everest/test_data/reads_full/shortreads_se_rna/PRJEB28158/ERR2732537_R1.fastq.gz,,,,
 SRR15057753,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads_full/longreads_np/PRJNA744354_S/SRR15057753_R1.fastq.gz,OXFORD_NANOPORE
 ERR4661016,DNA,,,,s3://su-everest-nf/shared/everest/test_data/reads_full/longreads_pb/PRJEB32062_S/ERR4661016_R1.fastq.gz,PACBIO
-SRR5110531_contig,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/SRR5110531_rep_seq.fasta,,
 AMR_CONTIG,DNA,,,s3://su-everest-nf/shared/everest/test_data/contigs/LAMBDA_AMR_contig.fasta,,
