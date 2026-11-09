@@ -24,9 +24,12 @@ process BBMAP_MAPPING_CONTIGS {
     // bbmap.sh is short-read only and fails on long reads (0% mapped -> error state);
     // use BBMap's long-read mapper mapPacBio.sh for long reads (same rpkm/covstats outputs).
     def aligner = meta.is_long_read ? 'mapPacBio.sh' : 'bbmap.sh'
+    // qin=33: BBMap auto-detects the quality offset from the first reads; long reads whose
+    // early qualities are all high (e.g. '@' = Q31) get misread as phred+64 and the job aborts
+    // on the first low-quality base. All inputs here are phred+33 (Trimmomatic -phred33, ONT/PacBio).
     def args = task.ext.args ?: ( meta.is_long_read
-                ? "nodisk ambiguous=random threads=${task.cpus} maxlen=6000"
-                : "nodisk slow=t ambiguous=random threads=${task.cpus}" )
+                ? "nodisk ambiguous=random threads=${task.cpus} maxlen=6000 qin=33"
+                : "nodisk slow=t ambiguous=random threads=${task.cpus} qin=33" )
 
     def input = meta.single_end ?
                 "in=${reads[0]}"
