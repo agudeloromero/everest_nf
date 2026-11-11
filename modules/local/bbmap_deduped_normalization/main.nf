@@ -20,6 +20,11 @@ process BBMAP_DUDUPED_NORMALIZATION {
         script:
         def args = task.ext.args ?: ""
         def prefix = task.ext.prefix ?: "${meta.id}"
+        // bbnorm sizes its k-mer tables to fill the whole Java heap, and the JVM needs
+        // off-heap memory on top of -Xmx. With -Xmx == task.memory the container is
+        // OOM-killed on larger samples (ERR2732537 on cohort_full, all 4 retries).
+        // Leave ~20% of the allocation as headroom.
+        def heap_mb = (task.memory.toMega() * 0.8) as long
 
         def input = meta.single_end ?
               "in=${reads}"
@@ -31,7 +36,7 @@ process BBMAP_DUDUPED_NORMALIZATION {
 
         """
         bbnorm.sh \\
-          -Xmx${task.memory.toMega()}m \\
+          -Xmx${heap_mb}m \\
           $args \\
           tmpdir=tmp \\
           $input\\
