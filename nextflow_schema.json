@@ -292,6 +292,18 @@
                     "type": "string",
                     "default": "None"
                 },
+                "conda_seqkit_env": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "conda_taxonkit_env": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "conda_r_env": {
+                    "type": "string",
+                    "default": "None"
+                },
                 "baltimore_db": {
                     "type": "string",
                     "default": "None"
@@ -357,18 +369,22 @@
                 },
                 "keep_lambda": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Keep phage lambda spike-in reads/contigs (do not filter them out)."
                 },
                 "skip_adapter_trimming": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip adapter trimming."
                 },
                 "skip_longread_qc": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip long-read QC (NanoPlot)."
                 },
                 "skip_longread_filtering": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip long-read filtering."
                 }
             }
